@@ -8,7 +8,7 @@ function Profile() {
             <Header />
             <div className="p-8 w-full h-full">
                 <div className="text-5xl">Profile</div>
-                <div className="flex w-full h-full bg-slate-500 p-10">
+                <div className="flex w-full h-full bg-slate-500 p-10 rounded-3xl">
                     <div className="flex flex-col items-center justify-center w-1/2 bg-white rounded-l-3xl">
                         <img
                             src="https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg"

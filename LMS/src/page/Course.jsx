@@ -7,9 +7,9 @@ function Course() {
     return (
         <div className="flex flex-col h-screen w-screen">
             <Header />
-            <div className="h-full w-full">
+            <div className="h-full w-full p-8">
                 <div className="text-5xl mb-4">Course</div>
-                <div className="flex h-full w-full bg-slate-400 px-4">
+                <div className="flex h-full w-full  px-4">
                     <div className="w-1/5 bg-slate-700 py-8 rounded-l-3xl">
                         <button
                             type="button"
