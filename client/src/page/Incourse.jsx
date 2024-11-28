@@ -1,18 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { useParams, useLocation } from "react-router-dom";
-import { fetchoneCourse } from "../conf/api";
-import Header from "../components/header";
-import Footer from "../components/footer";
-import CourseForm from "../components/CourseForm";
-import LessonCard from "../components/lesson/LessonCard";
-import LessonForm from "../components/lesson/LessonForm";
-
 const Incourse = () => {
     const { id } = useParams();
     const location = useLocation();
     const { documentID } = location.state || {};
     const [CourseData, setCourseData] = useState(null);
-    console.log("🚀 ~ Incourse ~ CourseData:", CourseData);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const toggleModal = (state = !isModalOpen) => {
@@ -22,7 +12,6 @@ const Incourse = () => {
     const fetchCourseData = async () => {
         try {
             const data = await fetchoneCourse(documentID);
-            // console.log("🚀 ~ fetchCourseData ~ data:", data.data)
             setCourseData(data.data);
         } catch (error) {
             console.error("Error fetching courses:", error);
@@ -30,7 +19,7 @@ const Incourse = () => {
     };
 
     useEffect(() => {
-        fetchCourseData(); // Fetch courses on component mount
+        fetchCourseData();
     }, []);
 
     return (
@@ -57,10 +46,10 @@ const Incourse = () => {
                     <div className="w-full rounded-r-3xl bg-slate-100 pt-4">
                         <div className="text-xl ml-8 mb-2">Total Lesson</div>
                         <div className="flex flex-wrap">
-                            {/* Map over the courses and display each course */}
                             {CourseData && CourseData.length > 0 ? (
                                 CourseData.map((course, index) => (
                                     <LessonCard
+                                        key={course.id}
                                         course={course}
                                         id={course.id}
                                         name={course.name}
@@ -77,7 +66,6 @@ const Incourse = () => {
                 </div>
             </div>
 
-            {/* Modal for adding a course */}
             <div
                 id="default-modal"
                 tabIndex={-1}
@@ -86,7 +74,10 @@ const Incourse = () => {
                     isModalOpen ? "flex" : "hidden"
                 }`}
             >
-                <LessonForm id="courseForm" />
+                <LessonForm
+                    id="LessonForm"
+                    closeModal={() => toggleModal(false)}
+                />
             </div>
 
             <Footer />

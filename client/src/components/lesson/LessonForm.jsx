@@ -9,14 +9,11 @@ function LessonForm() {
     // ฟังก์ชันจัดการการส่งฟอร์ม
     const handleSubmit = async (event) => {
         event.preventDefault();
-
         try {
             const newLesson = await createLesson(lessonName, description, file);
             console.log("Lesson created successfully:", newLesson);
-            alert("Lesson created successfully!");
         } catch (error) {
             console.error("Error creating lesson:", error);
-            alert("Failed to create lesson.");
         }
     };
 
@@ -133,13 +130,8 @@ function LessonForm() {
 
             <div className="mt-6 mb-14 flex items-center justify-end gap-x-6">
                 <button
-                    type="button"
-                    className="text-sm/6 font-semibold text-gray-900"
-                    onClick={() => {
-                        setLessonName("");
-                        setDescription("");
-                        setFile(null);
-                    }}
+                    type="cancel"
+                    class="text-sm/6 font-semibold text-gray-900 hover:underline  rounded-md  px-3 py-2 "
                 >
                     Cancel
                 </button>
