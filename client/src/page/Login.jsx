@@ -1,22 +1,24 @@
 import React, { useContext, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
+import { axData } from "../conf/ax";
 
 function Login() {
     const authContext = useContext(AuthContext);
-    console.log("🚀 ~ Login ~ authContext:", authContext)
+    console.log("🚀 ~ Login ~ authContext:", authContext);
     const { login } = authContext;
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-        login(username, password);
-        console.log("Login");
+        try {
+            await login(username, password);
+            console.log("Login Successful");
+            window.location.replace("/");
+        } catch (error) {
+            console.error("Login Failed:", error.message);
+        }
     };
-    if (authContext?.state.role == "Teacher") {
-        router.replace("/");
-    }
 
     return (
         <div className="flex w-screen h-screen items-center justify-center">

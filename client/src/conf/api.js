@@ -10,7 +10,7 @@ export const getCurrentUser = async () => {
     }
 };
 
-export const createCourse = async (coursename, description, teacherId) => {
+export const createCourse = async (coursename, description) => {
     try {
         const course = await ax.post("/api/courses", {
             data: {
