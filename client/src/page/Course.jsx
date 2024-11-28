@@ -3,7 +3,7 @@ import Header from "../components/header";
 import Footer from "../components/footer";
 import CourseCard from "../components/CourseCard";
 import CourseForm from "../components/CourseForm";
-import { fetchCourse } from "../conf/api";
+import { fetchMyCourse } from "../conf/api";
 
 function Course() {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -16,7 +16,7 @@ function Course() {
 
     const fetchCourseData = async () => {
         try {
-            const data = await fetchCourse(); // Assume fetchCourse is an async function
+            const data = await fetchMyCourse(); // Assume fetchCourse is an async function
             setCourseData(data.data); // Store the course data
         } catch (error) {
             console.error("Error fetching courses:", error);

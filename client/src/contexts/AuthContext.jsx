@@ -1,24 +1,23 @@
 import React, { createContext, useEffect, useState } from "react";
-
 import ax, { axData } from "../conf/ax";
 import conf from "../conf/main";
 
 const AuthContext = createContext(null);
 
-// Initial state for authentication
 const initialState = {
     isLoggedIn: false,
     user: null,
-    isLoginPending: false,
-    loginError: null,
     role: null,
+    loading: false,
+    error: null,
+    token: null,
+    id: null,
 };
 
-// Function to update JWT in session storage and axios configuration
-const updateJwt = async (jwt) => {
-    axData.jwt = jwt; // Set JWT for axios
-    if (jwt) {
-        sessionStorage.setItem(conf.jwtSessionStorageKey, jwt); // Use sessionStorage
+const saveJwt = async (token) => {
+    axData.jwt = token;
+    if (token) {
+        sessionStorage.setItem(conf.jwtSessionStorageKey, token);
     } else {
         sessionStorage.removeItem(conf.jwtSessionStorageKey);
     }
@@ -26,124 +25,104 @@ const updateJwt = async (jwt) => {
 
 const ContextProvider = ({ children }) => {
     const [state, setState] = useState(initialState);
+    // console.log("🚀 ~ ContextProvider ~ state:", state);
 
-    // Utility function to update the state
+    // Update state function
     const updateState = (newState) => {
         setState((prevState) => ({ ...prevState, ...newState }));
     };
 
-    // Login state management functions
-    const setLoginPending = (isLoginPending) => updateState({ isLoginPending });
-    const setLoginSuccess = (isLoggedIn, user) =>
-        updateState({ isLoggedIn, user, loginError: null });
-    const setLoginError = (loginError) =>
-        updateState({ loginError, isLoggedIn: false });
-    const setUserRole = (role) => updateState({ role });
+    // Login function
+    const login = async (username, password) => {
+        updateState({ loading: true, error: null });
 
-    // Handle the login result
-    const handleLoginResult = async (error, result) => {
-        console.log("🚀 ~ handleLoginResult ~ result:", result.jwt)
-        setLoginPending(false);
-        
-        if (result?.email) {
-            if (result.access_token) {
-                await updateJwt(result.jwt);
+        try {
+            const response = await ax.post(conf.loginEndpoint, {
+                identifier: username,
+                password: password,
+            });
+
+            if (response.data?.jwt) {
+                const { jwt, user } = response.data;
+                await saveJwt(jwt);
+                updateState({
+                    isLoggedIn: true,
+                    user: user.email,
+                    role: user.role?.name || "User",
+                    token: jwt,
+                    loading: false,
+                });
+            } else {
+                throw new Error("Invalid credentials");
             }
-            setLoginSuccess(true, result.user.email);
-            setUserRole(result.role?.name || "User"); // Default role fallback
-        } else if (error) {
-            setLoginError(error);
+        } catch (error) {
+            updateState({
+                error: error.response?.data?.message || "Login failed",
+                loading: false,
+            });
         }
     };
 
-    // Load persisted JWT and verify user
-    useEffect(() => {
-        const loadJwt = async () => {
-            const persistedJwt = sessionStorage.getItem(
-                conf.jwtSessionStorageKey
-            ); // Use sessionStorage
-            if (persistedJwt) {
-                setLoginPending(true);
-                await loadPersistedJwt(handleLoginResult);
-            }
-        };
-
-        loadJwt();
-    }, []);
-
-    // Function to handle login
-    const login = async (username, password) => {
-        setLoginPending(true);
-        setLoginSuccess(false, undefined);
-        setLoginError(null);
-
-        await fetchLogin(username, password, handleLoginResult);
-    };
-
-    // Function to handle logout
+ 
     const logout = async () => {
-        await updateJwt(null);
+        await saveJwt(null);
         setState(initialState);
     };
 
-    // Provide context to children
+  
+    useEffect(() => {
+        const loadPersistedJwt = async () => {
+            const token = sessionStorage.getItem(conf.jwtSessionStorageKey);
+            if (token) {
+                try {
+                    axData.jwt = token;
+                    const response = await ax.get(conf.jwtUserEndpoint);
+                    if (response.data?.email) {
+                        updateState({
+                            isLoggedIn: true,
+                            user: response.data.username,
+                            role: response.data.role?.name || "User",
+                            token,
+                            id: response.data.id,
+                            email: response.data.email,
+                        });
+                    } else {
+                        throw new Error("Invalid token");
+                    }
+                } catch {
+                    await saveJwt(null);
+                }
+            }
+        };
+        loadPersistedJwt();
+    }, []);
+
+    
+    const refreshToken = async () => {
+        try {
+            const response = await ax.post(conf.refreshTokenEndpoint);
+            if (response.data?.jwt) {
+                const { jwt } = response.data;
+                await saveJwt(jwt);
+                updateState({ token: jwt });
+            }
+        } catch {
+            await logout();
+        }
+    };
+
     return (
         <AuthContext.Provider
             value={{
                 state,
                 login,
                 logout,
+                refreshToken,
             }}
         >
             {children}
         </AuthContext.Provider>
     );
-};
-
-// Function to fetch login data
-const fetchLogin = async (username, password, callback) => {
-    try {
-        console.log("Fetching login");
-        const response = await ax.post(conf.loginEndpoint, {
-            identifier: username,
-            password: password,
-        });
-        console.log(response);
-
-        if (response.data?.jwt) {
-            callback(null, response.data);
-        } else {
-            callback("Invalid username or password", undefined);
-        }
-    } catch (e) {
-        callback("Failed to initiate login. Please try again.", undefined);
-    }
-};
-
-// Function to load persisted JWT and verify user
-const loadPersistedJwt = async (callback) => {
-    try {
-        const persistedJwt = sessionStorage.getItem(conf.jwtSessionStorageKey); // Use sessionStorage
-
-        if (persistedJwt) {
-            axData.jwt = persistedJwt;
-            const response = await ax.get(conf.jwtUserEndpoint);
-
-            if (response.data?.id > 0) {
-                callback(null, {
-                    email: response.data.email,
-                    role: response.data.role.name,
-                });
-            } else {
-                callback(
-                    "Failed to validate session. Please log in again.",
-                    null
-                );
-            }
-        }
-    } catch (e) {
-        callback("Failed to auto-login. Please check your connection.", null);
-    }
 };
 
 export { AuthContext, ContextProvider };

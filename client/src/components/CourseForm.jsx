@@ -1,12 +1,18 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { createCourse } from "../conf/api";
+import { AuthContext } from "../contexts/AuthContext";
 
 function CourseForm() {
     const [CourseName, setCourseName] = useState("");
     const [Description, setDescription] = useState("");
+    const { state } = useContext(AuthContext);
+    // console.log("🚀 ~ CourseForm ~ user:", state.id)
 
     const handleCreate = () => {
-        createCourse(CourseName, Description);
+        if (!CourseName.trim() || !Description.trim()) {
+            return;
+        }
+        createCourse(CourseName, Description,state.id);
     };
 
     return (

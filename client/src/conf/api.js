@@ -10,12 +10,13 @@ export const getCurrentUser = async () => {
     }
 };
 
-export const createCourse = async (coursename, description) => {
+export const createCourse = async (coursename, description, teacherId) => {
     try {
         const course = await ax.post("/api/courses", {
             data: {
                 name: coursename,
                 description: description,
+                teachers: [{ id: teacherId }],
             },
         });
         return course.data;
@@ -33,31 +34,44 @@ export const fetchCourse = async () => {
     }
 };
 
+export const editCourse = async (req, res) => {
+    try {
+        const course = await ax.put();
+        return course.data;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+export const fetchMyCourse = async () => {
+    try {
+        const course = await ax.get(conf.myCourseEndpoint);
+        return course.data;
+    } catch (error) {
+        console.error(error);
+    }
+};
+
 export const fetchoneCourse = async (id) => {
     try {
-        const course = await ax.get(`/api/courses/${id}`);
+        const course = await ax.get(`/api/courses/${id}?populate=*`);
         return course.data;
     } catch (error) {
         console.error("Error fetching course:", error);
     }
 };
 
-export const createLesson = async (lessonname, description, file) => {
+export const createLesson = async (lessonname, description, courseId, file) => {
     try {
-        const formData = new FormData();
-        formData.append("name", lessonname);
-        formData.append("description", description);
-
-        if (file) {
-            formData.append("file", file);
-        }
-        const response = await axios.post("/api/lessons", formData, {
-            headers: {
-                "Content-Type": "multipart/form-data",
+        const lesson = await ax.post("/api/lessons", {
+            data: {
+                name: lessonname,
+                description: description,
+                course: [{ id: courseId }],
             },
         });
-        return response.data;
+        return lesson.data;
     } catch (error) {
-        console.error("Error creating lesson:", error);
+        console.error(error);
     }
 };

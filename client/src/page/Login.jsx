@@ -4,19 +4,33 @@ import { axData } from "../conf/ax";
 
 function Login() {
     const authContext = useContext(AuthContext);
-    console.log("🚀 ~ Login ~ authContext:", authContext);
     const { login } = authContext;
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState(""); // สำหรับเก็บ error message
+    const [loading, setLoading] = useState(false); // สำหรับจัดการ loading state
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        setError(""); // เคลียร์ error ก่อน
+        setLoading(true); // ตั้งสถานะ loading
+
         try {
-            await login(username, password);
-            console.log("Login Successful");
-            window.location.replace("/");
+            // เรียกฟังก์ชัน login จาก AuthContext
+            const response = await login(username, password);
+            console.log("🚀 ~ handleLogin ~ response:", response)
+
+            if (axData?.jwt) {
+                console.log("Login Successful");
+                window.location.replace("/"); // เปลี่ยนเส้นทางไปหน้าแรก
+            } else {
+                throw new Error("Invalid credentials"); // หากไม่มี token ให้โยน error
+            }
         } catch (error) {
             console.error("Login Failed:", error.message);
+            setError("Invalid email or password. Please try again."); // แสดงข้อความ error
+        } finally {
+            setLoading(false); // ปิดสถานะ loading
         }
     };
 
@@ -58,6 +72,12 @@ function Login() {
                             required
                         />
                     </div>
+
+                    {/* Error Message */}
+                    {error && (
+                        <div className="text-red-500 text-sm mb-5">{error}</div>
+                    )}
+
                     <div className="flex items-start mb-5">
                         <div className="flex items-center h-5">
                             <input
@@ -75,9 +95,14 @@ function Login() {
                     </div>
                     <button
                         type="submit"
-                        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                        disabled={loading} // ป้องกันการกดซ้ำขณะกำลัง login
+                        className={`text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center ${
+                            loading
+                                ? "opacity-50 cursor-not-allowed"
+                                : "dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                        }`}
                     >
-                        Submit
+                        {loading ? "Loading..." : "Submit"}
                     </button>
                 </form>
             </div>
