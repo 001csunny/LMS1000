@@ -1,14 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { useParams, useLocation } from "react-router-dom";
+import { fetchoneCourse } from "../conf/api";
 import Header from "../components/header";
 import Footer from "../components/footer";
-import CourseCard from "../components/CourseCard";
 import CourseForm from "../components/CourseForm";
-import { fetchCourse } from "../conf/api";
+import LessonCard from "../components/lesson/LessonCard";
+import LessonForm from "../components/lesson/LessonForm";
 
-function Course() {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+const Incourse = () => {
+    const { id } = useParams();
+    const location = useLocation();
+    const { documentID } = location.state || {};
     const [CourseData, setCourseData] = useState(null);
-    console.log("🚀 ~ Course ~ CourseData:", CourseData);
+    console.log("🚀 ~ Incourse ~ CourseData:", CourseData);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const toggleModal = (state = !isModalOpen) => {
         setIsModalOpen(state);
@@ -16,8 +21,9 @@ function Course() {
 
     const fetchCourseData = async () => {
         try {
-            const data = await fetchCourse(); // Assume fetchCourse is an async function
-            setCourseData(data.data); // Store the course data
+            const data = await fetchoneCourse(documentID);
+            // console.log("🚀 ~ fetchCourseData ~ data:", data.data)
+            setCourseData(data.data);
         } catch (error) {
             console.error("Error fetching courses:", error);
         }
@@ -31,7 +37,7 @@ function Course() {
         <div className="flex flex-col h-screen w-screen">
             <Header />
             <div className="h-full w-full p-8">
-                <div className="text-5xl mb-4">Course</div>
+                <div className="text-5xl mb-4">{id}</div>
                 <div className="flex h-full w-full px-4">
                     <div className="w-1/5 bg-slate-700 py-8 rounded-l-3xl">
                         <button
@@ -39,7 +45,7 @@ function Course() {
                             type="button"
                             className="w-full py-2.5 px-5 mb-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                         >
-                            + Add Course
+                            + Add Lesson
                         </button>
                         <button
                             type="button"
@@ -49,12 +55,12 @@ function Course() {
                         </button>
                     </div>
                     <div className="w-full rounded-r-3xl bg-slate-100 pt-4">
-                        <div className="text-xl ml-8 mb-2">Total Courses</div>
+                        <div className="text-xl ml-8 mb-2">Total Lesson</div>
                         <div className="flex flex-wrap">
                             {/* Map over the courses and display each course */}
                             {CourseData && CourseData.length > 0 ? (
                                 CourseData.map((course, index) => (
-                                    <CourseCard
+                                    <LessonCard
                                         course={course}
                                         id={course.id}
                                         name={course.name}
@@ -64,7 +70,7 @@ function Course() {
                                     />
                                 ))
                             ) : (
-                                <div>No courses available</div>
+                                <div>No Lesson available</div>
                             )}
                         </div>
                     </div>
@@ -80,12 +86,12 @@ function Course() {
                     isModalOpen ? "flex" : "hidden"
                 }`}
             >
-                <CourseForm id="courseForm" />
+                <LessonForm id="courseForm" />
             </div>
 
             <Footer />
         </div>
     );
-}
+};
 
-export default Course;
+export default Incourse;

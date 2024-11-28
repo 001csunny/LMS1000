@@ -4,7 +4,7 @@ import Footer from "../components/footer";
 
 import AssignmentCard from "../components/AssignmentCard";
 
-function Assigment() {
+function Assignment() {
     return (
         <div className="flex flex-col h-screen w-screen">
             <Header />
@@ -40,4 +40,4 @@ function Assigment() {
     );
 }
 
-export default Assigment;
+export default Assignment;
