@@ -10,13 +10,13 @@ function LessonCard(props) {
     return (
         <div className="flex flex-row w-full h-14 bg-slate-100 px-10 justify-between items-center border-slate-200 border-y-[1px]">
             <Link
-                to={`/Course/${props.documentId}`}
+                to={`/lesson/${props.documentId}`}
                 className="hover:underline"
             >
                 {props.name}
             </Link>
             <div>{props.description}</div>
-            
+
             <div>
                 <button
                     type="button"

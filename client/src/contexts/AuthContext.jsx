@@ -12,6 +12,7 @@ const initialState = {
     error: null,
     token: null,
     id: null,
+    email: null,
 };
 
 const saveJwt = async (token) => {
@@ -25,7 +26,7 @@ const saveJwt = async (token) => {
 
 const ContextProvider = ({ children }) => {
     const [state, setState] = useState(initialState);
-    // console.log("🚀 ~ ContextProvider ~ state:", state);
+    console.log("🚀 ~ ContextProvider ~ state:", state)
 
     // Update state function
     const updateState = (newState) => {
@@ -50,6 +51,8 @@ const ContextProvider = ({ children }) => {
                     user: user.email,
                     role: user.role?.name || "User",
                     token: jwt,
+                    id: user.id,
+                    email: user.email,
                     loading: false,
                 });
             } else {
@@ -63,13 +66,13 @@ const ContextProvider = ({ children }) => {
         }
     };
 
- 
+    // Logout function
     const logout = async () => {
         await saveJwt(null);
         setState(initialState);
     };
 
-  
+    // Check login status on initial load
     useEffect(() => {
         const loadPersistedJwt = async () => {
             const token = sessionStorage.getItem(conf.jwtSessionStorageKey);
@@ -97,7 +100,7 @@ const ContextProvider = ({ children }) => {
         loadPersistedJwt();
     }, []);
 
-    
+    // Refresh Token function
     const refreshToken = async () => {
         try {
             const response = await ax.post(conf.refreshTokenEndpoint);
@@ -111,6 +114,21 @@ const ContextProvider = ({ children }) => {
         }
     };
 
+    // Check if user has specific role
+    const hasRole = (roles) => {
+        if (!Array.isArray(roles)) {
+            roles = [roles];
+        }
+        return roles.includes(state.role);
+    };
+
+    // Get Authenticated User Info
+    const getUserInfo = () => ({
+        id: state.id,
+        email: state.email,
+        role: state.role,
+    });
+
     return (
         <AuthContext.Provider
             value={{
@@ -118,6 +136,8 @@ const ContextProvider = ({ children }) => {
                 login,
                 logout,
                 refreshToken,
+                hasRole,
+                getUserInfo,
             }}
         >
             {children}

@@ -10,9 +10,10 @@ const Incourse = () => {
     const { id } = useParams(); // Course ID from URL
     const location = useLocation();
     const [CourseData, setCourseData] = useState({});
+    console.log("🚀 ~ Lesson ~ CourseData:", CourseData)
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    console.log("🚀 ~ Incourse ~ CourseData:", CourseData);
+
 
     // Fetch course data on component mount
     useEffect(() => {
@@ -74,6 +75,7 @@ const Incourse = () => {
                                         key={index}
                                         name={lesson.name}
                                         description={lesson.description}
+                                        documentId={lesson.documentId}
                                     />
                                 ))
                             ) : (

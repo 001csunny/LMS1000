@@ -1,31 +1,40 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Header from "../components/header";
 import Footer from "../components/footer";
 import CourseCard from "../components/CourseCard";
 import CourseForm from "../components/CourseForm";
 import { fetchMyCourse } from "../conf/api";
+import { AuthContext } from "../contexts/AuthContext";
 
 function Course() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [CourseData, setCourseData] = useState(null);
-    console.log("🚀 ~ Course ~ CourseData:", CourseData);
+    const [isLoading, setIsLoading] = useState(true); // เพิ่มสถานะการโหลด
+    const { state } = useContext(AuthContext);
+    console.log("🚀 ~ Course ~ state:", state);
 
     const toggleModal = (state = !isModalOpen) => {
         setIsModalOpen(state);
     };
 
     const fetchCourseData = async () => {
+        setIsLoading(true); // ตั้งสถานะเริ่มโหลดข้อมูล
         try {
-            const data = await fetchMyCourse(); // Assume fetchCourse is an async function
+            const data = await fetchMyCourse(state.id); // Assume fetchMyCourse is an async function
             setCourseData(data.data); // Store the course data
         } catch (error) {
             console.error("Error fetching courses:", error);
+        } finally {
+            setIsLoading(false); // โหลดเสร็จแล้ว
         }
     };
 
     useEffect(() => {
-        fetchCourseData(); // Fetch courses on component mount
-    }, []);
+        // ตรวจสอบว่า state.id มีค่าก่อนเรียก fetchCourseData
+        if (state?.id) {
+            fetchCourseData();
+        }
+    }, [state?.id]); // รันเมื่อ state.id เปลี่ยนแปลง
 
     return (
         <div className="flex flex-col h-screen w-screen">
@@ -51,10 +60,15 @@ function Course() {
                     <div className="w-full rounded-r-3xl bg-slate-100 pt-4">
                         <div className="text-xl ml-8 mb-2">Total Courses</div>
                         <div className="flex flex-wrap">
-                            {/* Map over the courses and display each course */}
-                            {CourseData && CourseData.length > 0 ? (
+                            {isLoading ? (
+                                // แสดงข้อความ Loading ขณะที่ข้อมูลกำลังถูกโหลด
+                                <div className="text-center w-full">
+                                    Loading...
+                                </div>
+                            ) : CourseData && CourseData.length > 0 ? (
                                 CourseData.map((course, index) => (
                                     <CourseCard
+                                        key={index}
                                         course={course}
                                         id={course.id}
                                         name={course.name}
@@ -64,7 +78,10 @@ function Course() {
                                     />
                                 ))
                             ) : (
-                                <div>No courses available</div>
+                                // ถ้าไม่มีข้อมูล
+                                <div className="text-center w-full">
+                                    No courses available
+                                </div>
                             )}
                         </div>
                     </div>

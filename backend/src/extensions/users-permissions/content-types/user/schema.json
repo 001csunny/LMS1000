@@ -70,6 +70,12 @@
       "relation": "manyToMany",
       "target": "api::course.course",
       "mappedBy": "students"
+    },
+    "quizzes": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::quiz.quiz",
+      "mappedBy": "students"
     }
   }
 }
