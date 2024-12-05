@@ -20,6 +20,12 @@
       "relation": "manyToMany",
       "target": "api::word.word",
       "inversedBy": "challenges"
+    },
+    "lesson": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::lesson.lesson",
+      "inversedBy": "challenges"
     }
   }
 }

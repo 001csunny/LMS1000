@@ -180,15 +180,16 @@ export const deleteQuizz = async (id) => {
 // *** Challenges ***
 
 // สร้าง Challenge ใหม่
-export const createChallenge = async (challengeName, wordIds) => {
+export const createChallenge = async (challengeName, wordIds, lessonId) => {
     try {
-        const challenge = await ax.post("/api/challenges", {
+        const response = await ax.post("/api/challenges", {
             data: {
                 challenge: challengeName,
-                words: wordIds.map((id) => ({ id: id })), // Array ของ `id` ของคำที่เชื่อมโยง
+                words: wordIds.map((id) => ({ id: id })), // เชื่อม Word IDs
+                lesson: lessonId, // เชื่อม Lesson ID
             },
         });
-        return challenge.data;
+        return response.data;
     } catch (error) {
         console.error("Error creating challenge:", error);
     }
@@ -315,5 +316,20 @@ export const textReader = async (word) => {
         return response.data; // คืนค่าข้อมูลเสียง
     } catch (error) {
         console.error("เกิดข้อผิดพลาดในการแปลงข้อความเป็นเสียง", error);
+    }
+};
+
+export const updateUser = async (userId, data) => {
+    try {
+        const response = await ax.put(`/api/users/${userId}`, {
+            username: data.username, 
+            email: data.email,
+            speach: data.speach
+        });
+        
+        return response.data;
+    } catch (error) {
+        console.error("Error updating user:", error);
+        throw error; // โยนข้อผิดพลาดออกไปให้ handle ด้านนอก
     }
 };

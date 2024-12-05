@@ -1,8 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-function QuizCard({ quizz, onCardClick, onEdit, onDelete }) {
-    console.log("🚀 ~ QuizCard ~ quizz:", quizz)
+function SpeachCard({ quizz, onCardClick, onEdit, onDelete }) {
+   console.log("🚀 ~ SpeachCard ~ quizz:", quizz)
+   
     return (
         <div
             className="flex flex-row w-full h-14 bg-slate-100 px-10 justify-between items-center border-slate-200 border-y-[1px] cursor-pointer"
@@ -12,11 +13,11 @@ function QuizCard({ quizz, onCardClick, onEdit, onDelete }) {
             <Link
                 // to={`/quiz/${quizId}`}
                 className="hover:underline font-medium text-gray-900"
-                onClick={onCardClick} 
+                onClick={onCardClick}
             >
-                {quizz.Quiz}
+                {quizz.challenge}
             </Link>
-            <div className="text-sky-500 ">multiple choice</div>
+            <div className="text-fuchsia-500 ">Speach</div>
             {/* Action Buttons */}
             <div className="flex gap-x-2">
                 {/* Edit Button */}
@@ -41,4 +42,4 @@ function QuizCard({ quizz, onCardClick, onEdit, onDelete }) {
     );
 }
 
-export default QuizCard;
+export default SpeachCard;

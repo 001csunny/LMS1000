@@ -44,6 +44,12 @@
       "relation": "manyToOne",
       "target": "api::course.course",
       "inversedBy": "lessons"
+    },
+    "challenges": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::challenge.challenge",
+      "mappedBy": "lesson"
     }
   }
 }

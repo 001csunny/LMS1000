@@ -1,19 +1,24 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { deleteQuizz, fetchoneLesson } from "../conf/api";
+import { deleteChallenge, deleteQuizz, fetchoneLesson } from "../conf/api";
 import Header from "../components/header";
 import Footer from "../components/footer";
 import QuizCard from "../components/lesson/QuizzCard";
 import QuizzForm from "../components/lesson/quizzForm";
 import QuizModal from "../components/QuizModal";
 import SpeachChallenge from "../components/lesson/SpeachChallenge";
+import SpeachCard from "../components/lesson/SpeachCard";
+import SpeachModal from "../components/lesson/SpeachModal";
 
 const Lesson = () => {
     const { id } = useParams();
     const [LessonData, setLessonData] = useState({});
     const [isModalOpen, setIsModalOpen] = useState(false); // Add quiz form modal state
     const [isSpeechModalOpen, setIsSpeechModalOpen] = useState(false); // Add speech challenge modal state
+    const [isSpeechModalOpendata, setIsSpeechModalOpendata] = useState(false); // Add speech challenge modal state
     const [selectedQuiz, setSelectedQuiz] = useState(null); // Store selected quiz for editing
+    const [selectedSpeach, setSelectedSpeach] = useState(null);
+    console.log("🚀 ~ Lesson ~ selectedQuiz:", selectedQuiz);
     const [loading, setLoading] = useState(true); // Loading state
 
     // Fetch course data on component mount
@@ -51,6 +56,24 @@ const Lesson = () => {
         }
     };
 
+    const handleDeleteChallenge = async (quizId) => {
+        const confirmDelete = window.confirm(
+            "Are you sure you want to delete this quiz?"
+        );
+        if (!confirmDelete) return;
+
+        try {
+            // ลบแบบทดสอบผ่าน API
+            await deleteChallenge(quizId);
+            console.log(`Quiz with ID ${quizId} has been deleted.`);
+
+            // Fetch ข้อมูลใหม่หลังจากลบสำเร็จ
+            fetchLessonData(); // เรียกฟังก์ชัน fetch ข้อมูลใหม่
+        } catch (error) {
+            console.error("Error deleting quiz:", error);
+        }
+    };
+
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => {
         setIsModalOpen(false);
@@ -59,6 +82,8 @@ const Lesson = () => {
 
     const openSpeechModal = () => setIsSpeechModalOpen(true);
     const closeSpeechModal = () => setIsSpeechModalOpen(false);
+    const openSpeechModaldata = () => setIsSpeechModalOpendata(true);
+    const closeSpeechModaldata = () => setIsSpeechModalOpendata(false);
 
     const openQuizModal = (quiz) => {
         setSelectedQuiz(quiz); // Set the selected quiz to be edited
@@ -135,6 +160,21 @@ const Lesson = () => {
                                     No Quizzes available
                                 </div>
                             )}
+                            {LessonData.challenges?.length > 0 ? (
+                                LessonData.challenges.map((quizz, index) => (
+                                    <SpeachCard
+                                        quizz={quizz}
+                                        key={index}
+                                        onDelete={handleDeleteChallenge}
+                                        onCardClick={() => {
+                                            setSelectedSpeach(quizz); // เก็บข้อมูล Challenge ที่เลือก
+                                            openSpeechModaldata(); // เปิด Modal
+                                        }}
+                                    />
+                                ))
+                            ) : (
+                                <div className="ml-8 text-gray-500"></div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -183,7 +223,7 @@ const Lesson = () => {
                     id="speech-modal"
                     tabIndex={-1}
                     aria-hidden={!isSpeechModalOpen}
-                    className="fixed bg-slate-500 bg-opacity-90 overflow-auto top-0 right-0 left-0 z-50 flex items-center justify-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
+                    className="fixed bg-slate-900 bg-opacity-90 overflow-auto top-0 right-0 left-0 z-50 flex items-center justify-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
                 >
                     <div className="relative rounded-lg  w-[90%] h-[80%] ">
                         <div className="flex justify-end p-2">
@@ -195,7 +235,26 @@ const Lesson = () => {
                                 ✕
                             </button>
                         </div>
-                        <SpeachChallenge closeModal={closeSpeechModal} />
+                        <SpeachChallenge
+                            closeModal={closeSpeechModal}
+                            LessonId={LessonData.id}
+                            refreshData={fetchLessonData}
+                        />
+                    </div>
+                </div>
+            )}
+            {isSpeechModalOpendata && (
+                <div
+                    id="speech-modal"
+                    tabIndex={-1}
+                    aria-hidden={!isSpeechModalOpendata}
+                    className="fixed bg-slate-900 bg-opacity-90 overflow-auto top-0 right-0 left-0 z-50 flex items-center justify-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
+                >
+                    <div className="relative rounded-lg w-[90%] h-[80%]">
+                        <SpeachModal
+                            selectedSpeach={selectedSpeach} // ส่งข้อมูลที่เลือก
+                            closeModal={closeSpeechModaldata} // ปิด Modal
+                        />
                     </div>
                 </div>
             )}
