@@ -1,16 +1,14 @@
-import { useContext } from "react";
 import { Navigate } from "react-router-dom";
-import { AuthContext } from "./AuthContext";
 
-const ProtectedRoute = ({ children }) => {
-    const { state } = useContext(AuthContext);
-
-    // ตรวจสอบสถานะการล็อกอิน
-    if ((state.token = null)) {
+const ProtectedRoute = ({ children, requiredRoles = [] }) => {
+    // ดึง role จาก sessionStorage
+    const userRole = sessionStorage.getItem("userRole");
+    const hasAccess = requiredRoles.includes(userRole);
+    if (!userRole) {
         return <Navigate to="/Login" replace />;
     }
 
-    // ถ้าล็อกอินแล้วให้แสดงหน้าที่กำหนด
+    // ถ้ามีสิทธิ์ให้แสดงหน้าที่กำหนด
     return children;
 };
 

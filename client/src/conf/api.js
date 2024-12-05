@@ -1,3 +1,4 @@
+import ax2sp from "./apitext2speach";
 import ax from "./ax";
 import conf from "./main";
 
@@ -173,5 +174,146 @@ export const deleteQuizz = async (id) => {
         return response.data;
     } catch (error) {
         console.error("Error deleting quizz:", error);
+    }
+};
+
+// *** Challenges ***
+
+// สร้าง Challenge ใหม่
+export const createChallenge = async (challengeName, wordIds) => {
+    try {
+        const challenge = await ax.post("/api/challenges", {
+            data: {
+                challenge: challengeName,
+                words: wordIds.map((id) => ({ id: id })), // Array ของ `id` ของคำที่เชื่อมโยง
+            },
+        });
+        return challenge.data;
+    } catch (error) {
+        console.error("Error creating challenge:", error);
+    }
+};
+
+// ดึงข้อมูล Challenge โดย `id`
+export const fetchOneChallenge = async (id) => {
+    try {
+        const challenge = await ax.get(`/api/challenges/${id}?populate=*`);
+        return challenge.data;
+    } catch (error) {
+        console.error("Error fetching challenge:", error);
+    }
+};
+
+// อัปเดตข้อมูล Challenge
+export const updateChallenge = async (id, data) => {
+    try {
+        const challenge = await ax.put(`/api/challenges/${id}`, {
+            data: data,
+        });
+        return challenge.data;
+    } catch (error) {
+        console.error("Error updating challenge:", error);
+    }
+};
+
+// ลบ Challenge โดย `id`
+export const deleteChallenge = async (id) => {
+    try {
+        const response = await ax.delete(`/api/challenges/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error("Error deleting challenge:", error);
+    }
+};
+
+// ดึงข้อมูลทั้งหมดของ Challenge
+export const fetchChallenges = async () => {
+    try {
+        const challenges = await ax.get("/api/challenges?populate=*");
+        return challenges.data;
+    } catch (error) {
+        console.error("Error fetching challenges:", error);
+    }
+};
+
+// *** Words ***
+
+// สร้าง Word ใหม่
+export const createWord = async (word, challengeIds) => {
+    try {
+        const wordData = await ax.post("/api/words", {
+            data: {
+                word: word,
+                challenges: challengeIds.map((id) => ({ id: id })), // Array ของ `id` ของ challenge ที่เชื่อมโยง
+            },
+        });
+        return wordData.data;
+    } catch (error) {
+        console.error("Error creating word:", error);
+    }
+};
+
+// ดึงข้อมูล Word โดย `id`
+export const fetchOneWord = async (id) => {
+    try {
+        const word = await ax.get(`/api/words/${id}?populate=*`);
+        return word.data;
+    } catch (error) {
+        console.error("Error fetching word:", error);
+    }
+};
+
+// อัปเดตข้อมูล Word
+export const updateWord = async (id, data) => {
+    try {
+        const word = await ax.put(`/api/words/${id}`, {
+            data: data,
+        });
+        return word.data;
+    } catch (error) {
+        console.error("Error updating word:", error);
+    }
+};
+
+// ลบ Word โดย `id`
+export const deleteWord = async (id) => {
+    try {
+        const response = await ax.delete(`/api/words/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error("Error deleting word:", error);
+    }
+};
+
+// ดึงข้อมูลทั้งหมดของ Word
+export const fetchWords = async () => {
+    try {
+        const words = await ax.get("/api/words?populate=*");
+        return words.data;
+    } catch (error) {
+        console.error("Error fetching words:", error);
+    }
+};
+
+export const textReader = async (word) => {
+    try {
+        const response = await ax2sp.post("", {
+            // ตั้งค่าคำขอ POST โดยใช้ URL ว่าง
+            input: { text: word },
+            voice: {
+                languageCode: "th-TH",
+                name: "th-TH-Neural2-C",
+            },
+            audioConfig: {
+                audioEncoding: "LINEAR16",
+                effectsProfileId: ["small-bluetooth-speaker-class-device"],
+                pitch: 0.4,
+                speakingRate: 1.04,
+            },
+        });
+
+        return response.data; // คืนค่าข้อมูลเสียง
+    } catch (error) {
+        console.error("เกิดข้อผิดพลาดในการแปลงข้อความเป็นเสียง", error);
     }
 };

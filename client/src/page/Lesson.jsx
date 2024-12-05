@@ -6,10 +6,13 @@ import Footer from "../components/footer";
 import QuizCard from "../components/lesson/QuizzCard";
 import QuizzForm from "../components/lesson/quizzForm";
 import QuizModal from "../components/QuizModal";
+import SpeachChallenge from "../components/lesson/SpeachChallenge";
+
 const Lesson = () => {
     const { id } = useParams();
     const [LessonData, setLessonData] = useState({});
     const [isModalOpen, setIsModalOpen] = useState(false); // Add quiz form modal state
+    const [isSpeechModalOpen, setIsSpeechModalOpen] = useState(false); // Add speech challenge modal state
     const [selectedQuiz, setSelectedQuiz] = useState(null); // Store selected quiz for editing
     const [loading, setLoading] = useState(true); // Loading state
 
@@ -54,6 +57,9 @@ const Lesson = () => {
         setSelectedQuiz(null); // Clear selected quiz when closing the modal
     };
 
+    const openSpeechModal = () => setIsSpeechModalOpen(true);
+    const closeSpeechModal = () => setIsSpeechModalOpen(false);
+
     const openQuizModal = (quiz) => {
         setSelectedQuiz(quiz); // Set the selected quiz to be edited
         setIsModalOpen(true); // Open the modal
@@ -89,6 +95,13 @@ const Lesson = () => {
                             className="w-full py-2.5 px-5 mb-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                         >
                             + Add Quizz
+                        </button>
+                        <button
+                            onClick={openSpeechModal}
+                            type="button"
+                            className="w-full py-2.5 px-5 mb-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                        >
+                            + Add Speech Challenge
                         </button>
 
                         {/* Edit Course Button */}
@@ -160,6 +173,29 @@ const Lesson = () => {
                                 refreshData={fetchLessonData}
                             />
                         )}
+                    </div>
+                </div>
+            )}
+
+            {/* Modal for Adding Speech Challenge */}
+            {isSpeechModalOpen && (
+                <div
+                    id="speech-modal"
+                    tabIndex={-1}
+                    aria-hidden={!isSpeechModalOpen}
+                    className="fixed bg-slate-500 bg-opacity-90 overflow-auto top-0 right-0 left-0 z-50 flex items-center justify-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
+                >
+                    <div className="relative rounded-lg  w-[90%] h-[80%] ">
+                        <div className="flex justify-end p-2">
+                            <button
+                                onClick={closeSpeechModal}
+                                type="button"
+                                className="text-white bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center w-5 h-5 justify-center"
+                            >
+                                ✕
+                            </button>
+                        </div>
+                        <SpeachChallenge closeModal={closeSpeechModal} />
                     </div>
                 </div>
             )}

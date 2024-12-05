@@ -15,18 +15,22 @@ const initialState = {
     email: null,
 };
 
-const saveJwt = async (token) => {
+const saveJwt = async (token, role) => {
     axData.jwt = token;
+
     if (token) {
         sessionStorage.setItem(conf.jwtSessionStorageKey, token);
+
+        sessionStorage.setItem("userRole", role);
     } else {
         sessionStorage.removeItem(conf.jwtSessionStorageKey);
+        sessionStorage.removeItem("userRole");
     }
 };
 
 const ContextProvider = ({ children }) => {
     const [state, setState] = useState(initialState);
-    console.log("🚀 ~ ContextProvider ~ state:", state)
+    console.log("🚀 ~ ContextProvider ~ state:", state);
 
     // Update state function
     const updateState = (newState) => {
@@ -81,6 +85,7 @@ const ContextProvider = ({ children }) => {
                     axData.jwt = token;
                     const response = await ax.get(conf.jwtUserEndpoint);
                     if (response.data?.email) {
+                        await saveJwt(token, response.data.role?.name);
                         updateState({
                             isLoggedIn: true,
                             user: response.data.username,
