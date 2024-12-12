@@ -18,7 +18,7 @@ const Lesson = () => {
     const [isSpeechModalOpendata, setIsSpeechModalOpendata] = useState(false); // Add speech challenge modal state
     const [selectedQuiz, setSelectedQuiz] = useState(null); // Store selected quiz for editing
     const [selectedSpeach, setSelectedSpeach] = useState(null);
-    console.log("🚀 ~ Lesson ~ selectedQuiz:", selectedQuiz);
+    // console.log("🚀 ~ Lesson ~ selectedQuiz:", selectedQuiz);
     const [loading, setLoading] = useState(true); // Loading state
 
     // Fetch course data on component mount
@@ -119,28 +119,28 @@ const Lesson = () => {
                             type="button"
                             className="w-full py-2.5 px-5 mb-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                         >
-                            + Add Quizz
+                            + เพิ่มแบบเรียน
                         </button>
                         <button
                             onClick={openSpeechModal}
                             type="button"
                             className="w-full py-2.5 px-5 mb-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                         >
-                            + Add Speech Challenge
+                            + เพิ่มแบบทดสอบ
                         </button>
 
                         {/* Edit Course Button */}
-                        <button
+                        {/* <button
                             type="button"
                             className="w-full py-2.5 px-5 mb-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                         >
                             Edit
-                        </button>
+                        </button> */}
                     </div>
                     {/* Lessons Section */}
                     <div className="w-full rounded-r-3xl bg-slate-100 pt-4">
                         <div className="text-xl ml-8 mb-2">
-                            {"Lesson" + " " + LessonData.name}
+                            {"บทเรียน" + " " + LessonData.name}
                         </div>
                         <div className="ml-8 text-gray-500">
                             Description {LessonData.description}
@@ -248,7 +248,7 @@ const Lesson = () => {
                     id="speech-modal"
                     tabIndex={-1}
                     aria-hidden={!isSpeechModalOpendata}
-                    className="fixed bg-slate-900 bg-opacity-90 overflow-auto top-0 right-0 left-0 z-50 flex items-center justify-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
+                    className="fixed bg-slate-900 bg-opacity-90 overflow-auto  z-50 flex items-center justify-center w-full  h-[calc(100%-1rem)]"
                 >
                     <div className="relative rounded-lg w-[90%] h-[80%]">
                         <SpeachModal

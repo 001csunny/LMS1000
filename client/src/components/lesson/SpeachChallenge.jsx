@@ -6,6 +6,8 @@ import {
     deleteWord,
     fetchWords,
 } from "../../conf/api";
+import WordCardForm from "../speach/WordCardForm";
+import ListWord from "../speach/ListWord";
 
 function SpeachChallenge({ closeModal, LessonId, refreshData }) {
     const [quizTitle, setQuizTitle] = useState("");
@@ -15,8 +17,12 @@ function SpeachChallenge({ closeModal, LessonId, refreshData }) {
     const [challengeIds] = useState([]); // ตัวอย่าง Challenge IDs (แก้ไขตามจริง)
     const [loading, setLoading] = useState(false);
     const [words, setWords] = useState([]);
-    const [selectedWords, setSelectedWords] = useState({}); // เก็บสถานะ checkbox
-    const [selectedWordsDelete, setSelectedWordsDelete] = useState({}); // เก็บสถานะ checkbox
+    console.log("🚀 ~ SpeachChallenge ~ words:", words);
+    const [isListWordModalOpen, setIsListWordModalOpen] = useState(false);
+    const [selectedWordsShow, setSelectedWordShow] = useState([{}]);
+    const [selectedWords, setSelectedWords] = useState([{}]); // เก็บสถานะ checkbox
+    console.log("🚀 ~ SpeachChallenge ~ selectedWords:", selectedWords);
+    const [selectedWordsDelete, setSelectedWordsDelete] = useState([]); // เก็บสถานะ checkbox
 
     const handleCreateQuiz = async () => {
         if (!quizTitle.trim()) {
@@ -24,9 +30,11 @@ function SpeachChallenge({ closeModal, LessonId, refreshData }) {
             return;
         }
 
-        const selectedIds = Object.keys(selectedWords).filter(
-            (id) => selectedWords[id] // เอาเฉพาะคำที่ถูกเลือก
-        );
+        // แปลง selectedIds จาก string เป็น integer และกรอง id ที่เป็น 0 ออก
+        const selectedIds = Object.keys(selectedWords)
+            .filter((id) => selectedWords[id]) // เอาเฉพาะคำที่ถูกเลือก
+            .map((id) => parseInt(id, 10)) // แปลง id เป็น integer
+            .filter((id) => id !== 0); // กรอง id ที่เป็น 0 ออก
 
         if (selectedIds.length === 0) {
             alert("Please select at least one word.");
@@ -42,8 +50,8 @@ function SpeachChallenge({ closeModal, LessonId, refreshData }) {
             ); // เรียก API สร้าง Quiz
             setQuizTitle(""); // รีเซ็ต Quiz Title
             setSelectedWords({}); // รีเซ็ตคำที่เลือก
-            refreshData()
-            closeModal()
+            refreshData();
+            closeModal();
         } catch (error) {
             console.error("Failed to create quiz:", error);
             alert("Failed to create quiz.");
@@ -117,9 +125,9 @@ function SpeachChallenge({ closeModal, LessonId, refreshData }) {
     }, []);
 
     return (
-        <div className="flex flex-col w-full h-full">
+        <div className="flex flex-col w-full h-[70vh]">
             {/* Header */}
-            <div className="text-4xl text-white font-bold p-4">Speach Quiz</div>
+            <div className="text-4xl text-white font-bold p-4">แบบเรียน</div>
 
             {/* Challenge Header */}
             <div className="flex flex-row items-center p-4 my-4 bg-slate-200 rounded-xl">
@@ -127,12 +135,12 @@ function SpeachChallenge({ closeModal, LessonId, refreshData }) {
                     htmlFor="quizTitle"
                     className="text-base w-[20%] font-semibold mr-10"
                 >
-                    Quiz Title:
+                    ชื่อแบบเรียน :
                 </label>
                 <input
                     id="quizTitle"
                     type="text"
-                    placeholder="Enter quiz title"
+                    placeholder="ป้อนชื่อแบบเรียนที่นี่"
                     value={quizTitle}
                     onChange={(e) => setQuizTitle(e.target.value)} // อัปเดต quizTitle state
                     className="w-full px-4 py-2 text-lg border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -146,13 +154,17 @@ function SpeachChallenge({ closeModal, LessonId, refreshData }) {
                     {loading ? (
                         <p>Loading words...</p>
                     ) : (
-                        words.map((wordItem) => (
+                        selectedWordsShow.map((wordItem) => (
                             <div
                                 key={wordItem.id}
                                 className="flex items-center justify-between p-2 border-b"
                             >
                                 {/* Word */}
-                                <WordCard word={wordItem.word} />
+                                <WordCardForm
+                                    word={wordItem}
+                                    setSelectedWords={setSelectedWordShow}
+                                    createWord={createWord}
+                                />
                                 {/* Toggle Checkbox/Checkmark */}
                                 <div
                                     className="cursor-pointer"
@@ -163,7 +175,7 @@ function SpeachChallenge({ closeModal, LessonId, refreshData }) {
                                         )
                                     }
                                 >
-                                    {selectedWords[wordItem.id] ? (
+                                    {selectedWords[wordItem] ? (
                                         <span className="text-green-500 text-xl">
                                             ✔
                                         </span>
@@ -183,13 +195,20 @@ function SpeachChallenge({ closeModal, LessonId, refreshData }) {
                         className="mb-2 px-4 py-2 bg-green-500 text-white rounded-xl hover:bg-green-600"
                         onClick={() => setIsModalOpen(true)} // เปิด Modal
                     >
-                        + Add Word
+                        + เพิ่มคำฝึก
                     </button>
+                    <button
+                        className="mb-2 px-4 py-2 bg-green-500 text-white rounded-xl hover:bg-green-600"
+                        onClick={() => setIsListWordModalOpen(true)} // เปิด Modal
+                    >
+                        + เพิ่มคำฝึกจากคำที่มีอยู่
+                    </button>
+
                     <button
                         className="mb-2 px-4 py-2 bg-red-500 text-white rounded-xl hover:bg-red-600"
                         onClick={() => setIsDeleteModalOpen(true)} // เปิด Delete Modal
                     >
-                        - Delete Word
+                        - ลบทุกคำที่เลือก
                     </button>
 
                     <button
@@ -197,7 +216,7 @@ function SpeachChallenge({ closeModal, LessonId, refreshData }) {
                         onClick={handleCreateQuiz} // เรียกฟังก์ชันสร้าง Quiz
                         disabled={loading} // ปิดการกดปุ่มระหว่างโหลด
                     >
-                        {loading ? "Creating..." : "Create Quiz"}
+                        {loading ? "กำลังสร้าง..." : "สร้างแบบเรียน"}
                     </button>
                 </div>
             </div>
@@ -207,7 +226,7 @@ function SpeachChallenge({ closeModal, LessonId, refreshData }) {
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
                     <div className="bg-white p-6 rounded shadow-lg w-80">
                         <div className="text-lg font-semibold mb-4">
-                            Add New Word
+                            เพิ่มคำฝึก
                         </div>
                         <input
                             type="text"
@@ -221,7 +240,7 @@ function SpeachChallenge({ closeModal, LessonId, refreshData }) {
                                 className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
                                 onClick={() => setIsModalOpen(false)} // ปิด Modal
                             >
-                                Cancel
+                                ยกเลิก
                             </button>
                             <button
                                 className={`px-4 py-2 rounded text-white ${
@@ -232,9 +251,23 @@ function SpeachChallenge({ closeModal, LessonId, refreshData }) {
                                 onClick={handleAddWord}
                                 disabled={loading} // ปิดการกดปุ่มระหว่างโหลด
                             >
-                                {loading ? "Adding..." : "Add Word"}
+                                {loading ? "กำลังเพิ่มคำ..." : "เพิ่มคำ"}
                             </button>
                         </div>
+                    </div>
+                </div>
+            )}
+            {isListWordModalOpen && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+                    <div className="bg-white p-6 rounded shadow-lg w-[60%]">
+                        <div className="text-lg font-semibold mb-4">
+                            เลือกคำจากรายการ
+                        </div>
+                        <ListWord
+                            words={words.filter((wordItem) => wordItem)} // ส่งเฉพาะค่าที่ไม่ใช่ null/undefined
+                            setSelectedWordShow={setSelectedWordShow}
+                            onClose={setIsListWordModalOpen}
+                        />
                     </div>
                 </div>
             )}
@@ -244,23 +277,23 @@ function SpeachChallenge({ closeModal, LessonId, refreshData }) {
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
                     <div className="bg-white p-6 rounded shadow-lg w-80">
                         <div className="text-lg font-semibold mb-4">
-                            Confirm Deletion
+                            ยืนยันว่าจะลบหรือไม่
                         </div>
                         <p className="mb-4">
-                            Are you sure you want to delete the selected words?
+                            คุณต้องการลบคำทั้งหมดที่เลือกใช่หรือไม่?
                         </p>
                         <div className="flex justify-between">
                             <button
                                 className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
                                 onClick={() => setIsDeleteModalOpen(false)} // ปิด Modal
                             >
-                                Cancel
+                                ยกเลิก
                             </button>
                             <button
                                 className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
                                 onClick={handleDeleteWords} // ยืนยันการลบ
                             >
-                                Confirm
+                                ยืนยัน
                             </button>
                         </div>
                     </div>

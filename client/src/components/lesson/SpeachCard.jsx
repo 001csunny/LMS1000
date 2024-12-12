@@ -17,7 +17,7 @@ function SpeachCard({ quizz, onCardClick, onEdit, onDelete }) {
             >
                 {quizz.challenge}
             </Link>
-            <div className="text-fuchsia-500 ">Speach</div>
+            <div className="text-fuchsia-500 ">แบบเรียน</div>
             {/* Action Buttons */}
             <div className="flex gap-x-2">
                 {/* Edit Button */}
@@ -26,7 +26,7 @@ function SpeachCard({ quizz, onCardClick, onEdit, onDelete }) {
                     onClick={() => onEdit(quizz.id)} // Pass quizId to onEdit callback
                     className="text-yellow-400 py-1 hover:text-white border border-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 text-center dark:border-yellow-300 dark:text-yellow-300 dark:hover:text-white dark:hover:bg-yellow-400 dark:focus:ring-yellow-900"
                 >
-                    Edit
+                    แก้ไข
                 </button>
 
                 {/* Delete Button */}
@@ -35,7 +35,7 @@ function SpeachCard({ quizz, onCardClick, onEdit, onDelete }) {
                     onClick={() => onDelete(quizz.documentId)} // Pass quizId to onDelete callback
                     className="text-red-700 py-1 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900"
                 >
-                    Delete
+                    ลบ
                 </button>
             </div>
         </div>

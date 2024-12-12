@@ -39,26 +39,21 @@ function Course() {
     return (
         <div className="flex flex-col h-screen w-screen">
             <Header />
-            <div className="h-full w-full p-8">
-                <div className="text-5xl mb-4">Course</div>
-                <div className="flex h-full w-full px-4">
-                    <div className="w-1/5 bg-slate-700 py-8 rounded-l-3xl">
-                        <button
-                            onClick={() => toggleModal(true)}
-                            type="button"
-                            className="w-full py-2.5 px-5 mb-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                        >
-                            + Add Course
-                        </button>
-                        <button
-                            type="button"
-                            className="w-full py-2.5 px-5 mb-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                        >
-                            Edit
-                        </button>
-                    </div>
-                    <div className="w-full rounded-r-3xl bg-slate-100 pt-4">
-                        <div className="text-xl ml-8 mb-2">Total Courses</div>
+            <div className=" h-full w-full p-8 ">
+                <div className="flex flex-row justify-between">
+                    <div className="text-5xl mb-4">ชั้นเรียนทั้งหมด</div>
+                    <button
+                        onClick={() => toggleModal(true)}
+                        type="button"
+                        className="w-40 rounded-2xl py-2.5 px-5 mb-2 mr-4 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                    >
+                        + สร้างชั้นเรียน
+                    </button>
+                </div>
+
+                <div className="flex h-full w-full px-8">
+                    <div className="w-full rounded-3xl bg-slate-100 pt-4">
+                        {/* <div className="text-xl ml-8 mb-2">ชั้นเรียนทั้งหมด</div> */}
                         <div className="flex flex-wrap">
                             {isLoading ? (
                                 // แสดงข้อความ Loading ขณะที่ข้อมูลกำลังถูกโหลด
@@ -80,7 +75,7 @@ function Course() {
                             ) : (
                                 // ถ้าไม่มีข้อมูล
                                 <div className="text-center w-full">
-                                    No courses available
+                                   ยังไม่มีชั้นเรียน
                                 </div>
                             )}
                         </div>

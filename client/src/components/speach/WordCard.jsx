@@ -18,6 +18,7 @@ function WordCard(wordItem) {
             <div onClick={() => handleClick(wordItem.word)}>
                 {wordItem.word}
             </div>{" "}
+            
             {/* Example word */}
         </div>
     );

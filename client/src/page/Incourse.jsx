@@ -53,21 +53,21 @@ const Incourse = () => {
                             type="button"
                             className="w-full py-2.5 px-5 mb-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                         >
-                            + Add Lesson
+                            + เพิ่มบทเรียน
                         </button>
 
-                        {/* Edit Course Button */}
-                        <button
+                        
+                        {/* <button
                             type="button"
                             className="w-full py-2.5 px-5 mb-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                         >
                             Edit
-                        </button>
+                        </button> */}
                     </div>
 
                     {/* Lessons Section */}
                     <div className="w-full rounded-r-3xl bg-slate-100 pt-4">
-                        <div className="text-xl ml-8 mb-2">Total Lesson</div>
+                        <div className="text-xl ml-8 mb-2">บทเรียนทั้งหมด</div>
                         <div className="flex flex-wrap">
                             {CourseData.lessons?.length > 0 ? (
                                 CourseData.lessons.map((lesson, index) => (
@@ -80,7 +80,7 @@ const Incourse = () => {
                                 ))
                             ) : (
                                 <div className="ml-8 text-gray-500">
-                                    No Lessons available
+                                    ยังไม่มีบทเรียน
                                 </div>
                             )}
                         </div>

@@ -324,7 +324,7 @@ export const updateUser = async (userId, data) => {
         const response = await ax.put(`/api/users/${userId}`, {
             username: data.username, 
             email: data.email,
-            speach: data.speach
+            Speach: data.Speach
         });
         
         return response.data;
