@@ -28,7 +28,7 @@ function Header() {
             </li>
 
             {/* เฉพาะบทบาทที่อนุญาตให้เข้าถึง Course */}
-            {userRole === "Admin" || userRole === "Teacher" ? (
+            {userRole === "student" || userRole === "Teacher" ? (
                 <li className="mr-1">
                     <a
                         className="bg-white inline-block py-2 px-4 text-blue-500 hover:text-blue-800 font-semibold"
@@ -36,12 +36,12 @@ function Header() {
                     >
                         Course
                     </a>
-                    <a
+                    {/* <a
                         className="bg-white inline-block py-2 px-4 text-gray-400 font-semibold"
                         href="/Assignment"
                     >
                         Assignment
-                    </a>
+                    </a> */}
                 </li>
             ) : null}
 

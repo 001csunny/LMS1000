@@ -2,11 +2,12 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 function SpeachCard({ quizz, onCardClick, onEdit, onDelete }) {
-   console.log("🚀 ~ SpeachCard ~ quizz:", quizz)
-   
+    const userRole = sessionStorage.getItem("userRole");
+    console.log("🚀 ~ SpeachCard ~ quizz:", quizz);
+
     return (
         <div
-            className="flex flex-row w-full h-14 bg-slate-100 px-10 justify-between items-center border-slate-200 border-y-[1px] cursor-pointer"
+            className="flex flex-row w-full h-14 bg-slate-100 px-20 justify-between items-center border-slate-200 border-y-[1px] cursor-pointer"
             // คลิกที่การ์ดจะเปิด Modal
         >
             {/* Quiz Question (Clickable Link) */}
@@ -15,29 +16,39 @@ function SpeachCard({ quizz, onCardClick, onEdit, onDelete }) {
                 className="hover:underline font-medium text-gray-900"
                 onClick={onCardClick}
             >
-                {quizz.challenge}
+                {quizz.challenge || quizz.test || quizz.exam}
             </Link>
-            <div className="text-fuchsia-500 ">แบบเรียน</div>
+            {quizz.challenge && (
+                <div className="text-fuchsia-500">แบบเรียน</div>
+            )}
+            {quizz.test && !quizz.challenge && (
+                <div className="text-amber-300">แบบฝึก</div>
+            )}
+            {quizz.exam && !quizz.challenge && !quizz.test && (
+                <div className="text-sky-500">แบบทดสอบ</div>
+            )}
             {/* Action Buttons */}
-            <div className="flex gap-x-2">
-                {/* Edit Button */}
-                <button
-                    type="button"
-                    onClick={() => onEdit(quizz.id)} // Pass quizId to onEdit callback
-                    className="text-yellow-400 py-1 hover:text-white border border-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 text-center dark:border-yellow-300 dark:text-yellow-300 dark:hover:text-white dark:hover:bg-yellow-400 dark:focus:ring-yellow-900"
-                >
-                    แก้ไข
-                </button>
+            {userRole === "Admin" || userRole === "Teacher" ? (
+                <div className="flex gap-x-2">
+                    {/* Edit Button */}
+                    <button
+                        type="button"
+                        onClick={() => onEdit(quizz.id)} // Pass quizId to onEdit callback
+                        className="text-yellow-400 py-1 hover:text-white border border-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 text-center dark:border-yellow-300 dark:text-yellow-300 dark:hover:text-white dark:hover:bg-yellow-400 dark:focus:ring-yellow-900"
+                    >
+                        แก้ไข
+                    </button>
 
-                {/* Delete Button */}
-                <button
-                    type="button"
-                    onClick={() => onDelete(quizz.documentId)} // Pass quizId to onDelete callback
-                    className="text-red-700 py-1 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900"
-                >
-                    ลบ
-                </button>
-            </div>
+                    {/* Delete Button */}
+                    <button
+                        type="button"
+                        onClick={() => onDelete(quizz.documentId)} // Pass quizId to onDelete callback
+                        className="text-red-700 py-1 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900"
+                    >
+                        ลบ
+                    </button>
+                </div>
+            ) : null}
         </div>
     );
 }

@@ -19,6 +19,18 @@
       "relation": "manyToMany",
       "target": "api::challenge.challenge",
       "mappedBy": "words"
+    },
+    "testdatum": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::testdata.testdata",
+      "mappedBy": "word"
+    },
+    "tests": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::test.test",
+      "mappedBy": "words"
     }
   }
 }

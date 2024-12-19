@@ -1,10 +1,10 @@
 {
   "kind": "collectionType",
-  "collectionName": "challenges",
+  "collectionName": "tests",
   "info": {
-    "singularName": "challenge",
-    "pluralName": "challenges",
-    "displayName": "challenge",
+    "singularName": "test",
+    "pluralName": "tests",
+    "displayName": "Test",
     "description": ""
   },
   "options": {
@@ -12,32 +12,26 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "challenge": {
+    "test": {
       "type": "string"
     },
     "words": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::word.word",
-      "inversedBy": "challenges"
+      "inversedBy": "tests"
     },
     "lesson": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::lesson.lesson",
-      "inversedBy": "challenges"
-    },
-    "testdata": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::testdata.testdata",
-      "mappedBy": "challenge"
+      "inversedBy": "tests"
     },
     "examdata": {
       "type": "relation",
-      "relation": "oneToMany",
+      "relation": "manyToMany",
       "target": "api::examdata.examdata",
-      "mappedBy": "challenge"
+      "inversedBy": "tests"
     }
   }
 }

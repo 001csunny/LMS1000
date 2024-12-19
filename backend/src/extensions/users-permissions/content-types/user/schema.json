@@ -71,14 +71,20 @@
       "target": "api::course.course",
       "mappedBy": "students"
     },
-    "quizzes": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::quiz.quiz",
-      "mappedBy": "students"
-    },
     "Speach": {
       "type": "text"
+    },
+    "testdata": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::testdata.testdata",
+      "mappedBy": "users_permissions_user"
+    },
+    "examdata": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::examdata.examdata",
+      "mappedBy": "users_permissions_user"
     }
   }
 }

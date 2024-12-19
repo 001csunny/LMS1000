@@ -33,12 +33,6 @@
     "start": {
       "type": "datetime"
     },
-    "quizzes": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::quiz.quiz",
-      "mappedBy": "lesson"
-    },
     "course": {
       "type": "relation",
       "relation": "manyToOne",
@@ -49,6 +43,12 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::challenge.challenge",
+      "mappedBy": "lesson"
+    },
+    "tests": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::test.test",
       "mappedBy": "lesson"
     }
   }

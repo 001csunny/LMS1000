@@ -24,7 +24,7 @@ function WordCardForm({ word, setSelectedWords }) {
                 <input
                     type="text"
                     className="w-full p-2 border border-gray-300 rounded"
-                    placeholder="กรุณาเพิ่มคำฝึกที่นี่"
+                    placeholder="กรุณาเพิ่มคำที่นี่"
                     value={newWord}
                     onChange={(e) => setNewWord(e.target.value)} // อัปเดต newWord state
                     onKeyDown={async (e) => {

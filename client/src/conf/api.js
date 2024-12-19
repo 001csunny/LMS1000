@@ -1,3 +1,4 @@
+import axSpeech from "./apispeach2text";
 import ax2sp from "./apitext2speach";
 import ax from "./ax";
 import conf from "./main";
@@ -37,10 +38,10 @@ export const fetchCourse = async () => {
     }
 };
 
-export const fetchMyCourse = async (id) => {
+export const fetchMyCourse = async (role, id) => {
     try {
         const course = await ax.get(
-            `/api/courses?filters[teachers][id][$eq]=${id}&populate=*`
+            `/api/courses?filters[${role}s][id][$eq]=${id}&populate=*`
         );
         return course.data;
     } catch (error) {
@@ -195,6 +196,21 @@ export const createChallenge = async (challengeName, wordIds, lessonId) => {
     }
 };
 
+export const createTest = async (challengeName, wordIds, lessonId) => {
+    try {
+        const response = await ax.post("/api/tests", {
+            data: {
+                test: challengeName,
+                words: wordIds.map((id) => ({ id: id })), // เชื่อม Word IDs
+                lesson: lessonId, // เชื่อม Lesson ID
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error creating test:", error);
+    }
+};
+
 // ดึงข้อมูล Challenge โดย `id`
 export const fetchOneChallenge = async (id) => {
     try {
@@ -202,6 +218,14 @@ export const fetchOneChallenge = async (id) => {
         return challenge.data;
     } catch (error) {
         console.error("Error fetching challenge:", error);
+    }
+};
+export const fetchOneTest = async (id) => {
+    try {
+        const challenge = await ax.get(`/api/tests/${id}?populate=*`);
+        return challenge.data;
+    } catch (error) {
+        console.error("Error fetching test:", error);
     }
 };
 
@@ -217,6 +241,17 @@ export const updateChallenge = async (id, data) => {
     }
 };
 
+export const updateTest = async (id, data) => {
+    try {
+        const challenge = await ax.put(`/api/tests/${id}`, {
+            data: data,
+        });
+        return challenge.data;
+    } catch (error) {
+        console.error("Error updating test:", error);
+    }
+};
+
 // ลบ Challenge โดย `id`
 export const deleteChallenge = async (id) => {
     try {
@@ -227,6 +262,14 @@ export const deleteChallenge = async (id) => {
     }
 };
 
+export const deleteTest = async (id) => {
+    try {
+        const response = await ax.delete(`/api/tests/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error("Error deleting test:", error);
+    }
+};
 // ดึงข้อมูลทั้งหมดของ Challenge
 export const fetchChallenges = async () => {
     try {
@@ -234,6 +277,15 @@ export const fetchChallenges = async () => {
         return challenges.data;
     } catch (error) {
         console.error("Error fetching challenges:", error);
+    }
+};
+
+export const fetchTests = async () => {
+    try {
+        const challenges = await ax.get("/api/tests?populate=*");
+        return challenges.data;
+    } catch (error) {
+        console.error("Error fetching test:", error);
     }
 };
 
@@ -322,14 +374,61 @@ export const textReader = async (word) => {
 export const updateUser = async (userId, data) => {
     try {
         const response = await ax.put(`/api/users/${userId}`, {
-            username: data.username, 
+            username: data.username,
             email: data.email,
-            Speach: data.Speach
+            Speach: data.Speach,
         });
-        
+
         return response.data;
     } catch (error) {
         console.error("Error updating user:", error);
         throw error; // โยนข้อผิดพลาดออกไปให้ handle ด้านนอก
+    }
+};
+export const speechToText = async (audioContent) => {
+    try {
+        const response = await axSpeech.post("", {
+            config: {
+                encoding: "LINEAR16", // รูปแบบการเข้ารหัสเสียง
+                sampleRateHertz: 48000, // ความถี่ตัวอย่างของไฟล์เสียง
+                languageCode: "th-TH", // ภาษาไทย
+                enableAutomaticPunctuation: true, // เปิดใช้งานการใส่เครื่องหมายวรรคตอน
+            },
+            audio: {
+                content: audioContent, // ไฟล์เสียงที่ถูกแปลงเป็น Base64
+            },
+        });
+
+        // แสดงข้อมูลที่ได้รับจาก API
+        console.log("API Response:", response.data);
+
+        // ตรวจสอบว่ามีผลลัพธ์ใน response หรือไม่
+        if (response.data?.results && Array.isArray(response.data.results)) {
+            const transcripts = response.data.results
+                .map((result) => {
+                    // ตรวจสอบว่า alternatives[0] มีค่าหรือไม่
+                    const transcript = result.alternatives[0]?.transcript;
+                    if (!transcript) {
+                        console.error(
+                            "No transcript found for this result:",
+                            result
+                        );
+                    }
+                    return transcript;
+                })
+                .filter(Boolean); // กรองค่า null หรือ undefined
+
+            // ถ้ามีข้อความที่แปลงแล้ว
+            if (transcripts.length > 0) {
+                return transcripts.join(" "); // รวบรวมข้อความจาก API
+            } else {
+                throw new Error("No valid transcript found.");
+            }
+        } else {
+            throw new Error("No valid results found in the response.");
+        }
+    } catch (error) {
+        console.error("เกิดข้อผิดพลาดในการแปลงเสียงเป็นข้อความ", error);
+        throw error; // โยนข้อผิดพลาดออกไป
     }
 };

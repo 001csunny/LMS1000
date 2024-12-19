@@ -7,13 +7,13 @@ import LessonForm from "../components/lesson/LessonForm";
 import LessonCard from "../components/lesson/LessonCard";
 
 const Incourse = () => {
+    
     const { id } = useParams(); // Course ID from URL
     const location = useLocation();
     const [CourseData, setCourseData] = useState({});
-    console.log("🚀 ~ Lesson ~ CourseData:", CourseData)
+    console.log("🚀 ~ Lesson ~ CourseData:", CourseData);
     const [isModalOpen, setIsModalOpen] = useState(false);
-
-
+    const userRole = sessionStorage.getItem("userRole");
 
     // Fetch course data on component mount
     useEffect(() => {
@@ -48,15 +48,16 @@ const Incourse = () => {
                     {/* Sidebar */}
                     <div className="w-1/5 bg-slate-700 py-8 rounded-l-3xl">
                         {/* Add Lesson Button */}
-                        <button
-                            onClick={openModal}
-                            type="button"
-                            className="w-full py-2.5 px-5 mb-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                        >
-                            + เพิ่มบทเรียน
-                        </button>
+                        {userRole === "Admin" || userRole === "Teacher" ? (
+                            <button
+                                onClick={openModal}
+                                type="button"
+                                className="w-full py-2.5 px-5 mb-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                            >
+                                + เพิ่มบทเรียน
+                            </button>
+                        ) : null}
 
-                        
                         {/* <button
                             type="button"
                             className="w-full py-2.5 px-5 mb-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"

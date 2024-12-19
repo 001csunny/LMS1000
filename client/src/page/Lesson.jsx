@@ -9,22 +9,41 @@ import QuizModal from "../components/QuizModal";
 import SpeachChallenge from "../components/lesson/SpeachChallenge";
 import SpeachCard from "../components/lesson/SpeachCard";
 import SpeachModal from "../components/lesson/SpeachModal";
+import CreateTest from "../components/lesson/Testpage/CreateTest";
+import TestModal from "../components/lesson/Testpage/TestModal";
 
 const Lesson = () => {
     const { id } = useParams();
     const [LessonData, setLessonData] = useState({});
+    console.log("🚀 ~ Lesson ~ LessonData:", LessonData);
     const [isModalOpen, setIsModalOpen] = useState(false); // Add quiz form modal state
     const [isSpeechModalOpen, setIsSpeechModalOpen] = useState(false); // Add speech challenge modal state
     const [isSpeechModalOpendata, setIsSpeechModalOpendata] = useState(false); // Add speech challenge modal state
     const [selectedQuiz, setSelectedQuiz] = useState(null); // Store selected quiz for editing
     const [selectedSpeach, setSelectedSpeach] = useState(null);
-    // console.log("🚀 ~ Lesson ~ selectedQuiz:", selectedQuiz);
-    const [loading, setLoading] = useState(true); // Loading state
+    const [isCreateTest, setIsCreateTest] = useState(false);
+    const [selectedTest, setSelectedTest] = useState(null);
+    console.log("🚀 ~ Lesson ~ selectedTest:", selectedTest)
+    const [isTestModalOpen, setIsTestModalOpen] = useState(false);
 
+    const [loading, setLoading] = useState(true); // Loading state
+    const userRole = sessionStorage.getItem("userRole");
     // Fetch course data on component mount
     useEffect(() => {
         fetchLessonData();
     }, []);
+
+    const fetchTestData = async (testId) => {
+        try {
+            setLoading(true); // เริ่มแสดงสถานะ Loading
+            const testData = await fetchOneTest(testId); // เรียก API เพื่อดึงข้อมูล
+            setSelectedTest(testData); // เก็บข้อมูล Test ที่ดึงมาได้
+        } catch (error) {
+            console.error("Error fetching test data:", error);
+        } finally {
+            setLoading(false); // หยุดแสดงสถานะ Loading
+        }
+    };
 
     const fetchLessonData = async () => {
         try {
@@ -73,6 +92,14 @@ const Lesson = () => {
             console.error("Error deleting quiz:", error);
         }
     };
+    const openTestModal = () => {
+        setIsTestModalOpen(true); // Open TestModal
+    };
+
+    const closeTestModal = () => {
+        setSelectedTest(null); // Clear selected test
+        setIsTestModalOpen(false); // Close TestModal
+    };
 
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => {
@@ -84,6 +111,8 @@ const Lesson = () => {
     const closeSpeechModal = () => setIsSpeechModalOpen(false);
     const openSpeechModaldata = () => setIsSpeechModalOpendata(true);
     const closeSpeechModaldata = () => setIsSpeechModalOpendata(false);
+    const openCreateTest = () => setIsCreateTest(true);
+    const closeCreateTest = () => setIsCreateTest(false);
 
     const openQuizModal = (quiz) => {
         setSelectedQuiz(quiz); // Set the selected quiz to be edited
@@ -112,31 +141,42 @@ const Lesson = () => {
 
                 <div className="flex h-full w-full px-4">
                     {/* Sidebar */}
-                    <div className="w-1/5 bg-slate-700 py-8 rounded-l-3xl">
-                        {/* Add Lesson Button */}
-                        <button
-                            onClick={openModal}
-                            type="button"
-                            className="w-full py-2.5 px-5 mb-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                        >
-                            + เพิ่มแบบเรียน
-                        </button>
-                        <button
-                            onClick={openSpeechModal}
-                            type="button"
-                            className="w-full py-2.5 px-5 mb-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                        >
-                            + เพิ่มแบบทดสอบ
-                        </button>
+                    {userRole === "Admin" || userRole === "Teacher" ? (
+                        <div className="w-1/5 bg-slate-700 py-8 rounded-l-3xl">
+                            {/* Add Lesson Button */}
+                            <button
+                                onClick={openSpeechModal}
+                                type="button"
+                                className="w-full py-2.5 px-5 mb-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                            >
+                                + เพิ่มแบบเรียน
+                            </button>
+                            <button
+                                onClick={openCreateTest}
+                                type="button"
+                                className="w-full py-2.5 px-5 mb-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                            >
+                                + เพิ่มแบบฝึก
+                            </button>
 
-                        {/* Edit Course Button */}
-                        {/* <button
-                            type="button"
-                            className="w-full py-2.5 px-5 mb-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                        >
-                            Edit
-                        </button> */}
-                    </div>
+                            <button
+                                onClick={openModal}
+                                type="button"
+                                className="w-full py-2.5 px-5 mb-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                            >
+                                + เพิ่มแบบทดสอบ
+                            </button>
+
+                            {/* Edit Course Button */}
+                            {/* <button
+                              type="button"
+                              className="w-full py-2.5 px-5 mb-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                          >
+                              Edit
+                          </button> */}
+                        </div>
+                    ) : null}
+
                     {/* Lessons Section */}
                     <div className="w-full rounded-r-3xl bg-slate-100 pt-4">
                         <div className="text-xl ml-8 mb-2">
@@ -145,8 +185,10 @@ const Lesson = () => {
                         <div className="ml-8 text-gray-500">
                             Description {LessonData.description}
                         </div>
-                        <div className="flex flex-wrap">
-                            {LessonData.quizzes?.length > 0 ? (
+                        <div className="flex flex-col">
+                            <div className="mx-10 my-4 text-xl">แบบเรียน</div>
+
+                            {/* {LessonData.quizzes?.length > 0 ? (
                                 LessonData.quizzes.map((quizz, index) => (
                                     <QuizCard
                                         quizz={quizz}
@@ -159,11 +201,12 @@ const Lesson = () => {
                                 <div className="ml-8 text-gray-500">
                                     No Quizzes available
                                 </div>
-                            )}
+                            )} */}
                             {LessonData.challenges?.length > 0 ? (
                                 LessonData.challenges.map((quizz, index) => (
                                     <SpeachCard
                                         quizz={quizz}
+                                        type={"challenges"}
                                         key={index}
                                         onDelete={handleDeleteChallenge}
                                         onCardClick={() => {
@@ -175,6 +218,24 @@ const Lesson = () => {
                             ) : (
                                 <div className="ml-8 text-gray-500"></div>
                             )}
+                            <div className="mx-10 my-4 text-xl">แบบฝึกหัด</div>
+                            {LessonData.tests?.length > 0 ? (
+                                LessonData.tests.map((quizz, index) => (
+                                    <SpeachCard
+                                        quizz={quizz}
+                                        type={"tests"}
+                                        key={index}
+                                        onDelete={handleDeleteChallenge}
+                                        onCardClick={() => {
+                                            setSelectedTest(quizz); // เก็บข้อมูล Challenge ที่เลือก
+                                            openTestModal(); // เปิด Modal
+                                        }}
+                                    />
+                                ))
+                            ) : (
+                                <div className="ml-8 text-gray-500"></div>
+                            )}
+                            <div className="mx-10 my-4 text-xl">แบบทดสอบ</div>
                         </div>
                     </div>
                 </div>
@@ -254,6 +315,58 @@ const Lesson = () => {
                         <SpeachModal
                             selectedSpeach={selectedSpeach} // ส่งข้อมูลที่เลือก
                             closeModal={closeSpeechModaldata} // ปิด Modal
+                        />
+                    </div>
+                </div>
+            )}
+            {isCreateTest && (
+                <div
+                    id="speech-modal"
+                    tabIndex={-1}
+                    aria-hidden={!isCreateTest}
+                    className="fixed bg-slate-900 bg-opacity-90 overflow-auto top-0 right-0 left-0 z-50 flex items-center justify-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
+                >
+                    <div className="relative rounded-lg  w-[90%] h-[80%] ">
+                        <div className="flex justify-end p-2">
+                            <button
+                                onClick={closeCreateTest}
+                                type="button"
+                                className="text-white bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center w-5 h-5 justify-center"
+                            >
+                                ✕
+                            </button>
+                        </div>
+                        <CreateTest
+                            closeModal={closeCreateTest}
+                            LessonId={LessonData.id}
+                            refreshData={fetchLessonData}
+                        />
+                    </div>
+                </div>
+            )}
+            {/* Test Modal */}
+            {isTestModalOpen && (
+                <div
+                    id="test-modal"
+                    tabIndex={-1}
+                    aria-hidden={!isTestModalOpen}
+                    className="fixed bg-slate-500 bg-opacity-50 overflow-auto top-0 right-0 left-0 z-50 flex items-center justify-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
+                >
+                    <div className="relative bg-white rounded-lg shadow-lg w-full max-w-lg">
+                        <div className="flex justify-end p-2">
+                            <button
+                                onClick={closeTestModal}
+                                type="button"
+                                className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
+                            >
+                                ✕
+                            </button>
+                        </div>
+                        <TestModal
+                            challengeData={selectedTest}
+                            selectedTest={selectedTest} // Pass selected test
+                            closeModal={closeTestModal} // Close modal handler
+                            fetchTestData={fetchTestData}
                         />
                     </div>
                 </div>

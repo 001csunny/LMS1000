@@ -12,6 +12,7 @@ function Course() {
     const [isLoading, setIsLoading] = useState(true); // เพิ่มสถานะการโหลด
     const { state } = useContext(AuthContext);
     console.log("🚀 ~ Course ~ state:", state);
+    const userRole = sessionStorage.getItem("userRole");
 
     const toggleModal = (state = !isModalOpen) => {
         setIsModalOpen(state);
@@ -20,7 +21,7 @@ function Course() {
     const fetchCourseData = async () => {
         setIsLoading(true); // ตั้งสถานะเริ่มโหลดข้อมูล
         try {
-            const data = await fetchMyCourse(state.id); // Assume fetchMyCourse is an async function
+            const data = await fetchMyCourse(userRole.toLowerCase(),state.id); // Assume fetchMyCourse is an async function
             setCourseData(data.data); // Store the course data
         } catch (error) {
             console.error("Error fetching courses:", error);
@@ -42,13 +43,15 @@ function Course() {
             <div className=" h-full w-full p-8 ">
                 <div className="flex flex-row justify-between">
                     <div className="text-5xl mb-4">ชั้นเรียนทั้งหมด</div>
-                    <button
-                        onClick={() => toggleModal(true)}
-                        type="button"
-                        className="w-40 rounded-2xl py-2.5 px-5 mb-2 mr-4 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                    >
-                        + สร้างชั้นเรียน
-                    </button>
+                    {userRole === "Admin" || userRole === "Teacher" ? (
+                        <button
+                            onClick={() => toggleModal(true)}
+                            type="button"
+                            className="w-40 rounded-2xl py-2.5 px-5 mb-2 mr-4 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                        >
+                            + สร้างชั้นเรียน
+                        </button>
+                    ) : null}
                 </div>
 
                 <div className="flex h-full w-full px-8">
@@ -75,7 +78,7 @@ function Course() {
                             ) : (
                                 // ถ้าไม่มีข้อมูล
                                 <div className="text-center w-full">
-                                   ยังไม่มีชั้นเรียน
+                                    ยังไม่มีชั้นเรียน
                                 </div>
                             )}
                         </div>

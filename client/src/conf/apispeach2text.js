@@ -1,10 +1,11 @@
 import axios from "axios";
 
 // URL ของ API
-const apiUrl = "https://texttospeech.googleapis.com/v1/text:synthesize";
+const apiSpeechUrl = "https://speech.googleapis.com/v1p1beta1/speech:recognize";
 
 // ดึง gcToken จาก sessionStorage
-const gcToken = sessionStorage.getItem("gcToken");
+const gcToken = "AIzaSyA40JOnPoZTEHhswblGLHWJVQ8_ekKfai0"
+
 
 // ตรวจสอบว่ามี gcToken หรือไม่
 if (!gcToken) {
@@ -14,15 +15,15 @@ if (!gcToken) {
 }
 
 // สร้าง Axios instance
-const ax2sp = axios.create({
-    baseURL: apiUrl, // ตั้งค่า baseURL ให้ถูกต้อง
+
+
+const axSpeech = axios.create({
+    baseURL: apiSpeechUrl,
     params: {
-        key: gcToken, // ใส่ gcToken (API Key) ในพารามิเตอร์ของ URL
+        key: gcToken, // ใส่ API Key (gcToken) ใน query string
     },
 });
 
-
-
 // ฟังก์ชันในการแปลงข้อความเป็นเสียง
-export default ax2sp;
+export default axSpeech;
 

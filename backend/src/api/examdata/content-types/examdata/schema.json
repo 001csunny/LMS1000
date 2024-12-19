@@ -1,0 +1,36 @@
+{
+  "kind": "collectionType",
+  "collectionName": "examdatas",
+  "info": {
+    "singularName": "examdata",
+    "pluralName": "examdatas",
+    "displayName": "Examdata"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "challenge": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::challenge.challenge",
+      "inversedBy": "examdata"
+    },
+    "users_permissions_user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "examdata"
+    },
+    "point": {
+      "type": "biginteger"
+    },
+    "tests": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::test.test",
+      "mappedBy": "examdata"
+    }
+  }
+}

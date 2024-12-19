@@ -3,6 +3,7 @@ import { fetchOneChallenge, textReader } from "../../conf/api";
 import WordCard from "../speach/WordCard";
 
 function SpeachModal({ selectedSpeach, closeModal }) {
+    console.log("🚀 ~ SpeachModal ~ selectedSpeach:", selectedSpeach)
     const [challengeData, setChallengeData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [highlightedIndex, setHighlightedIndex] = useState(null);

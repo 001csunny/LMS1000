@@ -385,6 +385,7 @@ export interface ApiChallengeChallenge extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    examdata: Schema.Attribute.Relation<'oneToMany', 'api::examdata.examdata'>;
     lesson: Schema.Attribute.Relation<'manyToOne', 'api::lesson.lesson'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -393,6 +394,7 @@ export interface ApiChallengeChallenge extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
+    testdata: Schema.Attribute.Relation<'oneToMany', 'api::testdata.testdata'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -443,6 +445,43 @@ export interface ApiCourseCourse extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiExamdataExamdata extends Struct.CollectionTypeSchema {
+  collectionName: 'examdatas';
+  info: {
+    displayName: 'Examdata';
+    pluralName: 'examdatas';
+    singularName: 'examdata';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    challenge: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::challenge.challenge'
+    >;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::examdata.examdata'
+    > &
+      Schema.Attribute.Private;
+    point: Schema.Attribute.BigInteger;
+    publishedAt: Schema.Attribute.DateTime;
+    tests: Schema.Attribute.Relation<'manyToMany', 'api::test.test'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    users_permissions_user: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+  };
+}
+
 export interface ApiLessonLesson extends Struct.CollectionTypeSchema {
   collectionName: 'lessons';
   info: {
@@ -476,49 +515,79 @@ export interface ApiLessonLesson extends Struct.CollectionTypeSchema {
     name: Schema.Attribute.String;
     open: Schema.Attribute.Boolean;
     publishedAt: Schema.Attribute.DateTime;
-    quizzes: Schema.Attribute.Relation<'oneToMany', 'api::quiz.quiz'>;
     start: Schema.Attribute.DateTime;
+    tests: Schema.Attribute.Relation<'oneToMany', 'api::test.test'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
   };
 }
 
-export interface ApiQuizQuiz extends Struct.CollectionTypeSchema {
-  collectionName: 'quizzes';
+export interface ApiTestTest extends Struct.CollectionTypeSchema {
+  collectionName: 'tests';
   info: {
     description: '';
-    displayName: 'Quiz';
-    pluralName: 'quizzes';
-    singularName: 'quiz';
+    displayName: 'Test';
+    pluralName: 'tests';
+    singularName: 'test';
   };
   options: {
     draftAndPublish: true;
   };
   attributes: {
-    Answer: Schema.Attribute.Enumeration<['A', 'B', 'C', 'D']>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    description: Schema.Attribute.Text;
-    file: Schema.Attribute.Media<
-      'images' | 'files' | 'videos' | 'audios',
-      true
-    >;
+    examdata: Schema.Attribute.Relation<'manyToMany', 'api::examdata.examdata'>;
     lesson: Schema.Attribute.Relation<'manyToOne', 'api::lesson.lesson'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<'oneToMany', 'api::quiz.quiz'> &
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::test.test'> &
       Schema.Attribute.Private;
-    pick: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     publishedAt: Schema.Attribute.DateTime;
-    Quiz: Schema.Attribute.String & Schema.Attribute.DefaultTo<'Quiz'>;
-    students: Schema.Attribute.Relation<
-      'manyToMany',
-      'plugin::users-permissions.user'
-    >;
+    test: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    words: Schema.Attribute.Relation<'manyToMany', 'api::word.word'>;
+  };
+}
+
+export interface ApiTestdataTestdata extends Struct.CollectionTypeSchema {
+  collectionName: 'testdatas';
+  info: {
+    displayName: 'testdata';
+    pluralName: 'testdatas';
+    singularName: 'testdata';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    challenge: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::challenge.challenge'
+    >;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::testdata.testdata'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    time: Schema.Attribute.BigInteger &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'0'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    users_permissions_user: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+    word: Schema.Attribute.Relation<'oneToOne', 'api::word.word'>;
   };
 }
 
@@ -544,6 +613,8 @@ export interface ApiWordWord extends Struct.CollectionTypeSchema {
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::word.word'> &
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
+    testdatum: Schema.Attribute.Relation<'oneToOne', 'api::testdata.testdata'>;
+    tests: Schema.Attribute.Relation<'manyToMany', 'api::test.test'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1020,6 +1091,7 @@ export interface PluginUsersPermissionsUser
       Schema.Attribute.SetMinMaxLength<{
         minLength: 6;
       }>;
+    examdata: Schema.Attribute.Relation<'oneToMany', 'api::examdata.examdata'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -1033,13 +1105,13 @@ export interface PluginUsersPermissionsUser
       }>;
     provider: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
-    quizzes: Schema.Attribute.Relation<'manyToMany', 'api::quiz.quiz'>;
     resetPasswordToken: Schema.Attribute.String & Schema.Attribute.Private;
     role: Schema.Attribute.Relation<
       'manyToOne',
       'plugin::users-permissions.role'
     >;
     Speach: Schema.Attribute.Text;
+    testdata: Schema.Attribute.Relation<'oneToMany', 'api::testdata.testdata'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1064,8 +1136,10 @@ declare module '@strapi/strapi' {
       'admin::user': AdminUser;
       'api::challenge.challenge': ApiChallengeChallenge;
       'api::course.course': ApiCourseCourse;
+      'api::examdata.examdata': ApiExamdataExamdata;
       'api::lesson.lesson': ApiLessonLesson;
-      'api::quiz.quiz': ApiQuizQuiz;
+      'api::test.test': ApiTestTest;
+      'api::testdata.testdata': ApiTestdataTestdata;
       'api::word.word': ApiWordWord;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
