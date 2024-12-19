@@ -11,6 +11,7 @@ import SpeachCard from "../components/lesson/SpeachCard";
 import SpeachModal from "../components/lesson/SpeachModal";
 import CreateTest from "../components/lesson/Testpage/CreateTest";
 import TestModal from "../components/lesson/Testpage/TestModal";
+import CreateExam from "../components/lesson/Exam/CreateExam";
 
 const Lesson = () => {
     const { id } = useParams();
@@ -22,6 +23,7 @@ const Lesson = () => {
     const [selectedQuiz, setSelectedQuiz] = useState(null); // Store selected quiz for editing
     const [selectedSpeach, setSelectedSpeach] = useState(null);
     const [isCreateTest, setIsCreateTest] = useState(false);
+    const [isCreateExam, setIsCreateExam] = useState(false);
     const [selectedTest, setSelectedTest] = useState(null);
     console.log("🚀 ~ Lesson ~ selectedTest:", selectedTest)
     const [isTestModalOpen, setIsTestModalOpen] = useState(false);
@@ -113,6 +115,8 @@ const Lesson = () => {
     const closeSpeechModaldata = () => setIsSpeechModalOpendata(false);
     const openCreateTest = () => setIsCreateTest(true);
     const closeCreateTest = () => setIsCreateTest(false);
+    const openCreateExam = () => setIsCreateExam(true);
+    const closeCreateExam = () => setIsCreateExam(false);
 
     const openQuizModal = (quiz) => {
         setSelectedQuiz(quiz); // Set the selected quiz to be edited
@@ -160,7 +164,7 @@ const Lesson = () => {
                             </button>
 
                             <button
-                                onClick={openModal}
+                                onClick={openCreateExam}
                                 type="button"
                                 className="w-full py-2.5 px-5 mb-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                             >
@@ -338,6 +342,31 @@ const Lesson = () => {
                         </div>
                         <CreateTest
                             closeModal={closeCreateTest}
+                            LessonId={LessonData.id}
+                            refreshData={fetchLessonData}
+                        />
+                    </div>
+                </div>
+            )}
+            {isCreateExam && (
+                <div
+                    id="speech-modal"
+                    tabIndex={-1}
+                    aria-hidden={!isCreateExam}
+                    className="fixed bg-slate-900 bg-opacity-90 overflow-auto top-0 right-0 left-0 z-50 flex items-center justify-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
+                >
+                    <div className="relative rounded-lg  w-[90%] h-[80%] ">
+                        <div className="flex justify-end p-2">
+                            <button
+                                onClick={closeCreateExam}
+                                type="button"
+                                className="text-white bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center w-5 h-5 justify-center"
+                            >
+                                ✕
+                            </button>
+                        </div>
+                        <CreateExam
+                            closeModal={closeCreateExam}
                             LessonId={LessonData.id}
                             refreshData={fetchLessonData}
                         />

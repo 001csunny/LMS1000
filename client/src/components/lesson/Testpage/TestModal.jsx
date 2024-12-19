@@ -131,12 +131,12 @@ const TestModal = ({ closeModal, selectedTest }) => {
                 <h2 className="text-xl font-bold">
                     {selectedTest?.test || "Test Challenge"}
                 </h2>
-                <button
+                {/* <button
                     onClick={closeModal}
                     className="text-gray-400 hover:text-black"
                 >
                     ✕
-                </button>
+                </button> */}
             </div>
             {loadingState ? (
                 <div className="mt-4 text-gray-500">Loading...</div>
