@@ -42,16 +42,15 @@ function LessonForm({ closeModal, id ,refreshData}) {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="flex-col mt-32 overflow-auto">
+        <form onSubmit={handleSubmit} className="flex-col ">
             <div className="space-y-12 bg-white p-14 rounded-2xl">
                 <div className="border-b border-gray-900/10 pb-12">
                     <h2 className="text-base/7 font-semibold text-gray-900">
-                        Add Lesson
+                        เพิ่มบทเรียน
                     </h2>
-                    <p className="mt-1 text-sm/6 text-gray-600">
-                        This information will be displayed publicly, so be
-                        careful what you share.
-                    </p>
+                    {/* <p className="mt-1 text-sm/6 text-gray-600">
+                        เขียนอธิ
+                    </p> */}
 
                     <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                         {/* Lesson Name Input */}
@@ -60,7 +59,7 @@ function LessonForm({ closeModal, id ,refreshData}) {
                                 htmlFor="lessonName"
                                 className="block text-sm/6 font-medium text-gray-900"
                             >
-                                Lesson Name
+                                ชื่อบทเรียน
                             </label>
                             <div className="mt-2">
                                 <input
@@ -70,8 +69,8 @@ function LessonForm({ closeModal, id ,refreshData}) {
                                     onChange={(e) =>
                                         setLessonName(e.target.value)
                                     }
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
-                                    placeholder="Lesson 1: Get started"
+                                    className="px-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
+                                    placeholder="เพิ่มชื่อบทเรียนของคุณที่นี่"
                                     required
                                 />
                             </div>
@@ -83,7 +82,7 @@ function LessonForm({ closeModal, id ,refreshData}) {
                                 htmlFor="description"
                                 className="block text-sm/6 font-medium text-gray-900"
                             >
-                                Description
+                               คำอธิบาย
                             </label>
                             <div className="mt-2">
                                 <textarea
@@ -94,18 +93,16 @@ function LessonForm({ closeModal, id ,refreshData}) {
                                         setDescription(e.target.value)
                                     }
                                     rows="3"
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
-                                    placeholder="Write a few sentences about this lesson."
+                                    className="px-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
+                                    placeholder="เขียนอธิบายสั้นๆ สำหรับบทเรียนนี้"
                                     required
                                 ></textarea>
                             </div>
-                            <p className="mt-3 text-sm/6 text-gray-600">
-                                Write a few sentences about this lesson.
-                            </p>
+                           
                         </div>
 
                         {/* File Upload Input */}
-                        <div className="col-span-full">
+                        {/* <div className="col-span-full">
                             <label
                                 htmlFor="file-upload"
                                 className="block text-sm/6 font-medium text-gray-900"
@@ -147,13 +144,13 @@ function LessonForm({ closeModal, id ,refreshData}) {
                                     </p>
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>
 
             {/* Form Buttons */}
-            <div className="mt-6 mb-14 flex items-center justify-end gap-x-6">
+            <div className="mt-6 mb-14 flex items-center justify-end gap-x-6 px-4">
                 <button
                     type="button"
                     onClick={closeModal}

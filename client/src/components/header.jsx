@@ -15,7 +15,7 @@ function Header() {
                     className="bg-white inline-block border-l border-t border-r rounded-t py-2 px-4 text-blue-700 font-semibold"
                     href="/"
                 >
-                    Home
+                    หน้าหลัก
                 </a>
             </li>
             <li className="mr-1">
@@ -23,7 +23,7 @@ function Header() {
                     className="bg-white inline-block py-2 px-4 text-blue-500 hover:text-blue-800 font-semibold"
                     href="/Profile"
                 >
-                    Profile
+                    โปรไฟล์
                 </a>
             </li>
 
@@ -34,7 +34,7 @@ function Header() {
                         className="bg-white inline-block py-2 px-4 text-blue-500 hover:text-blue-800 font-semibold"
                         href="/Course"
                     >
-                        Course
+                        วิชาเรียน
                     </a>
                     {/* <a
                         className="bg-white inline-block py-2 px-4 text-gray-400 font-semibold"
@@ -52,7 +52,7 @@ function Header() {
                         className="bg-white inline-block py-2 px-4 text-blue-500 hover:text-blue-800 font-semibold"
                         href="/AssignmentStd"
                     >
-                        Assignment
+                        งานในชั้นเรียน
                     </a>
                 </li>
             ) : null}
@@ -65,14 +65,14 @@ function Header() {
                         className="bg-white inline-block py-2 px-4 text-blue-500 hover:text-blue-800 font-semibold"
                         href="/Login"
                     >
-                        Logout
+                        ลงชื่อออก
                     </a>
                 ) : (
                     <a
                         className="bg-white inline-block py-2 px-4 text-gray-400 font-semibold"
                         href="/Login"
                     >
-                        Login →
+                        ลงชื่อใช้งาน →
                     </a>
                 )}
             </li>

@@ -25,7 +25,7 @@ const Lesson = () => {
     const [isCreateTest, setIsCreateTest] = useState(false);
     const [isCreateExam, setIsCreateExam] = useState(false);
     const [selectedTest, setSelectedTest] = useState(null);
-    console.log("🚀 ~ Lesson ~ selectedTest:", selectedTest)
+    console.log("🚀 ~ Lesson ~ selectedTest:", selectedTest);
     const [isTestModalOpen, setIsTestModalOpen] = useState(false);
 
     const [loading, setLoading] = useState(true); // Loading state
@@ -59,30 +59,8 @@ const Lesson = () => {
         }
     };
 
-    const handleDelete = async (quizId) => {
-        const confirmDelete = window.confirm(
-            "Are you sure you want to delete this quiz?"
-        );
-        if (!confirmDelete) return;
-
-        try {
-            // ลบแบบทดสอบผ่าน API
-            await deleteQuizz(quizId);
-            console.log(`Quiz with ID ${quizId} has been deleted.`);
-
-            // Fetch ข้อมูลใหม่หลังจากลบสำเร็จ
-            fetchLessonData(); // เรียกฟังก์ชัน fetch ข้อมูลใหม่
-        } catch (error) {
-            console.error("Error deleting quiz:", error);
-        }
-    };
 
     const handleDeleteChallenge = async (quizId) => {
-        const confirmDelete = window.confirm(
-            "Are you sure you want to delete this quiz?"
-        );
-        if (!confirmDelete) return;
-
         try {
             // ลบแบบทดสอบผ่าน API
             await deleteChallenge(quizId);
@@ -183,15 +161,13 @@ const Lesson = () => {
 
                     {/* Lessons Section */}
                     <div className="w-full rounded-r-3xl bg-slate-100 pt-4">
-                        <div className="text-xl ml-8 mb-2">
+                        <div className="text-2xl ml-8 mb-2">
                             {"บทเรียน" + " " + LessonData.name}
                         </div>
-                        <div className="ml-8 text-gray-500">
-                            Description {LessonData.description}
+                        <div className="ml-8 text-xl text-gray-500">
+                            {LessonData.description}
                         </div>
-                        <div className="flex flex-col">
-                            <div className="mx-10 my-4 text-xl">แบบเรียน</div>
-
+                        <div className="flex flex-col px-2">
                             {/* {LessonData.quizzes?.length > 0 ? (
                                 LessonData.quizzes.map((quizz, index) => (
                                     <QuizCard
@@ -207,37 +183,53 @@ const Lesson = () => {
                                 </div>
                             )} */}
                             {LessonData.challenges?.length > 0 ? (
-                                LessonData.challenges.map((quizz, index) => (
-                                    <SpeachCard
-                                        quizz={quizz}
-                                        type={"challenges"}
-                                        key={index}
-                                        onDelete={handleDeleteChallenge}
-                                        onCardClick={() => {
-                                            setSelectedSpeach(quizz); // เก็บข้อมูล Challenge ที่เลือก
-                                            openSpeechModaldata(); // เปิด Modal
-                                        }}
-                                    />
-                                ))
+                                <>
+                                    <div className="mx-10 my-4 text-xl">
+                                        แบบเรียน
+                                    </div>
+                                    {LessonData.challenges.map(
+                                        (quizz, index) => (
+                                            <SpeachCard
+                                                quizz={quizz}
+                                                type={"challenges"}
+                                                key={index}
+                                                onDelete={handleDeleteChallenge}
+                                                onCardClick={() => {
+                                                    setSelectedSpeach(quizz); // เก็บข้อมูล Challenge ที่เลือก
+                                                    openSpeechModaldata(); // เปิด Modal
+                                                }}
+                                            />
+                                        )
+                                    )}
+                                </>
                             ) : (
-                                <div className="ml-8 text-gray-500"></div>
+                                <div className="ml-8 text-gray-500">
+                                    ยังไม่มีแบบเรียน
+                                </div>
                             )}
-                            <div className="mx-10 my-4 text-xl">แบบฝึกหัด</div>
+
                             {LessonData.tests?.length > 0 ? (
-                                LessonData.tests.map((quizz, index) => (
-                                    <SpeachCard
-                                        quizz={quizz}
-                                        type={"tests"}
-                                        key={index}
-                                        onDelete={handleDeleteChallenge}
-                                        onCardClick={() => {
-                                            setSelectedTest(quizz); // เก็บข้อมูล Challenge ที่เลือก
-                                            openTestModal(); // เปิด Modal
-                                        }}
-                                    />
-                                ))
+                                <>
+                                    <div className="mx-10 my-4 text-xl">
+                                        แบบฝึกหัด
+                                    </div>
+                                    {LessonData.tests.map((quizz, index) => (
+                                        <SpeachCard
+                                            quizz={quizz}
+                                            type={"tests"}
+                                            key={index}
+                                            onDelete={handleDeleteChallenge}
+                                            onCardClick={() => {
+                                                setSelectedTest(quizz); // เก็บข้อมูล Challenge ที่เลือก
+                                                openTestModal(); // เปิด Modal
+                                            }}
+                                        />
+                                    ))}
+                                </>
                             ) : (
-                                <div className="ml-8 text-gray-500"></div>
+                                <div className="ml-8 text-gray-500">
+                                    ยังไม่มีแบบฝึก
+                                </div>
                             )}
                             <div className="mx-10 my-4 text-xl">แบบทดสอบ</div>
                         </div>

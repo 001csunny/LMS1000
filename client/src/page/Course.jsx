@@ -3,7 +3,7 @@ import Header from "../components/header";
 import Footer from "../components/footer";
 import CourseCard from "../components/CourseCard";
 import CourseForm from "../components/CourseForm";
-import { fetchMyCourse } from "../conf/api";
+import { deleteLesson, fetchMyCourse } from "../conf/api";
 import { AuthContext } from "../contexts/AuthContext";
 
 function Course() {
@@ -17,6 +17,8 @@ function Course() {
     const toggleModal = (state = !isModalOpen) => {
         setIsModalOpen(state);
     };
+
+    
 
     const fetchCourseData = async () => {
         setIsLoading(true); // ตั้งสถานะเริ่มโหลดข้อมูล
@@ -42,14 +44,14 @@ function Course() {
             <Header />
             <div className=" h-full w-full p-8 ">
                 <div className="flex flex-row justify-between">
-                    <div className="text-5xl mb-4">ชั้นเรียนทั้งหมด</div>
+                    <div className="text-5xl mb-4">วิชาเรียนทั้งหมด</div>
                     {userRole === "Admin" || userRole === "Teacher" ? (
                         <button
                             onClick={() => toggleModal(true)}
                             type="button"
                             className="w-40 rounded-2xl py-2.5 px-5 mb-2 mr-4 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                         >
-                            + สร้างชั้นเรียน
+                            + เพิ่มวิชา
                         </button>
                     ) : null}
                 </div>
@@ -78,7 +80,7 @@ function Course() {
                             ) : (
                                 // ถ้าไม่มีข้อมูล
                                 <div className="text-center w-full">
-                                    ยังไม่มีชั้นเรียน
+                                    ยังไม่มีวิชาที่สอน
                                 </div>
                             )}
                         </div>

@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
-import { fetchoneCourse } from "../conf/api";
+import { deleteLesson, fetchoneCourse } from "../conf/api";
 import Header from "../components/header";
 import Footer from "../components/footer";
 import LessonForm from "../components/lesson/LessonForm";
 import LessonCard from "../components/lesson/LessonCard";
 
 const Incourse = () => {
-    
     const { id } = useParams(); // Course ID from URL
     const location = useLocation();
     const [CourseData, setCourseData] = useState({});
@@ -19,6 +18,19 @@ const Incourse = () => {
     useEffect(() => {
         fetchCourseData();
     }, []);
+    
+    const handleDeleteLesson = async (quizId) => {
+        try {
+            // ลบแบบทดสอบผ่าน API
+            await deleteLesson(quizId);
+            console.log(`Quiz with ID ${quizId} has been deleted.`);
+
+            // Fetch ข้อมูลใหม่หลังจากลบสำเร็จ
+            fetchLessonData(); // เรียกฟังก์ชัน fetch ข้อมูลใหม่
+        } catch (error) {
+            console.error("Error deleting quiz:", error);
+        }
+    };
 
     const fetchCourseData = async () => {
         try {
@@ -39,18 +51,30 @@ const Incourse = () => {
 
             {/* Main Content */}
             <div className="h-full w-full p-8">
-                {/* Course Name */}
-                <div className="text-5xl mb-4">
-                    {CourseData.name || "Loading..."}
+                <div className="flex flex-row justify-between">
+                    <div className="text-5xl mb-4">
+                        {"วิชา " + CourseData.name || "Loading..."}
+                    </div>
+                    {userRole === "Admin" || userRole === "Teacher" ? (
+                        <button
+                            onClick={openModal}
+                            type="button"
+                            className="w-40 rounded-2xl py-2.5 px-5 mb-2 mr-4 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                        >
+                            + สร้างบทเรียน
+                        </button>
+                    ) : null}
                 </div>
+                {/* Course Name */}
+                <div className="text-5xl mb-4"></div>
 
                 <div className="flex h-full w-full px-4">
                     {/* Sidebar */}
-                    <div className="w-1/5 bg-slate-700 py-8 rounded-l-3xl">
-                        {/* Add Lesson Button */}
+                    {/* <div className="w-1/5 bg-slate-700 py-8 rounded-l-3xl">
+                       
                         {userRole === "Admin" || userRole === "Teacher" ? (
                             <button
-                                onClick={openModal}
+                                
                                 type="button"
                                 className="w-full py-2.5 px-5 mb-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                             >
@@ -58,13 +82,13 @@ const Incourse = () => {
                             </button>
                         ) : null}
 
-                        {/* <button
+                         <button
                             type="button"
                             className="w-full py-2.5 px-5 mb-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                         >
                             Edit
-                        </button> */}
-                    </div>
+                        </button> 
+                    </div> */}
 
                     {/* Lessons Section */}
                     <div className="w-full rounded-r-3xl bg-slate-100 pt-4">
@@ -77,6 +101,7 @@ const Incourse = () => {
                                         name={lesson.name}
                                         description={lesson.description}
                                         documentId={lesson.documentId}
+                                        handleDeleteLesson={handleDeleteLesson}
                                     />
                                 ))
                             ) : (

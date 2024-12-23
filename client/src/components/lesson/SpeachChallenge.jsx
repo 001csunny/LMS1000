@@ -19,8 +19,8 @@ function SpeachChallenge({ closeModal, LessonId, refreshData }) {
     const [words, setWords] = useState([]);
     console.log("🚀 ~ SpeachChallenge ~ words:", words);
     const [isListWordModalOpen, setIsListWordModalOpen] = useState(false);
-    const [selectedWordsShow, setSelectedWordShow] = useState([{}]);
-    const [selectedWords, setSelectedWords] = useState([{}]); // เก็บสถานะ checkbox
+    const [selectedWordsShow, setSelectedWordShow] = useState([]);
+    const [selectedWords, setSelectedWords] = useState([]); // เก็บสถานะ checkbox
     console.log("🚀 ~ SpeachChallenge ~ selectedWords:", selectedWords);
     const [selectedWordsDelete, setSelectedWordsDelete] = useState([]); // เก็บสถานะ checkbox
 
@@ -37,7 +37,7 @@ function SpeachChallenge({ closeModal, LessonId, refreshData }) {
             .filter((id) => id !== 0); // กรอง id ที่เป็น 0 ออก
 
         if (selectedIds.length === 0) {
-            alert("Please select at least one word.");
+            alert("กรุณาเลือกคำศัพท์");
             return;
         }
 
@@ -151,52 +151,53 @@ function SpeachChallenge({ closeModal, LessonId, refreshData }) {
             <div className="flex bg-slate-400 w-full h-full rounded-xl p-4">
                 {/* Left Panel */}
                 <div className="w-[50%] h-full bg-slate-100 p-4 overflow-y-auto rounded-xl">
+                    
                     {loading ? (
                         <p>Loading words...</p>
                     ) : (
-                        selectedWordsShow.map((wordItem) => (
-                            <div
-                                key={wordItem.id}
-                                className="flex items-center justify-between p-2 border-b"
-                            >
-                                {/* Word */}
-                                <WordCardForm
-                                    word={wordItem}
-                                    setSelectedWords={setSelectedWordShow}
-                                    createWord={createWord}
-                                />
-                                {/* Toggle Checkbox/Checkmark */}
+                        selectedWordsShow
+                            ?.filter((wordItem) => wordItem?.id) // ตรวจสอบว่ามี id
+                            .reverse()
+                            .map((wordItem) => (
                                 <div
-                                    className="cursor-pointer"
-                                    onClick={() =>
-                                        toggleCheckbox(
-                                            wordItem.id,
-                                            wordItem.documentId
-                                        )
-                                    }
+                                    key={wordItem.id}
+                                    className="flex items-center justify-between p-2 border-b"
                                 >
-                                    {selectedWords[wordItem] ? (
-                                        <span className="text-green-500 text-xl">
-                                            ✔
-                                        </span>
-                                    ) : (
-                                        <input type="checkbox" />
-                                    )}
+                                    <WordCard
+                                        word={wordItem.word} // ส่งเฉพาะ string ของคำศัพท์
+                                        setSelectedWords={setSelectedWordShow}
+                                        createWord={createWord}
+                                    />
+
+                                    <div
+                                        className="cursor-pointer"
+                                        onClick={() =>
+                                            toggleCheckbox(
+                                                wordItem.id,
+                                                wordItem.documentId
+                                            )
+                                        }
+                                    >
+                                        {selectedWords[wordItem.id] ? (
+                                            <span className="text-green-500 text-xl">
+                                                ✔
+                                            </span>
+                                        ) : (
+                                            <input type="checkbox" />
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
-                        ))
+                            ))
                     )}
                 </div>
 
                 {/* Right Panel */}
                 <div className="flex flex-col w-[60%] h-full justify-end items-start p-20">
                     <div className="flex justify-between"></div>
-                    <button
-                        className="mb-2 px-4 py-2 bg-green-500 text-white rounded-xl hover:bg-green-600"
-                        onClick={() => setIsModalOpen(true)} // เปิด Modal
-                    >
-                        + เพิ่มคำฝึก
-                    </button>
+                    <WordCardForm
+                        setSelectedWords={setSelectedWordShow}
+                        createWord={createWord}
+                    />
                     <button
                         className="mb-2 px-4 py-2 bg-green-500 text-white rounded-xl hover:bg-green-600"
                         onClick={() => setIsListWordModalOpen(true)} // เปิด Modal
@@ -225,9 +226,6 @@ function SpeachChallenge({ closeModal, LessonId, refreshData }) {
             {isModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
                     <div className="bg-white p-6 rounded shadow-lg w-80">
-                        <div className="text-lg font-semibold mb-4">
-                            เพิ่มคำฝึก
-                        </div>
                         <input
                             type="text"
                             className="w-full p-2 mb-4 border border-gray-300 rounded"
