@@ -25,12 +25,6 @@
     },
     "point": {
       "type": "biginteger"
-    },
-    "tests": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::test.test",
-      "mappedBy": "examdata"
     }
   }
 }

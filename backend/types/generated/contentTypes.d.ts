@@ -445,6 +445,33 @@ export interface ApiCourseCourse extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiExamExam extends Struct.CollectionTypeSchema {
+  collectionName: 'exams';
+  info: {
+    displayName: 'Exam';
+    pluralName: 'exams';
+    singularName: 'exam';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    exam: Schema.Attribute.String;
+    lessons: Schema.Attribute.Relation<'manyToMany', 'api::lesson.lesson'>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::exam.exam'> &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    words: Schema.Attribute.Relation<'manyToMany', 'api::word.word'>;
+  };
+}
+
 export interface ApiExamdataExamdata extends Struct.CollectionTypeSchema {
   collectionName: 'examdatas';
   info: {
@@ -471,7 +498,6 @@ export interface ApiExamdataExamdata extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     point: Schema.Attribute.BigInteger;
     publishedAt: Schema.Attribute.DateTime;
-    tests: Schema.Attribute.Relation<'manyToMany', 'api::test.test'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -502,6 +528,7 @@ export interface ApiLessonLesson extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     description: Schema.Attribute.Text;
+    exams: Schema.Attribute.Relation<'manyToMany', 'api::exam.exam'>;
     files: Schema.Attribute.Media<
       'images' | 'files' | 'videos' | 'audios',
       true
@@ -538,13 +565,13 @@ export interface ApiTestTest extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    examdata: Schema.Attribute.Relation<'manyToMany', 'api::examdata.examdata'>;
     lesson: Schema.Attribute.Relation<'manyToOne', 'api::lesson.lesson'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::test.test'> &
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
     test: Schema.Attribute.String;
+    testdata: Schema.Attribute.Relation<'manyToMany', 'api::testdata.testdata'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -577,6 +604,7 @@ export interface ApiTestdataTestdata extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
+    tests: Schema.Attribute.Relation<'manyToMany', 'api::test.test'>;
     time: Schema.Attribute.BigInteger &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'0'>;
@@ -609,6 +637,7 @@ export interface ApiWordWord extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    exams: Schema.Attribute.Relation<'manyToMany', 'api::exam.exam'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::word.word'> &
       Schema.Attribute.Private;
@@ -1136,6 +1165,7 @@ declare module '@strapi/strapi' {
       'admin::user': AdminUser;
       'api::challenge.challenge': ApiChallengeChallenge;
       'api::course.course': ApiCourseCourse;
+      'api::exam.exam': ApiExamExam;
       'api::examdata.examdata': ApiExamdataExamdata;
       'api::lesson.lesson': ApiLessonLesson;
       'api::test.test': ApiTestTest;

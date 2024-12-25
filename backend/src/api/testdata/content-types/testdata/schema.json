@@ -33,6 +33,12 @@
       "type": "biginteger",
       "default": "0",
       "required": true
+    },
+    "tests": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::test.test",
+      "mappedBy": "testdata"
     }
   }
 }

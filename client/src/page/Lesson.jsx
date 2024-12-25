@@ -59,7 +59,6 @@ const Lesson = () => {
         }
     };
 
-
     const handleDeleteChallenge = async (quizId) => {
         try {
             // ลบแบบทดสอบผ่าน API
@@ -371,14 +370,14 @@ const Lesson = () => {
                     id="test-modal"
                     tabIndex={-1}
                     aria-hidden={!isTestModalOpen}
-                    className="fixed bg-slate-500 bg-opacity-50 overflow-auto top-0 right-0 left-0 z-50 flex items-center justify-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
+                    className="fixed inset-0 z-50 flex items-center justify-center w-full h-full bg-white"
                 >
-                    <div className="relative bg-white rounded-lg shadow-lg w-full max-w-lg">
+                    <div className="relative rounded-lg w-[90%] sm:w-[80%] md:w-[60%] lg:w-[50%] xl:w-[40%] max-w-lg max-h-full">
                         <div className="flex justify-end p-2">
                             <button
                                 onClick={closeTestModal}
-                                type="button"
-                                className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
+                                className="text-gray-500 hover:text-black focus:outline-none"
+                                aria-label="Close"
                             >
                                 ✕
                             </button>

@@ -3,7 +3,7 @@ import Header from "../components/header";
 import Footer from "../components/footer";
 import CourseCard from "../components/CourseCard";
 import CourseForm from "../components/CourseForm";
-import { deleteLesson, fetchMyCourse } from "../conf/api";
+import { deleteCourse, fetchMyCourse } from "../conf/api";
 import { AuthContext } from "../contexts/AuthContext";
 
 function Course() {
@@ -17,13 +17,23 @@ function Course() {
     const toggleModal = (state = !isModalOpen) => {
         setIsModalOpen(state);
     };
+    const handleDeleteCourse = async (quizId) => {
+        try {
+            // ลบแบบทดสอบผ่าน API
+            await deleteCourse(quizId);
+            console.log(`Quiz with ID ${quizId} has been deleted.`);
 
-    
+            // Fetch ข้อมูลใหม่หลังจากลบสำเร็จ
+            fetchLessonData(); // เรียกฟังก์ชัน fetch ข้อมูลใหม่
+        } catch (error) {
+            console.error("Error deleting quiz:", error);
+        }
+    };
 
     const fetchCourseData = async () => {
         setIsLoading(true); // ตั้งสถานะเริ่มโหลดข้อมูล
         try {
-            const data = await fetchMyCourse(userRole.toLowerCase(),state.id); // Assume fetchMyCourse is an async function
+            const data = await fetchMyCourse(userRole.toLowerCase(), state.id); // Assume fetchMyCourse is an async function
             setCourseData(data.data); // Store the course data
         } catch (error) {
             console.error("Error fetching courses:", error);
@@ -75,6 +85,7 @@ function Course() {
                                         description={course.description}
                                         student={course.students}
                                         documentId={course.documentId}
+                                        handleDeleteCourse={handleDeleteCourse}
                                     />
                                 ))
                             ) : (

@@ -14,11 +14,10 @@ function WordCard(wordItem) {
     };
 
     return (
-        <div className="flex rounded-xl m-4 ml-10 bg-slate-300 w-72 p-4 justify-between items-center">
-            <div onClick={() => handleClick(wordItem.word)}>
+        <div className="flex rounded-md ml-10 bg-slate-300 w-72 p-2 justify-between items-center">
+            <div onClick={() => handleClick(wordItem.word)} className="text-center w-full">
                 {wordItem.word}
             </div>{" "}
-            
             {/* Example word */}
         </div>
     );

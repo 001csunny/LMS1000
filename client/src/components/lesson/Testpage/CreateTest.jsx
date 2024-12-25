@@ -119,7 +119,7 @@ function CreateTest({ closeModal, LessonId, refreshData }) {
     return (
         <div className="flex flex-col w-full h-[70vh]">
             {/* Header */}
-            <div className="text-4xl text-white font-bold p-4">แบบฝึก</div>
+            <div className="text-4xl text-white font-bold p-4">แบบเรียน</div>
 
             {/* Challenge Header */}
             <div className="flex flex-row items-center p-4 my-4 bg-slate-200 rounded-xl">
@@ -127,12 +127,12 @@ function CreateTest({ closeModal, LessonId, refreshData }) {
                     htmlFor="quizTitle"
                     className="text-base w-[20%] font-semibold mr-10"
                 >
-                    ชื่อแบบฝึกหัด :
+                    ชื่อแบบเรียน :
                 </label>
                 <input
                     id="quizTitle"
                     type="text"
-                    placeholder="ป้อนชื่อแบบฝึกหัดที่นี่"
+                    placeholder="ป้อนชื่อแบบเรียนที่นี่"
                     value={quizTitle}
                     onChange={(e) => setQuizTitle(e.target.value)} // อัปเดต quizTitle state
                     className="w-full px-4 py-2 text-lg border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -143,52 +143,53 @@ function CreateTest({ closeModal, LessonId, refreshData }) {
             <div className="flex bg-slate-400 w-full h-full rounded-xl p-4">
                 {/* Left Panel */}
                 <div className="w-[50%] h-full bg-slate-100 p-4 overflow-y-auto rounded-xl">
+                    
                     {loading ? (
                         <p>Loading words...</p>
                     ) : (
-                        selectedWordsShow.map((wordItem) => (
-                            <div
-                                key={wordItem.id}
-                                className="flex items-center justify-between p-2 border-b"
-                            >
-                                {/* Word */}
-                                <WordCardForm
-                                    word={wordItem}
-                                    setSelectedWords={setSelectedWordShow}
-                                    createWord={createWord}
-                                />
-                                {/* Toggle Checkbox/Checkmark */}
+                        selectedWordsShow
+                            ?.filter((wordItem) => wordItem?.id) // ตรวจสอบว่ามี id
+                            .reverse()
+                            .map((wordItem) => (
                                 <div
-                                    className="cursor-pointer"
-                                    onClick={() =>
-                                        toggleCheckbox(
-                                            wordItem.id,
-                                            wordItem.documentId
-                                        )
-                                    }
+                                    key={wordItem.id}
+                                    className="flex items-center justify-between p-2 border-b"
                                 >
-                                    {selectedWords[wordItem] ? (
-                                        <span className="text-green-500 text-xl">
-                                            ✔
-                                        </span>
-                                    ) : (
-                                        <input type="checkbox" />
-                                    )}
+                                    <WordCard
+                                        word={wordItem.word} // ส่งเฉพาะ string ของคำศัพท์
+                                        setSelectedWords={setSelectedWordShow}
+                                        createWord={createWord}
+                                    />
+
+                                    <div
+                                        className="cursor-pointer"
+                                        onClick={() =>
+                                            toggleCheckbox(
+                                                wordItem.id,
+                                                wordItem.documentId
+                                            )
+                                        }
+                                    >
+                                        {selectedWords[wordItem.id] ? (
+                                            <span className="text-green-500 text-xl">
+                                                ✔
+                                            </span>
+                                        ) : (
+                                            <input type="checkbox" />
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
-                        ))
+                            ))
                     )}
                 </div>
 
                 {/* Right Panel */}
                 <div className="flex flex-col w-[60%] h-full justify-end items-start p-20">
                     <div className="flex justify-between"></div>
-                    <button
-                        className="mb-2 px-4 py-2 bg-green-500 text-white rounded-xl hover:bg-green-600"
-                        onClick={() => setIsModalOpen(true)} // เปิด Modal
-                    >
-                        + เพิ่มคำฝึก
-                    </button>
+                    <WordCardForm
+                        setSelectedWords={setSelectedWordShow}
+                        createWord={createWord}
+                    />
                     <button
                         className="mb-2 px-4 py-2 bg-green-500 text-white rounded-xl hover:bg-green-600"
                         onClick={() => setIsListWordModalOpen(true)} // เปิด Modal
@@ -208,7 +209,7 @@ function CreateTest({ closeModal, LessonId, refreshData }) {
                         onClick={handleCreateQuiz} // เรียกฟังก์ชันสร้าง Quiz
                         disabled={loading} // ปิดการกดปุ่มระหว่างโหลด
                     >
-                        {loading ? "กำลังสร้าง..." : "สร้างแบบฝึก"}
+                        {loading ? "กำลังสร้าง..." : "สร้างแบบเรียน"}
                     </button>
                 </div>
             </div>
@@ -217,9 +218,6 @@ function CreateTest({ closeModal, LessonId, refreshData }) {
             {isModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
                     <div className="bg-white p-6 rounded shadow-lg w-80">
-                        <div className="text-lg font-semibold mb-4">
-                            เพิ่มคำฝึก
-                        </div>
                         <input
                             type="text"
                             className="w-full p-2 mb-4 border border-gray-300 rounded"

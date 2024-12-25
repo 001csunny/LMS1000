@@ -1,0 +1,30 @@
+{
+  "kind": "collectionType",
+  "collectionName": "exams",
+  "info": {
+    "singularName": "exam",
+    "pluralName": "exams",
+    "displayName": "Exam"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "exam": {
+      "type": "string"
+    },
+    "lessons": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::lesson.lesson",
+      "inversedBy": "exams"
+    },
+    "words": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::word.word",
+      "inversedBy": "exams"
+    }
+  }
+}

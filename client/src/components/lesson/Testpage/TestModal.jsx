@@ -11,7 +11,11 @@ const TestModal = ({ closeModal, selectedTest }) => {
     const [isCorrect, setIsCorrect] = useState(null);
     const [error, setError] = useState(null);
     const [loadingState, setLoadingState] = useState(false);
-    const [highlightedIndex, setHighlightedIndex] = useState(null); // เก็บ index ของคำที่ไฮไลต์
+    const [highlightedIndex, setHighlightedIndex] = useState(null);
+    const [wrongAttempts, setWrongAttempts] = useState(0); // สำหรับการนับจำนวนครั้งที่พูดผิด
+    const [results, setResults] = useState([]); // เก็บผลลัพธ์การทดสอบ
+    const [completed, setCompleted] = useState(false); // เช็คว่าทำการทดสอบเสร็จหรือไม่
+    const [isTestStarted, setIsTestStarted] = useState(false); // เช็คสถานะการเริ่มการทดสอบ
 
     const apiKey = "AIzaSyA40JOnPoZTEHhswblGLHWJVQ8_ekKfai0";
 
@@ -36,22 +40,24 @@ const TestModal = ({ closeModal, selectedTest }) => {
     }, [selectedTest]);
 
     const startTest = () => {
-        // เริ่มการทดสอบโดยตั้งค่า index ของคำแรกเป็น 0
         if (testData && testData.words.length > 0) {
+            setIsTestStarted(true); // ตั้งค่าให้การทดสอบเริ่มต้น
             setHighlightedIndex(0);
+            setWrongAttempts(0);
+            setResults([]);
+            setCompleted(false);
         }
     };
 
     const handleNextWord = () => {
-        // ไปยังคำถัดไป
         if (testData && highlightedIndex !== null) {
             if (highlightedIndex < testData.words.length - 1) {
                 setHighlightedIndex(highlightedIndex + 1);
-                setIsCorrect(null); // รีเซ็ตสถานะการตรวจสอบ
-                setUserSpeech(""); // ล้างคำพูดของผู้ใช้
+                setIsCorrect(null);
+                setUserSpeech("");
+                setWrongAttempts(0); // รีเซ็ตจำนวนครั้งที่พูดผิด
             } else {
-                alert("คำทั้งหมดถูกทดสอบเรียบร้อยแล้ว!");
-                setHighlightedIndex(null); // รีเซ็ตการไฮไลต์
+                setCompleted(true);
             }
         }
     };
@@ -59,7 +65,21 @@ const TestModal = ({ closeModal, selectedTest }) => {
     const checkCorrectness = (transcript) => {
         if (highlightedIndex !== null && testData) {
             const targetWord = testData.words[highlightedIndex]?.word || "";
-            setIsCorrect(transcript.trim() === targetWord.trim());
+            const isCorrect = transcript.trim() === targetWord.trim();
+            setIsCorrect(isCorrect);
+
+            if (isCorrect) {
+                setResults((prevResults) => [
+                    ...prevResults,
+                    { word: targetWord, correct: true },
+                ]);
+            } else {
+                setResults((prevResults) => [
+                    ...prevResults,
+                    { word: targetWord, correct: false },
+                ]);
+                setWrongAttempts((prevAttempts) => prevAttempts + 1);
+            }
         }
     };
 
@@ -125,82 +145,160 @@ const TestModal = ({ closeModal, selectedTest }) => {
         }
     };
 
+    const audioBlobToBase64 = (blob) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const arrayBuffer = reader.result;
+                const base64Audio = btoa(
+                    new Uint8Array(arrayBuffer).reduce(
+                        (data, byte) => data + String.fromCharCode(byte),
+                        ""
+                    )
+                );
+                resolve(base64Audio);
+            };
+            reader.onerror = reject;
+            reader.readAsArrayBuffer(blob);
+        });
+    };
+
     return (
         <div className="relative w-full p-4 bg-white rounded-lg shadow-lg">
             <div className="flex justify-between items-center">
                 <h2 className="text-xl font-bold">
                     {selectedTest?.test || "Test Challenge"}
                 </h2>
-                {/* <button
-                    onClick={closeModal}
-                    className="text-gray-400 hover:text-black"
-                >
-                    ✕
-                </button> */}
             </div>
+
             {loadingState ? (
                 <div className="mt-4 text-gray-500">Loading...</div>
             ) : testData ? (
-                <div className="mt-4 grid grid-cols-4 gap-4">
-                    {testData.words.map((wordItem, index) => (
-                        <div
-                            key={wordItem.id}
-                            className={`flex items-center justify-between p-2 border-b transition-all duration-500 ${
-                                index === highlightedIndex
-                                    ? "bg-yellow-300 text-red-500 animate-pulse"
-                                    : ""
-                            }`}
-                        >
-                            <WordCard word={wordItem.word} />
+                <div className="flex-col mt-4 text-center items-center justify-center w-full h-full">
+                    <div className="flex justify-center items-center w-full h-full mt-4">
+                        {highlightedIndex !== null && (
+                            <div className="mb-4">
+                                <WordCard
+                                    word={
+                                        testData.words[highlightedIndex]?.word
+                                    }
+                                />
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="mt-4">
+                        {!isTestStarted && ( // แสดงปุ่มเริ่มการทดสอบก่อนเริ่มการทดสอบ
+                            <button
+                                onClick={startTest}
+                                className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+                            >
+                                เริ่มการทดสอบ
+                            </button>
+                        )}
+
+                        {isTestStarted && ( // ซ่อนปุ่มเริ่มการทดสอบและแสดงปุ่มคำถัดไประหว่างการทดสอบ
+                            <>
+                                {isCorrect && !completed && (
+                                    <button
+                                        onClick={handleNextWord}
+                                        className="ml-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                                    >
+                                        คำถัดไป
+                                    </button>
+                                )}
+
+                                <button
+                                    onClick={
+                                        isRecording
+                                            ? stopRecording
+                                            : startRecording
+                                    }
+                                    className="ml-4 px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600"
+                                >
+                                    {isRecording ? "หยุดบันทึก" : "เริ่มบันทึก"}
+                                </button>
+                            </>
+                        )}
+                    </div>
+
+                    {userSpeech && (
+                        <div className="mt-4 text-center">
+                            {/* <p className="text-lg">
+                                คุณพูด:{" "}
+                                <span
+                                    className={`font-bold ${
+                                        isCorrect
+                                            ? "text-green-500"
+                                            : "text-red-500"
+                                    }`}
+                                >
+                                    {userSpeech}
+                                </span>
+                            </p> */}
+                            {isCorrect === true && (
+                                <p className="text-green-500">ถูกต้อง!</p>
+                            )}
+                            {isCorrect === false && (
+                                <p className="text-red-500">
+                                    ไม่ตรง ลองอีกครั้ง!
+                                </p>
+                            )}
                         </div>
-                    ))}
+                    )}
+
+                    {wrongAttempts >= 3 && !completed && (
+                        <div className="mt-4 text-center">
+                            <button
+                                onClick={handleNextWord}
+                                className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
+                            >
+                                ข้ามคำนี้
+                            </button>
+                        </div>
+                    )}
+
+                    {completed && (
+                        <div className="mt-4 text-center">
+                            <h3 className="text-lg font-bold">ผลการฝึกซ้อม</h3>
+                            <div className="mt-2">
+                                {results.map((result, index) => (
+                                    <p
+                                        key={index}
+                                        className={`text-lg ${
+                                            result.correct
+                                                ? "text-green-500"
+                                                : "text-red-500"
+                                        }`}
+                                    >
+                                        {result.word}:{" "}
+                                        {result.correct ? "ถูกต้อง" : "ผิด"}
+                                    </p>
+                                ))}
+                            </div>
+                            <div className="mt-4">
+                                <button
+                                    onClick={startTest}
+                                    className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+                                >
+                                    ฝึกซ้ำ
+                                </button>
+                                <button
+                                    onClick={closeModal}
+                                    className="ml-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                                >
+                                    เสร็จสิ้น
+                                </button>
+                            </div>
+                        </div>
+                    )}
                 </div>
             ) : (
                 <div className="mt-4 text-red-500">
                     Failed to load challenge
                 </div>
             )}
-            <div className="mt-4 text-center">
-                <button
-                    onClick={startTest}
-                    className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
-                >
-                    เริ่มการทดสอบ
-                </button>
-                <button
-                    onClick={handleNextWord}
-                    className="ml-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-                    disabled={highlightedIndex === null}
-                >
-                    พูดคำถัดไป
-                </button>
-                <button
-                    onClick={isRecording ? stopRecording : startRecording}
-                    className="ml-4 px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600"
-                >
-                    {isRecording ? "หยุดบันทึก" : "เริ่มบันทึก"}
-                </button>
-            </div>
-            {userSpeech && (
-                <div className="mt-4 text-center">
-                    <p className="text-lg">
-                        คุณพูด:{" "}
-                        <span
-                            className={`font-bold ${
-                                isCorrect ? "text-green-500" : "text-red-500"
-                            }`}
-                        >
-                            {userSpeech}
-                        </span>
-                    </p>
-                    {isCorrect === true && (
-                        <p className="text-green-500">ถูกต้อง!</p>
-                    )}
-                    {isCorrect === false && (
-                        <p className="text-red-500">ไม่ตรง ลองอีกครั้ง!</p>
-                    )}
-                </div>
-            )}
+
             {error && (
                 <div className="mt-4 text-center text-red-500">{error}</div>
             )}
@@ -209,21 +307,3 @@ const TestModal = ({ closeModal, selectedTest }) => {
 };
 
 export default TestModal;
-
-const audioBlobToBase64 = (blob) => {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            const arrayBuffer = reader.result;
-            const base64Audio = btoa(
-                new Uint8Array(arrayBuffer).reduce(
-                    (data, byte) => data + String.fromCharCode(byte),
-                    ""
-                )
-            );
-            resolve(base64Audio);
-        };
-        reader.onerror = reject;
-        reader.readAsArrayBuffer(blob);
-    });
-};

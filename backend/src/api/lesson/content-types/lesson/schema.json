@@ -50,6 +50,12 @@
       "relation": "oneToMany",
       "target": "api::test.test",
       "mappedBy": "lesson"
+    },
+    "exams": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::exam.exam",
+      "mappedBy": "lessons"
     }
   }
 }

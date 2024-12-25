@@ -31,6 +31,12 @@
       "relation": "manyToMany",
       "target": "api::test.test",
       "mappedBy": "words"
+    },
+    "exams": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::exam.exam",
+      "mappedBy": "words"
     }
   }
 }
