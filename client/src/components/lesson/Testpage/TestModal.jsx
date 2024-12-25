@@ -193,7 +193,7 @@ const TestModal = ({ closeModal, selectedTest }) => {
                                 onClick={startTest}
                                 className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
                             >
-                                เริ่มการทดสอบ
+                                เริ่มการฝึก
                             </button>
                         )}
 
@@ -216,7 +216,7 @@ const TestModal = ({ closeModal, selectedTest }) => {
                                     }
                                     className="ml-4 px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600"
                                 >
-                                    {isRecording ? "หยุดบันทึก" : "เริ่มบันทึก"}
+                                    {isRecording ? "กดตรวจ" : "กดเพื่อพูด"}
                                 </button>
                             </>
                         )}
