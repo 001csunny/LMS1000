@@ -119,7 +119,7 @@ function CreateTest({ closeModal, LessonId, refreshData }) {
     return (
         <div className="flex flex-col w-full h-[70vh]">
             {/* Header */}
-            <div className="text-4xl text-white font-bold p-4">แบบเรียน</div>
+            <div className="text-4xl text-white font-bold p-4">แบบฝึก</div>
 
             {/* Challenge Header */}
             <div className="flex flex-row items-center p-4 my-4 bg-slate-200 rounded-xl">
@@ -127,12 +127,12 @@ function CreateTest({ closeModal, LessonId, refreshData }) {
                     htmlFor="quizTitle"
                     className="text-base w-[20%] font-semibold mr-10"
                 >
-                    ชื่อแบบเรียน :
+                    ชื่อแบบฝึก :
                 </label>
                 <input
                     id="quizTitle"
                     type="text"
-                    placeholder="ป้อนชื่อแบบเรียนที่นี่"
+                    placeholder="ป้อนชื่อแบบฝึกที่นี่"
                     value={quizTitle}
                     onChange={(e) => setQuizTitle(e.target.value)} // อัปเดต quizTitle state
                     className="w-full px-4 py-2 text-lg border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -209,7 +209,7 @@ function CreateTest({ closeModal, LessonId, refreshData }) {
                         onClick={handleCreateQuiz} // เรียกฟังก์ชันสร้าง Quiz
                         disabled={loading} // ปิดการกดปุ่มระหว่างโหลด
                     >
-                        {loading ? "กำลังสร้าง..." : "สร้างแบบเรียน"}
+                        {loading ? "กำลังสร้าง..." : "สร้างแบบฝึก"}
                     </button>
                 </div>
             </div>

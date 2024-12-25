@@ -11,22 +11,22 @@ function Course() {
     const [CourseData, setCourseData] = useState(null);
     const [isLoading, setIsLoading] = useState(true); // เพิ่มสถานะการโหลด
     const { state } = useContext(AuthContext);
-    console.log("🚀 ~ Course ~ state:", state);
     const userRole = sessionStorage.getItem("userRole");
 
     const toggleModal = (state = !isModalOpen) => {
         setIsModalOpen(state);
     };
-    const handleDeleteCourse = async (quizId) => {
+
+    const handleDeleteCourse = async (courseId) => {
         try {
-            // ลบแบบทดสอบผ่าน API
-            await deleteCourse(quizId);
-            console.log(`Quiz with ID ${quizId} has been deleted.`);
+            // ลบวิชาเรียนผ่าน API
+            await deleteCourse(courseId);
+            console.log(`Course with ID ${courseId} has been deleted.`);
 
             // Fetch ข้อมูลใหม่หลังจากลบสำเร็จ
-            fetchLessonData(); // เรียกฟังก์ชัน fetch ข้อมูลใหม่
+            fetchCourseData(); // เรียกฟังก์ชัน fetch ข้อมูลใหม่
         } catch (error) {
-            console.error("Error deleting quiz:", error);
+            console.error("Error deleting course:", error);
         }
     };
 
@@ -68,7 +68,6 @@ function Course() {
 
                 <div className="flex h-full w-full px-8">
                     <div className="w-full rounded-3xl bg-slate-100 pt-4">
-                        {/* <div className="text-xl ml-8 mb-2">ชั้นเรียนทั้งหมด</div> */}
                         <div className="flex flex-wrap">
                             {isLoading ? (
                                 // แสดงข้อความ Loading ขณะที่ข้อมูลกำลังถูกโหลด
@@ -85,7 +84,7 @@ function Course() {
                                         description={course.description}
                                         student={course.students}
                                         documentId={course.documentId}
-                                        handleDeleteCourse={handleDeleteCourse}
+                                        handleDeleteCourse={handleDeleteCourse} // ส่งฟังก์ชันลบ
                                     />
                                 ))
                             ) : (

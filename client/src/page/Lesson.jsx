@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { deleteChallenge, deleteQuizz, fetchoneLesson } from "../conf/api";
+import {
+    deleteChallenge,
+    deleteQuizz,
+    deleteTest,
+    fetchOneExam,
+    fetchoneLesson,
+} from "../conf/api";
 import Header from "../components/header";
 import Footer from "../components/footer";
 import QuizCard from "../components/lesson/QuizzCard";
@@ -12,6 +18,7 @@ import SpeachModal from "../components/lesson/SpeachModal";
 import CreateTest from "../components/lesson/Testpage/CreateTest";
 import TestModal from "../components/lesson/Testpage/TestModal";
 import CreateExam from "../components/lesson/Exam/CreateExam";
+import ExamModal from "../components/lesson/Exam/ExamModal";
 
 const Lesson = () => {
     const { id } = useParams();
@@ -25,8 +32,9 @@ const Lesson = () => {
     const [isCreateTest, setIsCreateTest] = useState(false);
     const [isCreateExam, setIsCreateExam] = useState(false);
     const [selectedTest, setSelectedTest] = useState(null);
-    console.log("🚀 ~ Lesson ~ selectedTest:", selectedTest);
     const [isTestModalOpen, setIsTestModalOpen] = useState(false);
+    const [selectedExam, setSelectedExam] = useState(null);
+    const [isExamModalOpen, setIsExamModalOpen] = useState(false);
 
     const [loading, setLoading] = useState(true); // Loading state
     const userRole = sessionStorage.getItem("userRole");
@@ -40,6 +48,17 @@ const Lesson = () => {
             setLoading(true); // เริ่มแสดงสถานะ Loading
             const testData = await fetchOneTest(testId); // เรียก API เพื่อดึงข้อมูล
             setSelectedTest(testData); // เก็บข้อมูล Test ที่ดึงมาได้
+        } catch (error) {
+            console.error("Error fetching test data:", error);
+        } finally {
+            setLoading(false); // หยุดแสดงสถานะ Loading
+        }
+    };
+    const fetchExamData = async (testId) => {
+        try {
+            setLoading(true); // เริ่มแสดงสถานะ Loading
+            const testData = await fetchOneExam(testId); // เรียก API เพื่อดึงข้อมูล
+            setSelectedExam(testData); // เก็บข้อมูล Test ที่ดึงมาได้
         } catch (error) {
             console.error("Error fetching test data:", error);
         } finally {
@@ -71,6 +90,18 @@ const Lesson = () => {
             console.error("Error deleting quiz:", error);
         }
     };
+    const handleDeleteTest = async (quizId) => {
+        try {
+            // ลบแบบทดสอบผ่าน API
+            await deleteTest(quizId);
+            console.log(`Quiz with ID ${quizId} has been deleted.`);
+
+            // Fetch ข้อมูลใหม่หลังจากลบสำเร็จ
+            fetchLessonData(); // เรียกฟังก์ชัน fetch ข้อมูลใหม่
+        } catch (error) {
+            console.error("Error deleting quiz:", error);
+        }
+    };
     const openTestModal = () => {
         setIsTestModalOpen(true); // Open TestModal
     };
@@ -78,6 +109,10 @@ const Lesson = () => {
     const closeTestModal = () => {
         setSelectedTest(null); // Clear selected test
         setIsTestModalOpen(false); // Close TestModal
+    };
+    const closeExamModal = () => {
+        setSelectedExam(null); // Clear selected test
+        setIsExamModalOpen(false); // Close TestModal
     };
 
     const openModal = () => setIsModalOpen(true);
@@ -217,7 +252,7 @@ const Lesson = () => {
                                             quizz={quizz}
                                             type={"tests"}
                                             key={index}
-                                            onDelete={handleDeleteChallenge}
+                                            onDelete={handleDeleteTest}
                                             onCardClick={() => {
                                                 setSelectedTest(quizz); // เก็บข้อมูล Challenge ที่เลือก
                                                 openTestModal(); // เปิด Modal
@@ -230,7 +265,29 @@ const Lesson = () => {
                                     ยังไม่มีแบบฝึก
                                 </div>
                             )}
-                            <div className="mx-10 my-4 text-xl">แบบทดสอบ</div>
+                            {LessonData.tests?.length > 0 ? (
+                                <>
+                                    <div className="mx-10 my-4 text-xl">
+                                        แบบทดสอบ
+                                    </div>
+                                    {LessonData.exams.map((quizz, index) => (
+                                        <SpeachCard
+                                            quizz={quizz}
+                                            type={"tests"}
+                                            key={index}
+                                            onDelete={handleDeleteTest}
+                                            onCardClick={() => {
+                                                setSelectedExam(quizz); // เก็บข้อมูล Challenge ที่เลือก
+                                                openTestModal(); // เปิด Modal
+                                            }}
+                                        />
+                                    ))}
+                                </>
+                            ) : (
+                                <div className="ml-8 text-gray-500">
+                                    ยังไม่มีแบบทดสอบ
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -387,6 +444,32 @@ const Lesson = () => {
                             selectedTest={selectedTest} // Pass selected test
                             closeModal={closeTestModal} // Close modal handler
                             fetchTestData={fetchTestData}
+                        />
+                    </div>
+                </div>
+            )}
+            {isExamModalOpen && (
+                <div
+                    id="test-modal"
+                    tabIndex={-1}
+                    aria-hidden={!isExamModalOpen}
+                    className="fixed inset-0 z-50 flex items-center justify-center w-full h-full bg-white"
+                >
+                    <div className="relative rounded-lg w-[90%] sm:w-[80%] md:w-[60%] lg:w-[50%] xl:w-[40%] max-w-lg max-h-full">
+                        <div className="flex justify-end p-2">
+                            <button
+                                onClick={closeExamModal}
+                                className="text-gray-500 hover:text-black focus:outline-none"
+                                aria-label="Close"
+                            >
+                                ✕
+                            </button>
+                        </div>
+                        <ExamModal
+                            challengeData={selectedExam}
+                            selectedTest={selectedExam} // Pass selected test
+                            closeModal={closeExamModal} // Close modal handler
+                            fetchTestData={fetchExamData}
                         />
                     </div>
                 </div>

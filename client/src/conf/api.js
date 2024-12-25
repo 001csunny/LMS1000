@@ -195,6 +195,20 @@ export const createChallenge = async (challengeName, wordIds, lessonId) => {
         console.error("Error creating challenge:", error);
     }
 };
+export const createExam = async (challengeName, wordIds, lessonId) => {
+    try {
+        const response = await ax.post("/api/exams", {
+            data: {
+                exam: challengeName,
+                words: wordIds.map((id) => ({ id: id })), // เชื่อม Word IDs
+                lessons: lessonId, // เชื่อม Lesson ID
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error creating challenge:", error);
+    }
+};
 
 export const createTest = async (challengeName, wordIds, lessonId) => {
     try {
@@ -215,6 +229,14 @@ export const createTest = async (challengeName, wordIds, lessonId) => {
 export const fetchOneChallenge = async (id) => {
     try {
         const challenge = await ax.get(`/api/challenges/${id}?populate=*`);
+        return challenge.data;
+    } catch (error) {
+        console.error("Error fetching challenge:", error);
+    }
+};
+export const fetchOneExam = async (id) => {
+    try {
+        const challenge = await ax.get(`/api/exams/${id}?populate=*`);
         return challenge.data;
     } catch (error) {
         console.error("Error fetching challenge:", error);
@@ -256,6 +278,14 @@ export const updateTest = async (id, data) => {
 export const deleteChallenge = async (id) => {
     try {
         const response = await ax.delete(`/api/challenges/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error("Error deleting challenge:", error);
+    }
+};
+export const deleteExam = async (id) => {
+    try {
+        const response = await ax.delete(`/api/exams/${id}`);
         return response.data;
     } catch (error) {
         console.error("Error deleting challenge:", error);

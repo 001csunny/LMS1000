@@ -26,10 +26,12 @@ function SpeachCard({ quizz, onCardClick, onEdit, onDelete }) {
     const handleConfirmDelete = () => {
         if (inputCode === randomCode) {
             onDelete(quizz.documentId); // เรียกฟังก์ชันลบเมื่อรหัสถูกต้อง
+            console.log("🚀 ~ handleConfirmDelete ~ quizz:", quizz.documentId)
             setIsConfirmModalOpen(false); // ปิด modal
         } else {
             alert("รหัสไม่ถูกต้อง!"); // แจ้งเตือนเมื่อรหัสไม่ตรง
         }
+            
     };
 
     return (

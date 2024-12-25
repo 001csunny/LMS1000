@@ -10,25 +10,24 @@ const Incourse = () => {
     const { id } = useParams(); // Course ID from URL
     const location = useLocation();
     const [CourseData, setCourseData] = useState({});
-    console.log("🚀 ~ Lesson ~ CourseData:", CourseData);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const userRole = sessionStorage.getItem("userRole");
 
     // Fetch course data on component mount
     useEffect(() => {
         fetchCourseData();
-    }, []);
-    
-    const handleDeleteLesson = async (quizId) => {
+    }, [id]); // Fetch data when the course ID changes
+
+    const handleDeleteLesson = async (lessonId) => {
         try {
-            // ลบแบบทดสอบผ่าน API
-            await deleteLesson(quizId);
-            console.log(`Quiz with ID ${quizId} has been deleted.`);
+            // ลบบทเรียนผ่าน API
+            await deleteLesson(lessonId);
+            console.log(`Lesson with ID ${lessonId} has been deleted.`);
 
             // Fetch ข้อมูลใหม่หลังจากลบสำเร็จ
-            fetchLessonData(); // เรียกฟังก์ชัน fetch ข้อมูลใหม่
+            fetchCourseData(); // เรียกฟังก์ชัน fetch ข้อมูลใหม่
         } catch (error) {
-            console.error("Error deleting quiz:", error);
+            console.error("Error deleting lesson:", error);
         }
     };
 
@@ -65,32 +64,8 @@ const Incourse = () => {
                         </button>
                     ) : null}
                 </div>
-                {/* Course Name */}
-                <div className="text-5xl mb-4"></div>
 
                 <div className="flex h-full w-full px-4">
-                    {/* Sidebar */}
-                    {/* <div className="w-1/5 bg-slate-700 py-8 rounded-l-3xl">
-                       
-                        {userRole === "Admin" || userRole === "Teacher" ? (
-                            <button
-                                
-                                type="button"
-                                className="w-full py-2.5 px-5 mb-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                            >
-                                + เพิ่มบทเรียน
-                            </button>
-                        ) : null}
-
-                         <button
-                            type="button"
-                            className="w-full py-2.5 px-5 mb-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                        >
-                            Edit
-                        </button> 
-                    </div> */}
-
-                    {/* Lessons Section */}
                     <div className="w-full rounded-r-3xl bg-slate-100 pt-4">
                         <div className="text-xl ml-8 mb-2">บทเรียนทั้งหมด</div>
                         <div className="flex flex-wrap">
