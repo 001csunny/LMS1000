@@ -74,26 +74,26 @@ function Profile() {
     return (
         <div className="flex flex-col w-screen h-screen">
             <Header />
-            <div className="p-8 w-full h-full">
-                <div className="text-5xl">โปรไฟล์</div>
-                <div className="flex w-full h-full bg-slate-500 p-10 rounded-3xl">
+            <div className="p-4 md:p-8 w-full h-full">
+                <div className="text-2xl md:text-5xl">โปรไฟล์</div>
+                <div className="flex flex-col md:flex-row w-full h-full bg-slate-500 p-6 md:p-10 rounded-3xl space-y-6 md:space-y-0">
                     {/* Left Section: Profile Image */}
-                    <div className="flex flex-col items-center justify-center w-1/2 bg-white rounded-l-3xl">
+                    <div className="flex flex-col items-center justify-center w-full md:w-1/2 bg-white rounded-3xl md:rounded-l-3xl p-6">
                         <img
                             src="https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg"
                             alt="Profile"
-                            className="w-96 h-96 bg-slate-600 rounded-full"
+                            className="w-32 h-32 md:w-96 md:h-96 bg-slate-600 rounded-full"
                         />
                         <button
                             type="button"
-                            className="mt-8 py-2.5 px-5 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:ring-4 focus:ring-gray-100"
+                            className="mt-4 md:mt-8 py-2.5 px-5 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:ring-4 focus:ring-gray-100"
                         >
                             เปลี่ยนรูป
                         </button>
                     </div>
 
                     {/* Right Section: User Details */}
-                    <div className="flex flex-col w-1/2 bg-slate-300 rounded-r-3xl p-10 space-y-4">
+                    <div className="flex flex-col w-full md:w-1/2 bg-slate-300 rounded-3xl md:rounded-r-3xl p-6 md:p-10 space-y-4">
                         <div className="text-slate-500">ชื่อ</div>
                         {isEditing ? (
                             <input
@@ -138,14 +138,14 @@ function Profile() {
                         {isEditing ? (
                             <div className="flex space-x-4">
                                 <button
-                                    onClick={() => setIsEditing(false)} // Cancel editing
+                                    onClick={() => setIsEditing(false)}
                                     type="button"
                                     className="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-red-700 focus:ring-4 focus:ring-gray-100"
                                 >
                                     ยกเลิก
                                 </button>
                                 <button
-                                    onClick={saveProfile} // Save edited data
+                                    onClick={saveProfile}
                                     type="button"
                                     className="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-blue-500 rounded-lg hover:bg-blue-600 focus:ring-4 focus:ring-blue-200"
                                 >
@@ -154,9 +154,9 @@ function Profile() {
                             </div>
                         ) : (
                             <button
-                                onClick={() => setIsEditing(true)} // Enable editing
+                                onClick={() => setIsEditing(true)}
                                 type="button"
-                                className="mt-8 py-2.5 px-5 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:ring-4 focus:ring-gray-100"
+                                className="mt-4 md:mt-8 py-2.5 px-5 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:ring-4 focus:ring-gray-100"
                             >
                                 แก้ไข
                             </button>

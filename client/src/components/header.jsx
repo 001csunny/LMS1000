@@ -4,7 +4,7 @@ function Header() {
     // ดึง role จาก sessionStorage
     const userRole = sessionStorage.getItem("userRole");
     const handleLogout = async () => {
-        await logout();
+        sessionStorage.clear();
         console.log("User has been logged out!");
     };
 

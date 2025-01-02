@@ -15,22 +15,29 @@ const initialState = {
     email: null,
 };
 
-const saveJwt = async (token, role, gcToken) => {
+const saveJwt = async (token, role, gcToken, updateState) => {
     axData.jwt = token;
 
     if (token) {
         sessionStorage.setItem(conf.jwtSessionStorageKey, token);
         sessionStorage.setItem("userRole", role);
         sessionStorage.setItem("gcToken", gcToken);
+
+        // Update state after setting sessionStorage
+        updateState && updateState({ token, role });
     } else {
         sessionStorage.removeItem(conf.jwtSessionStorageKey);
         sessionStorage.removeItem("userRole");
-        sessionStorage.removeItem("gcToken", gcToken);
+        sessionStorage.removeItem("gcToken");
+
+        // Reset state if token is null
+        updateState && updateState(initialState);
     }
 };
 
 const ContextProvider = ({ children }) => {
     const [state, setState] = useState(initialState);
+
     console.log("🚀 ~ ContextProvider ~ state:", state);
 
     // Update state function
@@ -50,12 +57,12 @@ const ContextProvider = ({ children }) => {
 
             if (response.data?.jwt) {
                 const { jwt, user } = response.data;
-                await saveJwt(jwt);
+                const role = user.role?.name || "User";
+                await saveJwt(jwt, role, null, updateState);
                 updateState({
                     isLoggedIn: true,
                     user: user.email,
-                    role: user.role?.name || "User",
-                    token: jwt,
+                    role,
                     id: user.id,
                     email: user.email,
                     loading: false,
@@ -73,7 +80,7 @@ const ContextProvider = ({ children }) => {
 
     // Logout function
     const logout = async () => {
-        await saveJwt(null);
+        await saveJwt(null, null, null);
         setState(initialState);
     };
 
@@ -81,6 +88,8 @@ const ContextProvider = ({ children }) => {
     useEffect(() => {
         const loadPersistedJwt = async () => {
             const token = sessionStorage.getItem(conf.jwtSessionStorageKey);
+            const role = sessionStorage.getItem("userRole");
+
             if (token) {
                 try {
                     axData.jwt = token;
@@ -89,13 +98,13 @@ const ContextProvider = ({ children }) => {
                         await saveJwt(
                             token,
                             response.data.role?.name,
-                            response.data.Speach
+                            response.data.Speach,
+                            updateState
                         );
                         updateState({
                             isLoggedIn: true,
                             user: response.data.username,
                             role: response.data.role?.name || "User",
-                            token,
                             id: response.data.id,
                             email: response.data.email,
                             gcToken: response.data.Speach,
@@ -104,7 +113,7 @@ const ContextProvider = ({ children }) => {
                         throw new Error("Invalid token");
                     }
                 } catch {
-                    await saveJwt(null);
+                    await saveJwt(null, null, null);
                 }
             }
         };
@@ -117,7 +126,7 @@ const ContextProvider = ({ children }) => {
             const response = await ax.post(conf.refreshTokenEndpoint);
             if (response.data?.jwt) {
                 const { jwt } = response.data;
-                await saveJwt(jwt);
+                await saveJwt(jwt, state.role, null, updateState);
                 updateState({ token: jwt });
             }
         } catch {

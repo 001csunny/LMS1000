@@ -270,18 +270,20 @@ const Lesson = () => {
                                     <div className="mx-10 my-4 text-xl">
                                         แบบทดสอบ
                                     </div>
-                                    {LessonData.exams.map((quizz, index) => (
-                                        <SpeachCard
-                                            quizz={quizz}
-                                            type={"tests"}
-                                            key={index}
-                                            onDelete={handleDeleteTest}
-                                            onCardClick={() => {
-                                                setSelectedExam(quizz); // เก็บข้อมูล Challenge ที่เลือก
-                                                openTestModal(); // เปิด Modal
-                                            }}
-                                        />
-                                    ))}
+                                    {(LessonData.exams || []).map(
+                                        (quizz, index) => (
+                                            <SpeachCard
+                                                quizz={quizz}
+                                                type={"tests"}
+                                                key={index}
+                                                onDelete={handleDeleteTest}
+                                                onCardClick={() => {
+                                                    setSelectedExam(quizz); // เก็บข้อมูล Challenge ที่เลือก
+                                                    openTestModal(); // เปิด Modal
+                                                }}
+                                            />
+                                        )
+                                    )}
                                 </>
                             ) : (
                                 <div className="ml-8 text-gray-500">

@@ -12,15 +12,28 @@ import Index from "./page/index.jsx";
 import Incourse from "./page/Incourse.jsx";
 import Lesson from "./page/Lesson.jsx";
 import ProtectedRoute from "./contexts/ProtectedRoute.jsx";
+import StudentHome from "./components/student/studentHome.jsx";
 
 const routers = createBrowserRouter([
     {
         path: "/",
-        element: <Index />, // หน้าแรกไม่ต้องล็อกอิน
+        element: (
+            <ProtectedRoute >
+                <Index />
+            </ProtectedRoute>
+        ),
     },
     {
         path: "/Login",
-        element: <Login />, // หน้าล็อกอิน
+        element: <Login />,
+    },
+    {
+        path: "/STD",
+        element: (
+            <ProtectedRoute requiredRoles={["student"]}>
+                <StudentHome />
+            </ProtectedRoute>
+        ),
     },
     {
         path: "/Profile",
@@ -33,7 +46,7 @@ const routers = createBrowserRouter([
     {
         path: "/Course",
         element: (
-            <ProtectedRoute>
+            <ProtectedRoute >
                 <Course />
             </ProtectedRoute>
         ),
@@ -41,7 +54,7 @@ const routers = createBrowserRouter([
     {
         path: "/Assignment",
         element: (
-            <ProtectedRoute>
+            <ProtectedRoute requiredRoles={["Teacher"]}>
                 <Assigment />
             </ProtectedRoute>
         ),
@@ -49,7 +62,7 @@ const routers = createBrowserRouter([
     {
         path: "/Course/:id",
         element: (
-            <ProtectedRoute>
+            <ProtectedRoute >
                 <Incourse />
             </ProtectedRoute>
         ),
@@ -57,7 +70,7 @@ const routers = createBrowserRouter([
     {
         path: "/lesson/:id",
         element: (
-            <ProtectedRoute>
+            <ProtectedRoute >
                 <Lesson />
             </ProtectedRoute>
         ),
@@ -65,6 +78,10 @@ const routers = createBrowserRouter([
     {
         path: "*",
         element: <div>Not found 404</div>,
+    },
+    {
+        path: "/403",
+        element: <div>ไม่มีสิทธิ์เข้าถึงหน้านี้</div>,
     },
 ]);
 

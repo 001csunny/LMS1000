@@ -1,14 +1,29 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { axData } from "../conf/ax";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
+    const navigate = useNavigate();
     const authContext = useContext(AuthContext);
-    const { login } = authContext;
+    const { state, login } = authContext;
+    const { isLoggedIn, role, user } = state; // เพิ่ม role เพื่อใช้ตรวจสอบ
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState(""); // สำหรับเก็บ error message
     const [loading, setLoading] = useState(false); // สำหรับจัดการ loading state
+
+    useEffect(() => {
+        if (isLoggedIn && role) {
+            console.log("User logged in successfully with role:", role);
+
+            if (role === "student") {
+                navigate("/std"); // นำทางไปยังหน้า "/std" หาก role เป็น "student"
+            } else {
+                navigate("/"); // นำทางไปยังหน้าอื่นๆ ตามที่ต้องการ
+            }
+        }
+    }, [isLoggedIn, role, navigate]);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -18,11 +33,11 @@ function Login() {
         try {
             // เรียกฟังก์ชัน login จาก AuthContext
             const response = await login(username, password);
-            console.log("🚀 ~ handleLogin ~ response:", response)
+            console.log("🚀 ~ handleLogin ~ response:", response);
 
             if (axData?.jwt) {
                 console.log("Login Successful");
-                window.location.replace("/"); // เปลี่ยนเส้นทางไปหน้าแรก
+                window.location.reload();
             } else {
                 throw new Error("Invalid credentials"); // หากไม่มี token ให้โยน error
             }
@@ -38,37 +53,34 @@ function Login() {
         <div className="flex w-screen h-screen items-center justify-center">
             <div className="w-1/2 h-3/6">
                 <form onSubmit={handleLogin} className="max-w-sm mx-auto">
-                    <div className="mb-5">
-                        <label
-                            htmlFor="email"
-                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                        >
-                            Your email
+                    <div className="flex-col text-center items-center w-full">
+                        <label className="block mb-2 text-xl font-medium text-gray-900 dark:text-white">
+                            ยินดีต้อนรับ
                         </label>
+                        <label className="block mb-2 text-xl font-medium text-gray-900 dark:text-white">
+                            สู่โปรแกรมฝึกการอ่าน
+                        </label>
+                    </div>
+
+                    <div className="mb-5 mt-5">
                         <input
                             type="email"
                             id="email"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="name@email.com"
+                            placeholder="username or email"
                             required
                         />
                     </div>
                     <div className="mb-5">
-                        <label
-                            htmlFor="password"
-                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                        >
-                            Your password
-                        </label>
                         <input
                             type="password"
                             id="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="********"
+                            placeholder="password"
                             required
                         />
                     </div>
@@ -102,7 +114,7 @@ function Login() {
                                 : "dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                         }`}
                     >
-                        {loading ? "Loading..." : "Submit"}
+                        {loading ? "Loading..." : "Login"}
                     </button>
                 </form>
             </div>
