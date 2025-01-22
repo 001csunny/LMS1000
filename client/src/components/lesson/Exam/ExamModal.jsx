@@ -3,8 +3,8 @@ import axios from "axios";
 import { fetchOneExam } from "../../../conf/api";
 import WordCard from "../../speach/WordCard";
 
-const ExamModal = ({ closeModal, selectedTest }) => {
-    console.log("🚀 ~ ExamModal ~ selectedTest:", selectedTest)
+const ExamModal = ({ closeModal, selectedExam }) => {
+    console.log("🚀 ~ ExamModal ~ selectedExam:", selectedExam)
     const [testData, setTestData] = useState(null);
     const [isRecording, setIsRecording] = useState(false);
     const [mediaRecorder, setMediaRecorder] = useState(null);
@@ -24,6 +24,7 @@ const ExamModal = ({ closeModal, selectedTest }) => {
         try {
             setLoadingState(true);
             const testData = await fetchOneExam(testId);
+            console.log("🚀 ~ fetchTestData ~ testData:", testData)
             setTestData(testData.data);
         } catch (error) {
             console.error("Error fetching test data:", error);
@@ -34,10 +35,10 @@ const ExamModal = ({ closeModal, selectedTest }) => {
     };
 
     useEffect(() => {
-        if (selectedTest && selectedTest.documentId) {
-            fetchTestData(selectedTest.documentId);
+        if (selectedExam && selectedExam.documentId) {
+            fetchTestData(selectedExam.documentId);
         }
-    }, [selectedTest]);
+    }, [selectedExam]);
 
     const startTest = () => {
         if (testData && testData.words.length > 0) {
@@ -164,7 +165,7 @@ const ExamModal = ({ closeModal, selectedTest }) => {
         <div className="relative w-full p-4 bg-white rounded-lg shadow-lg">
             <div className="flex justify-between items-center">
                 <h2 className="text-xl font-bold">
-                    {selectedTest?.exam || "Exam Challenge"}
+                    {selectedExam?.exam || "Exam Challenge"}
                 </h2>
             </div>
 

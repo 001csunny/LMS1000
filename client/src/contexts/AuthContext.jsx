@@ -38,7 +38,7 @@ const saveJwt = async (token, role, gcToken, updateState) => {
 const ContextProvider = ({ children }) => {
     const [state, setState] = useState(initialState);
 
-    console.log("🚀 ~ ContextProvider ~ state:", state);
+    // console.log("🚀 ~ ContextProvider ~ state:", state);
 
     // Update state function
     const updateState = (newState) => {

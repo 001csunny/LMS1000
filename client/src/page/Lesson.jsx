@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
     deleteChallenge,
+    deleteExam,
     deleteQuizz,
     deleteTest,
     fetchOneExam,
@@ -23,7 +24,7 @@ import ExamModal from "../components/lesson/Exam/ExamModal";
 const Lesson = () => {
     const { id } = useParams();
     const [LessonData, setLessonData] = useState({});
-    console.log("🚀 ~ Lesson ~ LessonData:", LessonData);
+    // console.log("🚀 ~ Lesson ~ LessonData:", LessonData);
     const [isModalOpen, setIsModalOpen] = useState(false); // Add quiz form modal state
     const [isSpeechModalOpen, setIsSpeechModalOpen] = useState(false); // Add speech challenge modal state
     const [isSpeechModalOpendata, setIsSpeechModalOpendata] = useState(false); // Add speech challenge modal state
@@ -32,8 +33,10 @@ const Lesson = () => {
     const [isCreateTest, setIsCreateTest] = useState(false);
     const [isCreateExam, setIsCreateExam] = useState(false);
     const [selectedTest, setSelectedTest] = useState(null);
+    console.log("🚀 ~ Lesson ~ selectedTest:", selectedTest);
     const [isTestModalOpen, setIsTestModalOpen] = useState(false);
     const [selectedExam, setSelectedExam] = useState(null);
+    console.log("🚀 ~ Lesson ~ selectedExam:", selectedExam);
     const [isExamModalOpen, setIsExamModalOpen] = useState(false);
 
     const [loading, setLoading] = useState(true); // Loading state
@@ -102,8 +105,23 @@ const Lesson = () => {
             console.error("Error deleting quiz:", error);
         }
     };
+    const handleDeleteExam = async (quizId) => {
+        try {
+            // ลบแบบทดสอบผ่าน API
+            await deleteExam(quizId);
+            console.log(`Quiz with ID ${quizId} has been deleted.`);
+
+            // Fetch ข้อมูลใหม่หลังจากลบสำเร็จ
+            fetchLessonData(); // เรียกฟังก์ชัน fetch ข้อมูลใหม่
+        } catch (error) {
+            console.error("Error deleting quiz:", error);
+        }
+    };
     const openTestModal = () => {
         setIsTestModalOpen(true); // Open TestModal
+    };
+    const openExamModal = () => {
+        setIsExamModalOpen(true); // Open TestModal
     };
 
     const closeTestModal = () => {
@@ -276,10 +294,10 @@ const Lesson = () => {
                                                 quizz={quizz}
                                                 type={"tests"}
                                                 key={index}
-                                                onDelete={handleDeleteTest}
+                                                onDelete={handleDeleteExam}
                                                 onCardClick={() => {
                                                     setSelectedExam(quizz); // เก็บข้อมูล Challenge ที่เลือก
-                                                    openTestModal(); // เปิด Modal
+                                                    openExamModal(); // เปิด Modal
                                                 }}
                                             />
                                         )
@@ -296,41 +314,7 @@ const Lesson = () => {
             </div>
 
             {/* Modal for Adding or Editing Quizzes */}
-            {isModalOpen && (
-                <div
-                    id="default-modal"
-                    tabIndex={-1}
-                    aria-hidden={!isModalOpen}
-                    className="fixed bg-slate-500 bg-opacity-50 overflow-auto top-0 right-0 left-0 z-50 flex items-center justify-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
-                >
-                    <div className="relative bg-white rounded-lg shadow-lg w-full max-w-lg">
-                        <div className="flex justify-end p-2">
-                            <button
-                                onClick={closeModal}
-                                type="button"
-                                className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
-                            >
-                                ✕
-                            </button>
-                        </div>
-
-                        {/* If selectedQuiz exists, show QuizModal for editing, otherwise show QuizzForm for adding */}
-                        {selectedQuiz ? (
-                            <QuizModal
-                                quizData={selectedQuiz}
-                                closeModal={closeModal}
-                                refreshData={fetchLessonData}
-                            />
-                        ) : (
-                            <QuizzForm
-                                closeModal={closeModal}
-                                id={LessonData.id}
-                                refreshData={fetchLessonData}
-                            />
-                        )}
-                    </div>
-                </div>
-            )}
+        
 
             {/* Modal for Adding Speech Challenge */}
             {isSpeechModalOpen && (
@@ -469,9 +453,9 @@ const Lesson = () => {
                         </div>
                         <ExamModal
                             challengeData={selectedExam}
-                            selectedTest={selectedExam} // Pass selected test
+                            selectedExam={selectedExam} // Pass selected test
                             closeModal={closeExamModal} // Close modal handler
-                            fetchTestData={fetchExamData}
+                            fetchExamData={fetchExamData}
                         />
                     </div>
                 </div>
