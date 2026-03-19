@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --glass-bg: hsla(0, 0%, 100%, 0.1);
+    --glass-border: hsla(0, 0%, 100%, 0.2);
+    --glass-shadow: 0 8px 32px 0 hsla(0, 0%, 0%, 0.15);
+    
+    /* Grayscale palette */
+    --gray-50: hsl(0, 0%, 98%);
+    --gray-100: hsl(0, 0%, 95%);
+    --gray-200: hsl(0, 0%, 90%);
+    --gray-300: hsl(0, 0%, 80%);
+    --gray-400: hsl(0, 0%, 65%);
+    --gray-500: hsl(0, 0%, 45%);
+    --gray-600: hsl(0, 0%, 30%);
+    --gray-700: hsl(0, 0%, 20%);
+    --gray-800: hsl(0, 0%, 12%);
+    --gray-900: hsl(0, 0%, 5%);
+  }
+
+  body {
+    @apply font-thai bg-gray-50 text-gray-900;
+  }
+}
+
+@layer components {
+  .font-display {
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .font-serif {
+    font-family: 'Source Serif 4', serif;
+  }
+
+  .font-thai {
+    font-family: 'IBM Plex Sans Thai', sans-serif;
+  }
+
+  .glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+  }
+
+  .glass-button {
+    @apply transition-all duration-300;
+    background: hsla(0, 0%, 100%, 0.15);
+    backdrop-filter: blur(8px);
+    border: 1px solid hsla(0, 0%, 100%, 0.3);
+    box-shadow: 0 4px 12px hsla(0, 0%, 0%, 0.1);
+  }
+  
+  .glass-button:hover {
+    background: hsla(0, 0%, 100%, 0.25);
+    border-color: hsla(0, 0%, 100%, 0.5);
+    box-shadow: 0 6px 16px hsla(0, 0%, 0%, 0.15);
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "lms1000-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently --names \"API,WEB\" --prefix-colors \"cyan,magenta\" \"pnpm --filter @lms/api dev\" \"pnpm --filter @lms/web dev\"",
+    "build": "pnpm --filter @lms/api build && pnpm --filter @lms/web build",
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down",
+    "db:migrate": "pnpm --filter @lms/api prisma:migrate",
+    "db:seed": "pnpm --filter @lms/api prisma:seed",
+    "db:setup": "pnpm db:up && sleep 3 && pnpm db:migrate && pnpm db:seed"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
