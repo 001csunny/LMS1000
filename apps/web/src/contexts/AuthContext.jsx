@@ -9,7 +9,7 @@ const initialState = {
     user: null, // this was email before, let's keep it as string email or username
     username: null,
     role: null,
-    loading: false,
+    loading: true,
     error: null,
     token: null,
     id: null,
@@ -56,7 +56,14 @@ const ContextProvider = ({ children }) => {
             if (response.data?.access_token) {
                 const { access_token, user } = response.data;
                 const role = user.role || "USER";
-                await saveJwt(access_token, role, updateState);
+                
+                // Store in sessionStorage
+                sessionStorage.setItem(conf.jwtSessionStorageKey, access_token);
+                sessionStorage.setItem("userRole", role);
+                sessionStorage.setItem("userInfo", JSON.stringify(user));
+                
+                // Update axios headers
+                axData.jwt = access_token;
                 
                 updateState({
                     isLoggedIn: true,
@@ -65,6 +72,7 @@ const ContextProvider = ({ children }) => {
                     role,
                     id: user.id,
                     email: user.email,
+                    token: access_token,
                     loading: false,
                 });
             } else {
@@ -75,6 +83,7 @@ const ContextProvider = ({ children }) => {
                 error: error.response?.data?.message || "Login failed",
                 loading: false,
             });
+            throw error;
         }
     };
 
@@ -90,6 +99,9 @@ const ContextProvider = ({ children }) => {
             const token = sessionStorage.getItem(conf.jwtSessionStorageKey);
             const role = sessionStorage.getItem("userRole");
 
+            // Set loading to false immediately
+            setState(prevState => ({ ...prevState, loading: false }));
+
             if (token) {
                 try {
                     axData.jwt = token;
@@ -98,11 +110,6 @@ const ContextProvider = ({ children }) => {
                     
                     if (response.data?.email) {
                         const user = response.data;
-                        await saveJwt(
-                            token,
-                            user.role || "USER",
-                            updateState
-                        );
                         updateState({
                             isLoggedIn: true,
                             user: user.email,
@@ -110,12 +117,15 @@ const ContextProvider = ({ children }) => {
                             role: user.role || "USER",
                             id: user.id,
                             email: user.email,
+                            token: token,
                         });
                     } else {
                         throw new Error("Invalid token");
                     }
                 } catch {
-                    await saveJwt(null, null);
+                    sessionStorage.removeItem(conf.jwtSessionStorageKey);
+                    sessionStorage.removeItem("userRole");
+                    setState(initialState);
                 }
             }
         };
@@ -160,3 +170,12 @@ const ContextProvider = ({ children }) => {
 };
 
 export { AuthContext, ContextProvider };
+
+// Hook for easy access to auth context
+export const useAuth = () => {
+    const context = React.useContext(AuthContext);
+    if (!context) {
+        throw new Error('useAuth must be used within an AuthProvider');
+    }
+    return context;
+};

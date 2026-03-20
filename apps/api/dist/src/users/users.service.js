@@ -13,6 +13,7 @@ exports.UsersService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
 const bcrypt = require("bcryptjs");
+const client_1 = require("@prisma/client");
 let UsersService = class UsersService {
     constructor(prisma) {
         this.prisma = prisma;
@@ -117,7 +118,7 @@ let UsersService = class UsersService {
                 email: data.email,
                 username: data.username,
                 password: hash,
-                role: data.role || 'USER',
+                role: data.role || client_1.Role.STUDENT,
             },
             select: {
                 id: true,

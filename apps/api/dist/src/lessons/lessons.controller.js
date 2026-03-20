@@ -38,11 +38,17 @@ let LessonsController = class LessonsController {
     createChallenge(body) {
         return this.lessonsService.createChallenge(body);
     }
+    findOneChallenge(id) {
+        return this.lessonsService.findOneChallenge(id);
+    }
     deleteChallenge(id) {
         return this.lessonsService.deleteChallenge(id);
     }
     createTest(body) {
         return this.lessonsService.createTest(body);
+    }
+    findOneTest(id) {
+        return this.lessonsService.findOneTest(id);
     }
     deleteTest(id) {
         return this.lessonsService.deleteTest(id);
@@ -50,11 +56,20 @@ let LessonsController = class LessonsController {
     createExam(body) {
         return this.lessonsService.createExam(body);
     }
+    findOneExam(id) {
+        return this.lessonsService.findOneExam(id);
+    }
     deleteExam(id) {
         return this.lessonsService.deleteExam(id);
     }
     saveProgress(lessonId, user, xpEarned) {
         return this.lessonsService.saveProgress(user.id, lessonId, xpEarned ?? 0);
+    }
+    finishLesson(lessonId, user, body) {
+        if (typeof body.totalScore !== 'number' || typeof body.completedCount !== 'number' || typeof body.totalExercises !== 'number') {
+            return { success: false, message: 'Invalid payload types' };
+        }
+        return this.lessonsService.finishLesson(user.id, lessonId, body);
     }
 };
 exports.LessonsController = LessonsController;
@@ -103,6 +118,13 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], LessonsController.prototype, "createChallenge", null);
 __decorate([
+    (0, common_1.Get)('challenges/:id'),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", void 0)
+], LessonsController.prototype, "findOneChallenge", null);
+__decorate([
     (0, common_1.Delete)('challenges/:id'),
     (0, common_1.UseGuards)(roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)('ADMIN'),
@@ -120,6 +142,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], LessonsController.prototype, "createTest", null);
+__decorate([
+    (0, common_1.Get)('tests/:id'),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", void 0)
+], LessonsController.prototype, "findOneTest", null);
 __decorate([
     (0, common_1.Delete)('tests/:id'),
     (0, common_1.UseGuards)(roles_guard_1.RolesGuard),
@@ -139,6 +168,13 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], LessonsController.prototype, "createExam", null);
 __decorate([
+    (0, common_1.Get)('exams/:id'),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", void 0)
+], LessonsController.prototype, "findOneExam", null);
+__decorate([
     (0, common_1.Delete)('exams/:id'),
     (0, common_1.UseGuards)(roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)('ADMIN'),
@@ -156,6 +192,15 @@ __decorate([
     __metadata("design:paramtypes", [Number, Object, Number]),
     __metadata("design:returntype", void 0)
 ], LessonsController.prototype, "saveProgress", null);
+__decorate([
+    (0, common_1.Post)(':id/finish'),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __param(1, (0, current_user_decorator_1.CurrentUser)()),
+    __param(2, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Object, Object]),
+    __metadata("design:returntype", void 0)
+], LessonsController.prototype, "finishLesson", null);
 exports.LessonsController = LessonsController = __decorate([
     (0, common_1.Controller)('lessons'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),

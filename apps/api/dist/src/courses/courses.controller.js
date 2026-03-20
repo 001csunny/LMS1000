@@ -29,6 +29,12 @@ let CoursesController = class CoursesController {
     findMyCourses(user, queryRole) {
         return this.coursesService.findMyCourses(queryRole ?? user.role, user.id);
     }
+    getCatalog() {
+        return this.coursesService.getCatalog();
+    }
+    getMyProgress(user) {
+        return this.coursesService.getMyProgress(user.id);
+    }
     findOne(id) {
         return this.coursesService.findOne(id);
     }
@@ -63,6 +69,19 @@ __decorate([
     __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", void 0)
 ], CoursesController.prototype, "findMyCourses", null);
+__decorate([
+    (0, common_1.Get)('catalog'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], CoursesController.prototype, "getCatalog", null);
+__decorate([
+    (0, common_1.Get)('my-progress'),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], CoursesController.prototype, "getMyProgress", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),

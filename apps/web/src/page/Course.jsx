@@ -1,17 +1,24 @@
-import React, { useState, useEffect, useContext } from "react";
-import Header from "../components/header";
-import Footer from "../components/footer";
-import CourseCard from "../components/CourseCard";
-import CourseForm from "../components/CourseForm";
-import { deleteCourse, fetchMyCourse } from "../conf/api";
-import { AuthContext } from "../contexts/AuthContext";
+import React, { useState, useEffect } from 'react';
+import { Button, Card, CardBody, Loading, Modal, ModalHeader, ModalBody, ModalFooter, Input, MainLayout, CourseCard } from '../components/ui';
+import { Course as CourseModel } from '../types';
+import courseService from '../services/CourseService';
+import authService from '../services/AuthService';
 
-function Course() {
+/**
+ * Course Management Page
+ * Displays and manages user's courses with modern UI
+ */
+function CourseManagement() {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [CourseData, setCourseData] = useState(null);
+    const [courseData, setCourseData] = useState([]);
     const [isLoading, setIsLoading] = useState(true); 
-    const { state } = useContext(AuthContext);
-    const userRole = sessionStorage.getItem("userRole") || "USER";
+    const [error, setError] = useState('');
+    const [courseName, setCourseName] = useState('');
+    const [courseDescription, setCourseDescription] = useState('');
+    const [isPublic, setIsPublic] = useState(false);
+
+    const currentUser = authService.getCurrentUserInfo();
+    const userRole = authService.getCurrentRole();
 
     const toggleModal = (modalState = !isModalOpen) => {
         setIsModalOpen(modalState);
@@ -19,106 +26,191 @@ function Course() {
 
     const handleDeleteCourse = async (courseId) => {
         try {
-            await deleteCourse(courseId);
+            await courseService.deleteCourse(courseId);
             fetchCourseData(); 
         } catch (error) {
-            console.error("Error deleting course:", error);
+            setError(error.message || 'Failed to delete course');
+        }
+    };
+
+    const handleCreateCourse = async () => {
+        try {
+            if (!courseName.trim()) {
+                setError('กรุณาระบุชื่อคอร์ส');
+                return;
+            }
+
+            await courseService.createCourse({
+                name: courseName,
+                description: courseDescription,
+                isPublic: isPublic
+            });
+            
+            setCourseName('');
+            setCourseDescription('');
+            setIsPublic(false);
+            toggleModal(false);
+            fetchCourseData();
+        } catch (error) {
+            setError(error.message || 'Failed to create course');
         }
     };
 
     const fetchCourseData = async () => {
         setIsLoading(true); 
+        setError('');
+        
         try {
-            // Note: Since NestJS uses `ADMIN` and `USER` roles, pass it properly
-            const data = await fetchMyCourse(userRole.toLowerCase(), state.id); 
-            // In NestJS, data might be returned directly or wrapped in data property
-            setCourseData(data.data || data); 
+            const data = await courseService.getMyCourses(userRole.toLowerCase(), currentUser?.id); 
+            setCourseData(data || []); 
         } catch (error) {
-            console.error("Error fetching courses:", error);
+            setError(error.message || 'Failed to fetch courses');
         } finally {
             setIsLoading(false); 
         }
     };
 
     useEffect(() => {
-        if (state?.id) {
+        if (currentUser?.id) {
             fetchCourseData();
         }
-    }, [state?.id]); 
+    }, [currentUser?.id]); 
 
-    const isAdmin = userRole === "ADMIN" || userRole === "Admin" || userRole === "Teacher";
+    const isAdmin = userRole === 'ADMIN' || userRole === 'Admin';
+
+    if (isLoading && courseData.length === 0) {
+        return (
+            <MainLayout>
+                <div className="flex items-center justify-center min-h-[60vh]">
+                    <Loading size="lg" text="กำลังโหลดข้อมูลวิชาเรียน..." />
+                </div>
+            </MainLayout>
+        );
+    }
 
     return (
-        <div className="flex flex-col min-h-screen w-screen bg-gray-50 font-thai relative">
-            {/* Background elements for glassmorphism effect */}
-            <div className="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
-                <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
-                <div className="absolute top-[20%] right-[-10%] w-96 h-96 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
-                <div className="absolute bottom-[-10%] left-[20%] w-96 h-96 bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
-            </div>
+        <MainLayout>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                {/* Error Alert */}
+                {error && (
+                    <div className="mb-6">
+                        <Card variant="error">
+                            <CardBody className="text-red-700">
+                                {error}
+                                <Button 
+                                    variant="ghost" 
+                                    size="sm" 
+                                    className="ml-2"
+                                    onClick={() => setError('')}
+                                >
+                                    ✕
+                                </Button>
+                            </CardBody>
+                        </Card>
+                    </div>
+                )}
 
-            <Header />
-            <div className="flex-1 w-full max-w-7xl mx-auto p-4 md:p-8">
+                {/* Header */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
-                    <div className="text-4xl md:text-5xl font-display font-bold text-gray-800">วิชาเรียนทั้งหมด</div>
+                    <div className="text-4xl md:text-5xl font-display font-bold text-gray-900">วิชาเรียนทั้งหมด</div>
                     {isAdmin && (
-                        <button
+                        <Button
                             onClick={() => toggleModal(true)}
-                            type="button"
-                            className="mt-4 md:mt-0 w-full md:w-auto rounded-xl py-3 px-6 text-sm font-medium text-white bg-gray-900 border border-transparent shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-200 transition-all font-thai"
+                            className="mt-4 md:mt-0"
                         >
                             + เพิ่มวิชาใหม่
-                        </button>
+                        </Button>
                     )}
                 </div>
 
-                <div className="glass-panel w-full rounded-3xl p-6 md:p-8 backdrop-blur-xl border border-white/50 shadow-xl bg-white/40">
-                    <div className="flex flex-wrap gap-6 justify-center lg:justify-start">
-                        {isLoading ? (
-                            <div className="text-center w-full py-12 text-gray-500 font-thai text-lg">
-                                <div className="inline-block animate-spin w-8 h-8 rounded-full border-4 border-gray-200 border-t-blue-600 mb-4"></div>
-                                <div>กำลังโหลดข้อมูลวิชาเรียน...</div>
-                            </div>
-                        ) : CourseData && CourseData.length > 0 ? (
-                            CourseData.map((course, index) => (
+                {/* Course Grid */}
+                <div className="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-gray-200">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                        {courseData.length > 0 ? (
+                            courseData.map((course) => (
                                 <CourseCard
-                                    key={index}
+                                    key={course.id}
                                     course={course}
-                                    id={course.id}
-                                    name={course.name}
-                                    description={course.description}
-                                    student={course.students}
-                                    documentId={course.documentId || course.id} // Fallback to id if documentId doesn't exist
-                                    handleDeleteCourse={handleDeleteCourse} 
+                                    actions={{
+                                        onDelete: handleDeleteCourse,
+                                        onEdit: (course) => {
+                                            // TODO: Implement edit functionality
+                                            console.log('Edit course:', course);
+                                        }
+                                    }}
                                 />
                             ))
                         ) : (
-                            <div className="text-center w-full py-12 text-gray-500 font-thai text-lg">
-                                ยังไม่มีวิชาที่สอน
+                            <div className="col-span-full text-center py-12 text-gray-500">
+                                <div className="text-lg font-medium mb-2">ยังไม่มีวิชาที่สอน</div>
+                                {isAdmin && (
+                                    <Button onClick={() => toggleModal(true)}>
+                                        + สร้างวิชาแรก
+                                    </Button>
+                                )}
                             </div>
                         )}
                     </div>
                 </div>
-            </div>
 
-            {/* Modal for adding a course */}
-            <div
-                id="default-modal"
-                tabIndex={-1}
-                aria-hidden={!isModalOpen ? "true" : "false"}
-                className={`fixed bg-gray-900/50 backdrop-blur-sm overflow-auto top-0 right-0 left-0 z-50 items-center justify-center w-full md:inset-0 h-full ${
-                    isModalOpen ? "flex" : "hidden"
-                }`}
-            >
-                <div className="glass-panel border border-white/20 bg-white/90 shadow-2xl rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-                     {/* The CourseForm component will render inside here */}
-                     <CourseForm id="courseForm" closeModal={() => toggleModal(false)} />
-                </div>
+                {/* Create Course Modal */}
+                <Modal 
+                    isOpen={isModalOpen} 
+                    onClose={() => toggleModal(false)}
+                    size="md"
+                >
+                    <ModalHeader>
+                        <h3 className="text-lg font-medium text-gray-900">เพิ่มวิชาใหม่</h3>
+                    </ModalHeader>
+                    <ModalBody>
+                        <div className="space-y-4">
+                            <Input
+                                label="ชื่อวิชา"
+                                value={courseName}
+                                onChange={(e) => setCourseName(e.target.value)}
+                                placeholder="ระบุชื่อวิชา"
+                                required
+                            />
+                            <Input
+                                label="คำอธิบาย"
+                                value={courseDescription}
+                                onChange={(e) => setCourseDescription(e.target.value)}
+                                placeholder="คำอธิบายวิชา (ไม่จำเป็นต้อง)"
+                            />
+                            <div className="flex items-center">
+                                <input
+                                    type="checkbox"
+                                    id="isPublic"
+                                    checked={isPublic}
+                                    onChange={(e) => setIsPublic(e.target.checked)}
+                                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                />
+                                <label htmlFor="isPublic" className="ml-2 block text-sm text-gray-700">
+                                    ทำให้เป็นสาธารณะ (ผู้ใช้ทั่วไปสามารถเข้าถึงได้)
+                                </label>
+                            </div>
+                        </div>
+                    </ModalBody>
+                    <ModalFooter>
+                        <div className="flex justify-end space-x-3">
+                            <Button 
+                                variant="secondary" 
+                                onClick={() => toggleModal(false)}
+                            >
+                                ยกเลิก
+                            </Button>
+                            <Button 
+                                onClick={handleCreateCourse}
+                                disabled={!courseName.trim()}
+                            >
+                                สร้างวิชา
+                            </Button>
+                        </div>
+                    </ModalFooter>
+                </Modal>
             </div>
-
-            <Footer />
-        </div>
+        </MainLayout>
     );
 }
 
-export default Course;
+export default CourseManagement;

@@ -17,6 +17,8 @@ const words_module_1 = require("./words/words.module");
 const s3_module_1 = require("./s3/s3.module");
 const speech_module_1 = require("./speech/speech.module");
 const leaderboard_module_1 = require("./leaderboard/leaderboard.module");
+const vocabulary_module_1 = require("./vocabulary/vocabulary.module");
+const exercises_module_1 = require("./exercises/exercises.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -32,6 +34,8 @@ exports.AppModule = AppModule = __decorate([
             s3_module_1.S3Module,
             speech_module_1.SpeechModule,
             leaderboard_module_1.LeaderboardModule,
+            vocabulary_module_1.VocabularyModule,
+            exercises_module_1.ExercisesModule,
         ],
     })
 ], AppModule);

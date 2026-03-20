@@ -11,7 +11,21 @@ datasource db {
 
 enum Role {
   ADMIN
-  USER
+  STUDENT
+}
+
+enum ExerciseType {
+  TRANSLATION
+  SPEAKING
+  LISTENING
+  READING
+  MATCHING
+}
+
+enum Difficulty {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
 }
 
 model User {
@@ -19,16 +33,17 @@ model User {
   email        String         @unique
   username     String
   password     String
-  role         Role           @default(USER)
+  role         Role           @default(STUDENT)
   xp           Int            @default(0)
   streak       Int            @default(0)
   speechToken  String?
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
-  progress     Progress[]
+  userProgress UserProgress[]
   subscriptions Subscription[]
   taughtCourses Course[]      @relation("TeacherCourses")
   enrolledCourses Course[]    @relation("StudentCourses")
+  speechResults SpeechResult[]
 }
 
 model Course {
@@ -36,6 +51,7 @@ model Course {
   name        String
   description String?
   isPublic    Boolean  @default(false)
+  difficulty  Difficulty @default(BEGINNER)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   lessons     Lesson[]
@@ -49,68 +65,83 @@ model Lesson {
   description String?
   courseId    Int
   isPublic    Boolean     @default(false)
+  difficulty  Difficulty  @default(BEGINNER)
+  orderIndex  Int         @default(0)
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   course      Course      @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  challenges  Challenge[]
-  tests       Test[]
-  exams       Exam[]
-  progress    Progress[]
+  vocabularies Vocabulary[]
+  exercises   Exercise[]
+  userProgress UserProgress[]
 }
 
-model Challenge {
-  id        Int      @id @default(autoincrement())
-  name      String
-  lessonId  Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  lesson    Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
-  words     Word[]   @relation("ChallengeWords")
-}
-
-model Test {
-  id        Int      @id @default(autoincrement())
-  name      String
-  lessonId  Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  lesson    Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
-  words     Word[]   @relation("TestWords")
-}
-
-model Exam {
-  id        Int      @id @default(autoincrement())
-  name      String
-  lessonId  Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  lesson    Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
-  words     Word[]   @relation("ExamWords")
-}
-
-model Word {
-  id          Int        @id @default(autoincrement())
-  word        String
+model Vocabulary {
+  id          Int      @id @default(autoincrement())
+  lessonId    Int
+  thaiWord    String
+  englishWord String
   audioUrl    String?
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  challenges  Challenge[] @relation("ChallengeWords")
-  tests       Test[]      @relation("TestWords")
-  exams       Exam[]      @relation("ExamWords")
+  imageUrl    String?
+  difficulty  Difficulty @default(BEGINNER)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  lesson      Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  exercises   Exercise[]
 }
 
-model Progress {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  lessonId  Int
-  completed Boolean  @default(false)
-  xpEarned  Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  lesson    Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+model Exercise {
+  id           Int          @id @default(autoincrement())
+  lessonId     Int
+  vocabularyId Int
+  type         ExerciseType
+  question     String
+  answer       String
+  audioUrl     String?
+  imageUrl     String?
+  hints        String[]
+  orderIndex   Int          @default(0)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  lesson       Lesson       @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  vocabulary   Vocabulary   @relation(fields: [vocabularyId], references: [id], onDelete: Cascade)
+  speechResults SpeechResult[]
+}
+
+enum ProgressStatus {
+  UNATTEMPTED
+  IN_PROGRESS
+  COMPLETED
+}
+
+model UserProgress {
+  id                   Int           @id @default(autoincrement())
+  userId               Int
+  lessonId             Int
+  status               ProgressStatus @default(UNATTEMPTED)
+  xpEarned             Int           @default(0)
+  completionPercentage Float         @default(0.0)
+  highestScore         Float         @default(0.0)
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+  user                 User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson               Lesson        @relation(fields: [lessonId], references: [id], onDelete: Cascade)
 
   @@unique([userId, lessonId])
+}
+
+model SpeechResult {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  exerciseId Int
+  audioUrl   String
+  transcript String
+  score      Float    @default(0.0)
+  accuracy   Float    @default(0.0)
+  passed     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exercise   Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
 }
 
 model Subscription {

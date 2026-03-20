@@ -2,126 +2,44 @@ import { LessonsService } from './lessons.service';
 export declare class PublicLessonsController {
     private readonly lessonsService;
     constructor(lessonsService: LessonsService);
-    findPublicLessons(): Promise<({
-        course: {
-            name: string;
-            id: number;
-        };
-        challenges: ({
-            words: {
-                createdAt: Date;
-                updatedAt: Date;
-                id: number;
-                word: string;
-                audioUrl: string | null;
-            }[];
-        } & {
-            name: string;
-            createdAt: Date;
-            updatedAt: Date;
-            id: number;
-            lessonId: number;
-        })[];
-        tests: ({
-            words: {
-                createdAt: Date;
-                updatedAt: Date;
-                id: number;
-                word: string;
-                audioUrl: string | null;
-            }[];
-        } & {
-            name: string;
-            createdAt: Date;
-            updatedAt: Date;
-            id: number;
-            lessonId: number;
-        })[];
-        exams: ({
-            words: {
-                createdAt: Date;
-                updatedAt: Date;
-                id: number;
-                word: string;
-                audioUrl: string | null;
-            }[];
-        } & {
-            name: string;
-            createdAt: Date;
-            updatedAt: Date;
-            id: number;
-            lessonId: number;
-        })[];
-    } & {
+    findPublicLessons(): Promise<{
         name: string;
         description: string | null;
         isPublic: boolean;
+        difficulty: import("@prisma/client").$Enums.Difficulty;
         createdAt: Date;
         updatedAt: Date;
         id: number;
         courseId: number;
-    })[]>;
+        orderIndex: number;
+    }[]>;
     findPublicLesson(id: number): Promise<{
-        course: {
-            name: string;
-            description: string | null;
-            isPublic: boolean;
-            createdAt: Date;
-            updatedAt: Date;
+        challenges: {
             id: number;
-        };
-        challenges: ({
-            words: {
-                createdAt: Date;
-                updatedAt: Date;
-                id: number;
-                word: string;
-                audioUrl: string | null;
-            }[];
-        } & {
             name: string;
-            createdAt: Date;
-            updatedAt: Date;
-            id: number;
             lessonId: number;
-        })[];
-        tests: ({
-            words: {
-                createdAt: Date;
-                updatedAt: Date;
-                id: number;
-                word: string;
-                audioUrl: string | null;
-            }[];
-        } & {
-            name: string;
-            createdAt: Date;
-            updatedAt: Date;
+            wordIds: number[];
+        }[];
+        tests: {
             id: number;
-            lessonId: number;
-        })[];
-        exams: ({
-            words: {
-                createdAt: Date;
-                updatedAt: Date;
-                id: number;
-                word: string;
-                audioUrl: string | null;
-            }[];
-        } & {
             name: string;
-            createdAt: Date;
-            updatedAt: Date;
-            id: number;
             lessonId: number;
-        })[];
-    } & {
+            wordIds: number[];
+        }[];
+        exams: {
+            id: number;
+            name: string;
+            lessonId: number;
+            wordIds: number[];
+        }[];
         name: string;
         description: string | null;
         isPublic: boolean;
+        difficulty: import("@prisma/client").$Enums.Difficulty;
         createdAt: Date;
         updatedAt: Date;
         id: number;
         courseId: number;
+        orderIndex: number;
     }>;
 }

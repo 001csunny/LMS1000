@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "predev": "pnpm db:setup",
     "dev": "concurrently --names \"API,WEB\" --prefix-colors \"cyan,magenta\" \"pnpm --filter @lms/api dev\" \"pnpm --filter @lms/web dev\"",
     "build": "pnpm --filter @lms/api build && pnpm --filter @lms/web build",
     "db:up": "docker compose up -d",

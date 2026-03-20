@@ -13,6 +13,8 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 
+import { CreateUserDto } from './dto/create-user.dto';
+
 @Controller('users')
 @UseGuards(JwtAuthGuard)
 export class UsersController {
@@ -73,12 +75,7 @@ export class UsersController {
   @Post()
   @UseGuards(RolesGuard)
   @Roles('ADMIN')
-  createUser(@Body() body: {
-    email: string;
-    username: string;
-    password: string;
-    role?: 'ADMIN' | 'USER';
-  }) {
+  createUser(@Body() body: CreateUserDto) {
     return this.usersService.createUser(body);
   }
 }

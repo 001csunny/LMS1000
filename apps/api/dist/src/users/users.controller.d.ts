@@ -1,18 +1,19 @@
 import { UsersService } from './users.service';
+import { CreateUserDto } from './dto/create-user.dto';
 export declare class UsersController {
     private readonly usersService;
     constructor(usersService: UsersService);
     getMe(user: {
         id: number;
     }): Promise<{
-        createdAt: Date;
-        id: number;
         email: string;
         username: string;
         role: import("@prisma/client").$Enums.Role;
         xp: number;
         streak: number;
         speechToken: string;
+        createdAt: Date;
+        id: number;
     }>;
     updateMe(user: {
         id: number;
@@ -21,13 +22,13 @@ export declare class UsersController {
         email?: string;
         speechToken?: string;
     }): Promise<{
-        id: number;
         email: string;
         username: string;
         role: import("@prisma/client").$Enums.Role;
         xp: number;
         streak: number;
         speechToken: string;
+        id: number;
     }>;
     updatePassword(user: {
         id: number;
@@ -40,44 +41,39 @@ export declare class UsersController {
     addXp(user: {
         id: number;
     }, amount: number): Promise<{
-        id: number;
         xp: number;
         streak: number;
+        id: number;
     }>;
     incrementStreak(user: {
         id: number;
     }): Promise<{
-        id: number;
         xp: number;
         streak: number;
+        id: number;
     }>;
     getLeaderboard(): Promise<{
-        id: number;
         username: string;
         xp: number;
         streak: number;
+        id: number;
     }[]>;
     findAll(): Promise<{
-        createdAt: Date;
-        id: number;
         email: string;
         username: string;
         role: import("@prisma/client").$Enums.Role;
         xp: number;
         streak: number;
+        createdAt: Date;
+        id: number;
     }[]>;
-    createUser(body: {
-        email: string;
-        username: string;
-        password: string;
-        role?: 'ADMIN' | 'USER';
-    }): Promise<{
-        createdAt: Date;
-        id: number;
+    createUser(body: CreateUserDto): Promise<{
         email: string;
         username: string;
         role: import("@prisma/client").$Enums.Role;
         xp: number;
         streak: number;
+        createdAt: Date;
+        id: number;
     }>;
 }

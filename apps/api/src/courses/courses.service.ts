@@ -62,9 +62,7 @@ export class CoursesService {
       include: {
         lessons: {
           include: {
-            challenges: true,
-            tests: true,
-            exams: true,
+            userProgress: true,
           },
         },
         teachers: { select: { id: true, username: true, email: true } },
@@ -97,6 +95,29 @@ export class CoursesService {
     return this.prisma.course.update({
       where: { id: courseId },
       data: { students: { disconnect: { id: studentId } } },
+    });
+  }
+
+  async getCatalog() {
+    return this.prisma.course.findMany({
+      where: { isPublic: true },
+      include: {
+        lessons: {
+          orderBy: { createdAt: 'asc' },
+          include: { _count: { select: { exercises: true } } }
+        }
+      }
+    });
+  }
+
+  async getMyProgress(userId: number) {
+    return this.prisma.userProgress.findMany({
+      where: { userId },
+      include: {
+        lesson: {
+          include: { course: true }
+        }
+      }
     });
   }
 }

@@ -35,6 +35,16 @@ export class CoursesController {
     return this.coursesService.findMyCourses(queryRole ?? user.role, user.id);
   }
 
+  @Get('catalog')
+  getCatalog() {
+    return this.coursesService.getCatalog();
+  }
+
+  @Get('my-progress')
+  getMyProgress(@CurrentUser() user: { id: number }) {
+    return this.coursesService.getMyProgress(user.id);
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.coursesService.findOne(id);

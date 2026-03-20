@@ -32,7 +32,7 @@ export class WordsController {
   @Post()
   @UseGuards(RolesGuard)
   @Roles('ADMIN')
-  create(@Body() body: { word: string; audioUrl?: string }) {
+  create(@Body() body: { thaiWord: string; englishWord: string; lessonId?: number }) {
     return this.wordsService.create(body);
   }
 
@@ -41,7 +41,7 @@ export class WordsController {
   @Roles('ADMIN')
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() body: { word?: string; audioUrl?: string },
+    @Body() body: { thaiWord?: string; englishWord?: string; lessonId?: number },
   ) {
     return this.wordsService.update(id, body);
   }

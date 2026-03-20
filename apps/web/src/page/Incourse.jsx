@@ -75,7 +75,7 @@ const Incourse = () => {
                                         key={index}
                                         name={lesson.name}
                                         description={lesson.description}
-                                        documentId={lesson.documentId}
+                                        documentId={lesson.id}
                                         handleDeleteLesson={handleDeleteLesson}
                                     />
                                 ))

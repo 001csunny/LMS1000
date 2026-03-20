@@ -61,6 +61,11 @@ export class LessonsController {
     return this.lessonsService.createChallenge(body);
   }
 
+  @Get('challenges/:id')
+  findOneChallenge(@Param('id', ParseIntPipe) id: number) {
+    return this.lessonsService.findOneChallenge(id);
+  }
+
   @Delete('challenges/:id')
   @UseGuards(RolesGuard)
   @Roles('ADMIN')
@@ -76,6 +81,11 @@ export class LessonsController {
     @Body() body: { name: string; lessonId: number; wordIds?: number[] },
   ) {
     return this.lessonsService.createTest(body);
+  }
+
+  @Get('tests/:id')
+  findOneTest(@Param('id', ParseIntPipe) id: number) {
+    return this.lessonsService.findOneTest(id);
   }
 
   @Delete('tests/:id')
@@ -95,6 +105,11 @@ export class LessonsController {
     return this.lessonsService.createExam(body);
   }
 
+  @Get('exams/:id')
+  findOneExam(@Param('id', ParseIntPipe) id: number) {
+    return this.lessonsService.findOneExam(id);
+  }
+
   @Delete('exams/:id')
   @UseGuards(RolesGuard)
   @Roles('ADMIN')
@@ -110,5 +125,18 @@ export class LessonsController {
     @Body('xpEarned') xpEarned: number,
   ) {
     return this.lessonsService.saveProgress(user.id, lessonId, xpEarned ?? 0);
+  }
+
+  // Progress: Finalize lesson progress
+  @Post(':id/finish')
+  finishLesson(
+    @Param('id', ParseIntPipe) lessonId: number,
+    @CurrentUser() user: { id: number },
+    @Body() body: { totalScore: number; completedCount: number; totalExercises: number },
+  ) {
+    if (typeof body.totalScore !== 'number' || typeof body.completedCount !== 'number' || typeof body.totalExercises !== 'number') {
+      return { success: false, message: 'Invalid payload types' };
+    }
+    return this.lessonsService.finishLesson(user.id, lessonId, body);
   }
 }

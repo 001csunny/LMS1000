@@ -15,10 +15,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SpeechController = void 0;
 const common_1 = require("@nestjs/common");
 const speech_service_1 = require("./speech.service");
+const speech_evaluation_service_1 = require("./speech-evaluation.service");
 const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
 let SpeechController = class SpeechController {
-    constructor(speechService) {
+    constructor(speechService, speechEvaluationService) {
         this.speechService = speechService;
+        this.speechEvaluationService = speechEvaluationService;
     }
     async transcribe(body) {
         const transcript = await this.speechService.transcribe(body.audioBase64, body.sampleRateHertz ?? 48000);
@@ -30,6 +32,10 @@ let SpeechController = class SpeechController {
         }
         return { transcript };
     }
+    async evaluate(body) {
+        const buffer = Buffer.from(body.audioBuffer, 'base64');
+        return this.speechEvaluationService.evaluateSpeech(body.userId, body.exerciseId, buffer, body.originalText);
+    }
 };
 exports.SpeechController = SpeechController;
 __decorate([
@@ -40,9 +46,18 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], SpeechController.prototype, "transcribe", null);
+__decorate([
+    (0, common_1.Post)('evaluate'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], SpeechController.prototype, "evaluate", null);
 exports.SpeechController = SpeechController = __decorate([
     (0, common_1.Controller)('speech'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    __metadata("design:paramtypes", [speech_service_1.SpeechService])
+    __metadata("design:paramtypes", [speech_service_1.SpeechService,
+        speech_evaluation_service_1.SpeechEvaluationService])
 ], SpeechController);
 //# sourceMappingURL=speech.controller.js.map

@@ -7,6 +7,8 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcryptjs';
 
+import { Role } from '@prisma/client';
+
 @Injectable()
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
@@ -119,7 +121,7 @@ export class UsersService {
     email: string;
     username: string;
     password: string;
-    role?: 'ADMIN' | 'USER';
+    role?: Role;
   }) {
     const existing = await this.prisma.user.findUnique({
       where: { email: data.email },
@@ -136,7 +138,7 @@ export class UsersService {
         email: data.email,
         username: data.username,
         password: hash,
-        role: data.role || 'USER',
+        role: data.role || Role.STUDENT,
       },
       select: {
         id: true,

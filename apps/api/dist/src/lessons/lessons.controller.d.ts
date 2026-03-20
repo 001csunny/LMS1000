@@ -3,67 +3,33 @@ export declare class LessonsController {
     private readonly lessonsService;
     constructor(lessonsService: LessonsService);
     findOne(id: number): Promise<{
-        course: {
-            name: string;
-            description: string | null;
-            isPublic: boolean;
-            createdAt: Date;
-            updatedAt: Date;
+        challenges: {
             id: number;
-        };
-        challenges: ({
-            words: {
-                createdAt: Date;
-                updatedAt: Date;
-                id: number;
-                word: string;
-                audioUrl: string | null;
-            }[];
-        } & {
             name: string;
-            createdAt: Date;
-            updatedAt: Date;
-            id: number;
             lessonId: number;
-        })[];
-        tests: ({
-            words: {
-                createdAt: Date;
-                updatedAt: Date;
-                id: number;
-                word: string;
-                audioUrl: string | null;
-            }[];
-        } & {
-            name: string;
-            createdAt: Date;
-            updatedAt: Date;
+            wordIds: number[];
+        }[];
+        tests: {
             id: number;
-            lessonId: number;
-        })[];
-        exams: ({
-            words: {
-                createdAt: Date;
-                updatedAt: Date;
-                id: number;
-                word: string;
-                audioUrl: string | null;
-            }[];
-        } & {
             name: string;
-            createdAt: Date;
-            updatedAt: Date;
-            id: number;
             lessonId: number;
-        })[];
-    } & {
+            wordIds: number[];
+        }[];
+        exams: {
+            id: number;
+            name: string;
+            lessonId: number;
+            wordIds: number[];
+        }[];
         name: string;
         description: string | null;
         isPublic: boolean;
+        difficulty: import("@prisma/client").$Enums.Difficulty;
         createdAt: Date;
         updatedAt: Date;
         id: number;
         courseId: number;
+        orderIndex: number;
     }>;
     create(body: {
         name: string;
@@ -75,6 +41,7 @@ export declare class LessonsController {
             name: string;
             description: string | null;
             isPublic: boolean;
+            difficulty: import("@prisma/client").$Enums.Difficulty;
             createdAt: Date;
             updatedAt: Date;
             id: number;
@@ -83,10 +50,12 @@ export declare class LessonsController {
         name: string;
         description: string | null;
         isPublic: boolean;
+        difficulty: import("@prisma/client").$Enums.Difficulty;
         createdAt: Date;
         updatedAt: Date;
         id: number;
         courseId: number;
+        orderIndex: number;
     }>;
     update(id: number, body: {
         name?: string;
@@ -96,97 +65,83 @@ export declare class LessonsController {
         name: string;
         description: string | null;
         isPublic: boolean;
+        difficulty: import("@prisma/client").$Enums.Difficulty;
         createdAt: Date;
         updatedAt: Date;
         id: number;
         courseId: number;
+        orderIndex: number;
     }>;
     remove(id: number): Promise<{
         name: string;
         description: string | null;
         isPublic: boolean;
+        difficulty: import("@prisma/client").$Enums.Difficulty;
         createdAt: Date;
         updatedAt: Date;
         id: number;
         courseId: number;
+        orderIndex: number;
     }>;
     createChallenge(body: {
         name: string;
         lessonId: number;
         wordIds?: number[];
     }): Promise<{
-        words: {
-            createdAt: Date;
-            updatedAt: Date;
-            id: number;
-            word: string;
-            audioUrl: string | null;
-        }[];
-    } & {
-        name: string;
-        createdAt: Date;
-        updatedAt: Date;
         id: number;
+        name: string;
         lessonId: number;
+        wordIds: number[];
+    }>;
+    findOneChallenge(id: number): Promise<{
+        id: number;
+        name: string;
+        lessonId: number;
+        wordIds: number[];
     }>;
     deleteChallenge(id: number): Promise<{
-        name: string;
-        createdAt: Date;
-        updatedAt: Date;
         id: number;
-        lessonId: number;
+        deleted: boolean;
     }>;
     createTest(body: {
         name: string;
         lessonId: number;
         wordIds?: number[];
     }): Promise<{
-        words: {
-            createdAt: Date;
-            updatedAt: Date;
-            id: number;
-            word: string;
-            audioUrl: string | null;
-        }[];
-    } & {
-        name: string;
-        createdAt: Date;
-        updatedAt: Date;
         id: number;
+        name: string;
         lessonId: number;
+        wordIds: number[];
+    }>;
+    findOneTest(id: number): Promise<{
+        id: number;
+        name: string;
+        lessonId: number;
+        wordIds: number[];
     }>;
     deleteTest(id: number): Promise<{
-        name: string;
-        createdAt: Date;
-        updatedAt: Date;
         id: number;
-        lessonId: number;
+        deleted: boolean;
     }>;
     createExam(body: {
         name: string;
         lessonId: number;
         wordIds?: number[];
     }): Promise<{
-        words: {
-            createdAt: Date;
-            updatedAt: Date;
-            id: number;
-            word: string;
-            audioUrl: string | null;
-        }[];
-    } & {
-        name: string;
-        createdAt: Date;
-        updatedAt: Date;
         id: number;
+        name: string;
         lessonId: number;
+        wordIds: number[];
+    }>;
+    findOneExam(id: number): Promise<{
+        id: number;
+        name: string;
+        lessonId: number;
+        wordIds: number[];
     }>;
     deleteExam(id: number): Promise<{
-        name: string;
-        createdAt: Date;
-        updatedAt: Date;
         id: number;
-        lessonId: number;
+        deleted: boolean;
     }>;
     saveProgress(lessonId: number, user: {
         id: number;
@@ -194,9 +149,31 @@ export declare class LessonsController {
         createdAt: Date;
         updatedAt: Date;
         id: number;
-        lessonId: number;
         userId: number;
-        completed: boolean;
+        lessonId: number;
+        status: import("@prisma/client").$Enums.ProgressStatus;
         xpEarned: number;
+        completionPercentage: number;
+        highestScore: number;
     }>;
+    finishLesson(lessonId: number, user: {
+        id: number;
+    }, body: {
+        totalScore: number;
+        completedCount: number;
+        totalExercises: number;
+    }): Promise<{
+        createdAt: Date;
+        updatedAt: Date;
+        id: number;
+        userId: number;
+        lessonId: number;
+        status: import("@prisma/client").$Enums.ProgressStatus;
+        xpEarned: number;
+        completionPercentage: number;
+        highestScore: number;
+    }> | {
+        success: boolean;
+        message: string;
+    };
 }

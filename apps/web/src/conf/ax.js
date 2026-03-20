@@ -12,8 +12,13 @@ const ax = axios.create({
 
 ax.interceptors.request.use(function (config) {
   // Do something before request is sent
-  if (axData.jwt && config.url !== conf.loginEndpoint) {
-    config.headers['Authorization'] = `Bearer ${axData.jwt}`
+  let token = axData.jwt;
+  if (!token) {
+    token = sessionStorage.getItem(conf.jwtSessionStorageKey);
+  }
+  
+  if (token && config.url !== conf.loginEndpoint) {
+    config.headers['Authorization'] = `Bearer ${token}`
   }
   return config;
 }, function (error) {

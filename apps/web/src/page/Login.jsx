@@ -1,27 +1,32 @@
-import React, { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../contexts/AuthContext";
-import { axData } from "../conf/ax";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button, Card, CardBody, Input, Loading, MainLayout } from '../components/ui';
+import { useAuth } from '../contexts/AuthContext';
 
+/**
+ * Login Page with modern UI and proper authentication flow
+ */
 function Login() {
     const navigate = useNavigate();
-    const authContext = useContext(AuthContext);
-    const { state, login } = authContext;
-    const { isLoggedIn, role } = state; 
-    const [username, setUsername] = useState("");
+    const { login } = useAuth();
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState(""); 
     const [loading, setLoading] = useState(false); 
 
     useEffect(() => {
-        if (isLoggedIn && role) {
-            if (role === "USER" || role === "student") {
-                navigate("/std"); 
-            } else {
+        // Check if user is already logged in
+        const token = sessionStorage.getItem('auth.jwt');
+        const role = sessionStorage.getItem('userRole');
+        
+        if (token && role) {
+            if (role === 'USER') {
                 navigate("/"); 
+            } else if (role === 'ADMIN') {
+                navigate("/admin"); 
             }
         }
-    }, [isLoggedIn, role, navigate]);
+    }, [navigate]);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -29,105 +34,117 @@ function Login() {
         setLoading(true);
 
         try {
-            await login(username, password);
-            if (axData?.jwt) {
-                window.location.reload();
+            await login(email, password);
+            
+            // Redirect based on user role from sessionStorage
+            const role = sessionStorage.getItem('userRole');
+            if (role === 'ADMIN') {
+                navigate("/admin");
             } else {
-                throw new Error("Invalid credentials");
+                navigate("/");
             }
-        } catch (error) {
-            setError("Invalid email or password. Please try again.");
+        } catch (err) {
+            setError(err.message || 'Login failed');
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="relative flex w-screen h-screen overflow-hidden bg-gray-900">
-            {/* Left Panel - Video Background & Welcome Text */}
-            <div className="relative hidden lg:flex flex-col justify-center w-[52%] h-full">
-                {/* Looping video could go here; using a placeholder color for now */}
-                <div className="absolute inset-0 z-0 bg-gradient-to-br from-gray-800 to-gray-900 opacity-90" />
-                
-                <div className="relative z-10 px-16 xl:px-24">
-                    <h1 className="text-5xl xl:text-7xl font-display font-bold text-white leading-tight mb-6">
-                        LMS<br />
-                        <span className="font-serif italic text-gray-300">Thai Reading Platform</span>
-                    </h1>
-                    <p className="text-xl text-gray-400 font-thai max-w-lg">
-                        ยินดีต้อนรับสู่โปรแกรมฝึกการอ่านภาษาไทย ที่ออกแบบมาเพื่อพัฒนาทักษะของคุณอย่างมีประสิทธิภาพ
-                    </p>
-                </div>
-            </div>
-
-            {/* Right Panel - Login Form (Glassmorphism) */}
-            <div className="flex w-full lg:w-[48%] h-full items-center justify-center p-8 z-10">
-                <div className="glass-panel w-full max-w-md rounded-3xl p-10 backdrop-blur-xl">
-                    <div className="text-center mb-8">
-                        <h2 className="text-3xl font-thai font-bold text-white mb-2">เข้าสู่ระบบ</h2>
-                        <p className="text-gray-300 font-thai text-sm">Please enter your details to sign in.</p>
+        <MainLayout showNavbar={false}>
+            <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+                <div className="max-w-md w-full space-y-8">
+                    {/* Header */}
+                    <div className="text-center">
+                        <h2 className="mt-6 text-3xl font-bold text-gray-900">
+                            เข้าสู่ระบบ
+                        </h2>
+                        <p className="mt-2 text-sm text-gray-600">
+                            หรือ <a href="/public" className="font-medium text-blue-600 hover:text-blue-500">
+                                ดูคอร์สสาธารณะ
+                            </a> โดยไม่ต้องล็อกอิน
+                        </p>
                     </div>
 
-                    <form onSubmit={handleLogin} className="space-y-6">
-                        <div>
-                            <label className="block text-sm font-thai text-gray-200 mb-2">อีเมล (Email)</label>
-                            <input
-                                type="email"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                                className="w-full bg-white/10 border border-white/20 text-white rounded-xl focus:ring-2 focus:ring-white/50 focus:border-transparent block p-4 font-thai placeholder-gray-400 transition-all"
-                                placeholder="name@example.com"
-                                required
-                            />
-                        </div>
+                    {/* Login Form */}
+                    <Card>
+                        <CardBody className="p-6">
+                            <form className="space-y-6" onSubmit={handleLogin}>
+                                {error && (
+                                    <div className="rounded-md bg-red-50 p-4 mb-4">
+                                        <div className="text-sm text-red-800">
+                                            {error}
+                                        </div>
+                                    </div>
+                                )}
 
-                        <div>
-                            <label className="block text-sm font-thai text-gray-200 mb-2">รหัสผ่าน (Password)</label>
-                            <input
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="w-full bg-white/10 border border-white/20 text-white rounded-xl focus:ring-2 focus:ring-white/50 focus:border-transparent block p-4 font-thai placeholder-gray-400 transition-all"
-                                placeholder="••••••••"
-                                required
-                            />
-                        </div>
+                                <div>
+                                    <Input
+                                        label="อีเมล"
+                                        type="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        placeholder="admin1@lms.local"
+                                        required
+                                        disabled={loading}
+                                    />
+                                </div>
 
-                        {error && (
-                            <div className="text-red-400 text-sm font-thai bg-red-500/10 p-3 rounded-lg border border-red-500/20">
-                                {error}
+                                <div>
+                                    <Input
+                                        label="รหัสผ่าน"
+                                        type="password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        placeholder="••••••••••"
+                                        required
+                                        disabled={loading}
+                                    />
+                                </div>
+
+                                <div>
+                                    <Button
+                                        type="submit"
+                                        className="w-full"
+                                        disabled={loading || !email.trim() || !password.trim()}
+                                    >
+                                        {loading ? (
+                                            <div className="flex items-center">
+                                                <Loading size="sm" />
+                                                <span className="ml-2">กำลังเข้าสู่ระบบ...</span>
+                                            </div>
+                                        ) : (
+                                            'เข้าสู่ระบบ'
+                                        )}
+                                    </Button>
+                                </div>
+                            </form>
+                        </CardBody>
+                    </Card>
+
+                    {/* Demo Accounts */}
+                    <Card variant="outlined">
+                        <CardBody className="p-6">
+                            <h3 className="text-lg font-medium text-gray-900 mb-4">
+                                บัญชีสำหรับทดสอบ
+                            </h3>
+                            <div className="space-y-3">
+                                <div className="p-3 bg-gray-50 rounded-md">
+                                    <div className="text-sm">
+                                        <span className="font-medium">ผู้ดูแล:</span> admin1@lms.local / Admin@1234
+                                    </div>
+                                </div>
+                                <div className="p-3 bg-gray-50 rounded-md">
+                                    <div className="text-sm">
+                                        <span className="font-medium">ผู้ใช้ทั่วไป:</span> user1@lms.local / User@1234
+                                    </div>
+                                </div>
                             </div>
-                        )}
-
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center">
-                                <input
-                                    id="remember"
-                                    type="checkbox"
-                                    className="w-4 h-4 rounded bg-white/10 border-white/20 text-white focus:ring-white/50 focus:ring-offset-gray-900"
-                                />
-                                <label htmlFor="remember" className="ml-2 text-sm font-thai text-gray-300">
-                                    จดจำฉันไว้
-                                </label>
-                            </div>
-                            <a href="#" className="text-sm font-thai text-gray-300 hover:text-white transition-colors">
-                                ลืมรหัสผ่าน?
-                            </a>
-                        </div>
-
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className={`glass-button w-full font-thai font-bold text-white rounded-xl py-4 transition-all duration-300 ${
-                                loading ? "opacity-50 cursor-not-allowed" : "hover:-translate-y-1"
-                            }`}
-                        >
-                            {loading ? "กำลังเข้าสู่ระบบ..." : "เข้าสู่ระบบ"}
-                        </button>
-                    </form>
+                        </CardBody>
+                    </Card>
                 </div>
             </div>
-        </div>
+        </MainLayout>
     );
 }
 

@@ -183,9 +183,15 @@ export const createTest = async (challengeName, wordIds, lessonId) => {
     }
 };
 
-export const fetchOneChallenge = async (id) => { /* stub */ };
-export const fetchOneExam = async (id) => { /* stub */ };
-export const fetchOneTest = async (id) => { /* stub */ };
+export const fetchOneChallenge = async (id) => {
+    try { return (await ax.get(`/lessons/challenges/${id}`)).data; } catch (e) { console.error(e); }
+};
+export const fetchOneExam = async (id) => {
+    try { return (await ax.get(`/lessons/exams/${id}`)).data; } catch (e) { console.error(e); }
+};
+export const fetchOneTest = async (id) => {
+    try { return (await ax.get(`/lessons/tests/${id}`)).data; } catch (e) { console.error(e); }
+};
 export const updateChallenge = async (id, data) => { /* stub */ };
 export const updateTest = async (id, data) => { /* stub */ };
 

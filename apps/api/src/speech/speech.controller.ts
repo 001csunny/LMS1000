@@ -7,12 +7,16 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { SpeechService } from './speech.service';
+import { SpeechEvaluationService } from './speech-evaluation.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('speech')
 @UseGuards(JwtAuthGuard)
 export class SpeechController {
-  constructor(private readonly speechService: SpeechService) {}
+  constructor(
+    private readonly speechService: SpeechService,
+    private readonly speechEvaluationService: SpeechEvaluationService
+  ) {}
 
   /**
    * POST /speech/transcribe
@@ -40,5 +44,25 @@ export class SpeechController {
     }
 
     return { transcript };
+  }
+
+  /**
+   * POST /speech/evaluate
+   * Body: { userId: number, exerciseId: number, audioBuffer: string, originalText: string }
+   * 
+   * Receives base64 audio and validates it using GCP SpeechService.
+   */
+  @Post('evaluate')
+  @HttpCode(HttpStatus.OK)
+  async evaluate(
+    @Body() body: { userId: number; exerciseId: number; audioBuffer: string; originalText: string },
+  ) {
+    const buffer = Buffer.from(body.audioBuffer, 'base64');
+    return this.speechEvaluationService.evaluateSpeech(
+      body.userId,
+      body.exerciseId,
+      buffer,
+      body.originalText,
+    );
   }
 }

@@ -8,6 +8,8 @@ import { WordsModule } from './words/words.module';
 import { S3Module } from './s3/s3.module';
 import { SpeechModule } from './speech/speech.module';
 import { LeaderboardModule } from './leaderboard/leaderboard.module';
+import { VocabularyModule } from './vocabulary/vocabulary.module';
+import { ExercisesModule } from './exercises/exercises.module';
 
 @Module({
   imports: [
@@ -20,6 +22,8 @@ import { LeaderboardModule } from './leaderboard/leaderboard.module';
     S3Module,
     SpeechModule,
     LeaderboardModule,
+    VocabularyModule,
+    ExercisesModule,
   ],
 })
 export class AppModule {}

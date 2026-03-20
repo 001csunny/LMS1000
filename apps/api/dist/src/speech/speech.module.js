@@ -10,12 +10,13 @@ exports.SpeechModule = void 0;
 const common_1 = require("@nestjs/common");
 const speech_service_1 = require("./speech.service");
 const speech_controller_1 = require("./speech.controller");
+const speech_evaluation_service_1 = require("./speech-evaluation.service");
 let SpeechModule = class SpeechModule {
 };
 exports.SpeechModule = SpeechModule;
 exports.SpeechModule = SpeechModule = __decorate([
     (0, common_1.Module)({
-        providers: [speech_service_1.SpeechService],
+        providers: [speech_service_1.SpeechService, speech_evaluation_service_1.SpeechEvaluationService],
         controllers: [speech_controller_1.SpeechController],
     })
 ], SpeechModule);
