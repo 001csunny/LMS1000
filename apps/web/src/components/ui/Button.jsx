@@ -16,23 +16,23 @@ const Button = React.forwardRef(({
   onClick,
   ...props
 }, ref) => {
-  const baseClasses = 'inline-flex items-center justify-center font-medium rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+  const baseClasses = 'inline-flex items-center justify-center font-bold rounded-2xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-[0.98]';
   
   const variantClasses = {
-    primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 focus:ring-offset-blue-50',
-    secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200 focus:ring-gray-500 focus:ring-offset-gray-50 border border-gray-300',
-    success: 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500 focus:ring-offset-green-50',
-    warning: 'bg-yellow-600 text-white hover:bg-yellow-700 focus:ring-yellow-500 focus:ring-offset-yellow-50',
-    danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 focus:ring-offset-red-50',
-    outline: 'border border-gray-300 bg-transparent text-gray-700 hover:bg-gray-50 focus:ring-gray-500 focus:ring-offset-gray-50',
-    ghost: 'text-gray-700 hover:bg-gray-100 focus:ring-gray-500 focus:ring-offset-gray-50'
+    primary: 'bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40',
+    secondary: 'bg-white/60 backdrop-blur-md text-gray-900 border border-white/60 shadow-sm hover:bg-white/80',
+    success: 'bg-gradient-to-br from-green-500 to-emerald-600 text-white shadow-lg shadow-green-500/25 hover:shadow-green-500/40',
+    warning: 'bg-gradient-to-br from-yellow-400 to-orange-500 text-white shadow-lg shadow-orange-500/25',
+    danger: 'bg-gradient-to-br from-red-500 to-rose-600 text-white shadow-lg shadow-red-500/25',
+    outline: 'border-2 border-blue-600/20 bg-white/20 backdrop-blur-sm text-blue-700 hover:bg-blue-50',
+    ghost: 'text-gray-600 hover:bg-white/40 backdrop-blur-sm'
   };
 
   const sizeClasses = {
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-4 py-2 text-sm',
-    lg: 'px-6 py-3 text-base',
-    xl: 'px-8 py-4 text-lg'
+    sm: 'px-4 py-2 text-sm',
+    md: 'px-6 py-2.5 text-sm',
+    lg: 'px-8 py-3.5 text-base',
+    xl: 'px-10 py-4.5 text-lg uppercase tracking-wider'
   };
 
   const classes = cn(

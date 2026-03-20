@@ -2,7 +2,6 @@ import BaseService from './BaseService';
 
 /**
  * Vocabulary Service for managing vocabulary words
- * Extends BaseService for common API operations
  */
 class VocabularyService extends BaseService {
   constructor() {
@@ -13,42 +12,42 @@ class VocabularyService extends BaseService {
   /**
    * Get all vocabularies for a lesson
    */
-  async getVocabulariesByLesson(lessonId) {
-    return this.get(`/lesson/${lessonId}`);
-  }
-
-  /**
-   * Create new vocabulary
-   */
-  async createVocabulary(vocabularyData) {
-    return this.post('', vocabularyData);
-  }
-
-  /**
-   * Update vocabulary
-   */
-  async updateVocabulary(id, vocabularyData) {
-    return this.patch(`/${id}`, vocabularyData);
-  }
-
-  /**
-   * Delete vocabulary
-   */
-  async deleteVocabulary(id) {
-    return this.delete(`/${id}`);
+  async findByLesson(lessonId) {
+    return this.get(`/vocabulary/lesson/${lessonId}`);
   }
 
   /**
    * Get single vocabulary
    */
-  async getVocabulary(id) {
-    return this.get(`/${id}`);
+  async findOne(id) {
+    return this.get(`/vocabulary/${id}`);
+  }
+
+  /**
+   * Create new vocabulary
+   */
+  async create(data) {
+    return this.post('/vocabulary', data);
+  }
+
+  /**
+   * Update vocabulary
+   */
+  async update(id, data) {
+    return this.patch(`/vocabulary/${id}`, data);
+  }
+
+  /**
+   * Delete vocabulary
+   */
+  async remove(id) {
+    return this.delete(`/vocabulary/${id}`);
   }
 
   /**
    * Search vocabularies
    */
-  async searchVocabularies(query, lessonId = null) {
+  async search(query, lessonId = null) {
     const params = new URLSearchParams({ q: query });
     if (lessonId) {
       params.append('lessonId', lessonId);
@@ -59,7 +58,7 @@ class VocabularyService extends BaseService {
   /**
    * Get all vocabularies (admin only)
    */
-  async getAllVocabularies() {
+  async getAll() {
     return this.get('');
   }
 }

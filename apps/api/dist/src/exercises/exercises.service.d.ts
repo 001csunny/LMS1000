@@ -1,6 +1,5 @@
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateExerciseDto, UpdateExerciseDto } from './dto/exercises.dto';
-import { ExerciseType } from './dto/exercises.dto';
+import { CreateExerciseDto, UpdateExerciseDto, ExerciseType } from './dto/exercises.dto';
 export declare class ExercisesService {
     private prisma;
     constructor(prisma: PrismaService);
@@ -27,6 +26,7 @@ export declare class ExercisesService {
         question: string;
         answer: string;
         hints: string[];
+        choices: string[];
     }>;
     findByLesson(lessonId: number): Promise<({
         speechResults: {
@@ -53,6 +53,7 @@ export declare class ExercisesService {
         question: string;
         answer: string;
         hints: string[];
+        choices: string[];
     })[]>;
     findByType(type: ExerciseType, lessonId?: number): Promise<({
         lesson: {
@@ -77,6 +78,7 @@ export declare class ExercisesService {
         question: string;
         answer: string;
         hints: string[];
+        choices: string[];
     })[]>;
     findOne(id: number): Promise<{
         speechResults: ({
@@ -119,6 +121,7 @@ export declare class ExercisesService {
         question: string;
         answer: string;
         hints: string[];
+        choices: string[];
     }>;
     update(id: number, data: UpdateExerciseDto): Promise<{
         lesson: {
@@ -143,6 +146,7 @@ export declare class ExercisesService {
         question: string;
         answer: string;
         hints: string[];
+        choices: string[];
     }>;
     remove(id: number): Promise<{
         createdAt: Date;
@@ -157,6 +161,7 @@ export declare class ExercisesService {
         question: string;
         answer: string;
         hints: string[];
+        choices: string[];
     }>;
     findAll(): Promise<({
         lesson: {
@@ -181,6 +186,7 @@ export declare class ExercisesService {
         question: string;
         answer: string;
         hints: string[];
+        choices: string[];
     })[]>;
     getNextExercise(currentExerciseId: number): Promise<{
         vocabulary: {
@@ -202,6 +208,7 @@ export declare class ExercisesService {
         question: string;
         answer: string;
         hints: string[];
+        choices: string[];
     }>;
     getExerciseCount(lessonId: number): Promise<number>;
 }

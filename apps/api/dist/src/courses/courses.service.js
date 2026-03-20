@@ -16,12 +16,15 @@ let CoursesService = class CoursesService {
     constructor(prisma) {
         this.prisma = prisma;
     }
-    async create(data) {
+    async create(data, teacherId) {
+        const { name, description, isPublic, difficulty } = data;
         return this.prisma.course.create({
             data: {
-                name: data.name,
-                description: data.description,
-                isPublic: data.isPublic || false,
+                name,
+                description,
+                isPublic: isPublic ?? false,
+                difficulty: difficulty || 'BEGINNER',
+                teachers: teacherId ? { connect: { id: teacherId } } : undefined,
             }
         });
     }
@@ -78,9 +81,31 @@ let CoursesService = class CoursesService {
             throw new common_1.NotFoundException(`Course #${id} not found`);
         return course;
     }
+    async findLessonsByCourse(id) {
+        const course = await this.prisma.course.findUnique({
+            where: { id },
+            include: {
+                lessons: {
+                    include: {
+                        userProgress: true,
+                    },
+                    orderBy: { orderIndex: 'asc' }
+                },
+            },
+        });
+        if (!course)
+            throw new common_1.NotFoundException(`Course #${id} not found`);
+        return course.lessons;
+    }
     async update(id, data) {
         await this.findOne(id);
-        return this.prisma.course.update({ where: { id }, data });
+        return this.prisma.course.update({
+            where: { id },
+            data: {
+                ...data,
+                difficulty: data.difficulty || undefined
+            }
+        });
     }
     async remove(id) {
         await this.findOne(id);

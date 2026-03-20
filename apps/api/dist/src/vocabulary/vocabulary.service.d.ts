@@ -56,6 +56,7 @@ export declare class VocabularyService {
             question: string;
             answer: string;
             hints: string[];
+            choices: string[];
         })[];
         lesson: {
             id: number;

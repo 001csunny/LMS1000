@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateVocabularyDto, UpdateVocabularyDto, Difficulty } from './dto/vocabulary.dto';
+import { CreateVocabularyDto, UpdateVocabularyDto } from './dto/vocabulary.dto';
 
 @Injectable()
 export class VocabularyService {
@@ -15,7 +15,7 @@ export class VocabularyService {
         englishWord: data.englishWord,
         audioUrl: data.audioUrl,
         imageUrl: data.imageUrl,
-        difficulty: data.difficulty,
+        difficulty: (data.difficulty as any) || undefined,
       },
       include: {
         lesson: {
@@ -74,7 +74,7 @@ export class VocabularyService {
         englishWord: data.englishWord,
         audioUrl: data.audioUrl,
         imageUrl: data.imageUrl,
-        difficulty: data.difficulty,
+        difficulty: (data.difficulty as any) || undefined,
       },
       include: {
         lesson: {

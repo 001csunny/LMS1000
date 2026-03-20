@@ -21,11 +21,7 @@ import CourseDashboard from "./page/CourseDashboard.jsx";
 const routers = createBrowserRouter([
     {
         path: "/",
-        element: (
-            <ProtectedRoute >
-                <Index />
-            </ProtectedRoute>
-        ),
+        element: <PublicCourses />,
     },
     {
         path: "/Login",
@@ -52,14 +48,6 @@ const routers = createBrowserRouter([
         ),
     },
     {
-        path: "/STD",
-        element: (
-            <ProtectedRoute requiredRoles={["student"]}>
-                <StudentHome />
-            </ProtectedRoute>
-        ),
-    },
-    {
         path: "/Profile",
         element: (
             <ProtectedRoute>
@@ -68,18 +56,18 @@ const routers = createBrowserRouter([
         ),
     },
     {
-        path: "/Course",
-        element: (
-            <ProtectedRoute >
-                <CourseManagement />
-            </ProtectedRoute>
-        ),
-    },
-    {
         path: "/dashboard",
         element: (
             <ProtectedRoute>
                 <CourseDashboard />
+            </ProtectedRoute>
+        ),
+    },
+    {
+        path: "/Course",
+        element: (
+            <ProtectedRoute >
+                <CourseManagement />
             </ProtectedRoute>
         ),
     },
@@ -109,11 +97,11 @@ const routers = createBrowserRouter([
     },
     {
         path: "*",
-        element: <div>Not found 404</div>,
+        element: <div className="min-h-screen flex items-center justify-center font-black text-gray-400 uppercase tracking-widest">Page Not Found</div>,
     },
     {
         path: "/403",
-        element: <div>ไม่มีสิทธิ์เข้าถึงหน้านี้</div>,
+        element: <div className="min-h-screen flex items-center justify-center font-black text-red-400 uppercase tracking-widest">Access Denied</div>,
     },
 ]);
 

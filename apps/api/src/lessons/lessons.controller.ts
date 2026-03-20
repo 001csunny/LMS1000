@@ -14,6 +14,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { CreateLessonDto, UpdateLessonDto } from './dto/lessons.dto';
 
 @Controller('lessons')
 @UseGuards(JwtAuthGuard)
@@ -28,9 +29,7 @@ export class LessonsController {
   @Post()
   @UseGuards(RolesGuard)
   @Roles('ADMIN')
-  create(
-    @Body() body: { name: string; description?: string; courseId: number; isPublic?: boolean },
-  ) {
+  create(@Body() body: CreateLessonDto) {
     return this.lessonsService.create(body);
   }
 
@@ -39,7 +38,7 @@ export class LessonsController {
   @Roles('ADMIN')
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() body: { name?: string; description?: string; isPublic?: boolean },
+    @Body() body: UpdateLessonDto,
   ) {
     return this.lessonsService.update(id, body);
   }

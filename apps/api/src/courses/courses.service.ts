@@ -5,12 +5,15 @@ import { PrismaService } from '../prisma/prisma.service';
 export class CoursesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(data: { name: string; description?: string; isPublic?: boolean }) {
+  async create(data: { name: string; description?: string; isPublic?: boolean; difficulty?: string }, teacherId?: number) {
+    const { name, description, isPublic, difficulty } = data;
     return this.prisma.course.create({ 
       data: {
-        name: data.name,
-        description: data.description,
-        isPublic: data.isPublic || false,
+        name,
+        description,
+        isPublic: isPublic ?? false,
+        difficulty: (difficulty as any) || 'BEGINNER',
+        teachers: teacherId ? { connect: { id: teacherId } } : undefined,
       }
     });
   }
@@ -74,9 +77,32 @@ export class CoursesService {
     return course;
   }
 
-  async update(id: number, data: { name?: string; description?: string; isPublic?: boolean }) {
+  async findLessonsByCourse(id: number) {
+    const course = await this.prisma.course.findUnique({
+      where: { id },
+      include: {
+        lessons: {
+          include: {
+            userProgress: true,
+          },
+          orderBy: { orderIndex: 'asc' }
+        },
+      },
+    });
+
+    if (!course) throw new NotFoundException(`Course #${id} not found`);
+    return course.lessons;
+  }
+
+  async update(id: number, data: { name?: string; description?: string; isPublic?: boolean; difficulty?: string }) {
     await this.findOne(id);
-    return this.prisma.course.update({ where: { id }, data });
+    return this.prisma.course.update({ 
+      where: { id }, 
+      data: {
+        ...data,
+        difficulty: (data.difficulty as any) || undefined
+      } 
+    });
   }
 
   async remove(id: number) {

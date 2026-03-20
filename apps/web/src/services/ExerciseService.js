@@ -1,8 +1,7 @@
 import BaseService from './BaseService';
 
 /**
- * Exercise Service for managing learning exercises
- * Extends BaseService for common API operations
+ * Exercise Service for managing lesson exercises
  */
 class ExerciseService extends BaseService {
   constructor() {
@@ -13,68 +12,43 @@ class ExerciseService extends BaseService {
   /**
    * Get all exercises for a lesson
    */
-  async getExercisesByLesson(lessonId) {
+  async findByLesson(lessonId) {
     return this.get(`/exercises/lesson/${lessonId}`);
-  }
-
-  /**
-   * Get exercises by type
-   */
-  async getExercisesByType(type, lessonId = null) {
-    const params = new URLSearchParams({ type });
-    if (lessonId) {
-      params.append('lessonId', lessonId);
-    }
-    return this.get(`/exercises/type?${params}`);
-  }
-
-  /**
-   * Create new exercise
-   */
-  async createExercise(exerciseData) {
-    return this.post('/exercises', exerciseData);
-  }
-
-  /**
-   * Update exercise
-   */
-  async updateExercise(id, exerciseData) {
-    return this.patch(`/exercises/${id}`, exerciseData);
-  }
-
-  /**
-   * Delete exercise
-   */
-  async deleteExercise(id) {
-    return this.delete(`/exercises/${id}`);
   }
 
   /**
    * Get single exercise
    */
-  async getExercise(id) {
+  async findOne(id) {
     return this.get(`/exercises/${id}`);
   }
 
   /**
-   * Get next exercise in lesson
+   * Create new exercise
    */
-  async getNextExercise(currentExerciseId) {
-    return this.get(`/exercises/next/${currentExerciseId}`);
+  async create(data) {
+    return this.post('/exercises', data);
   }
 
   /**
-   * Get exercise count for lesson
+   * Update exercise
    */
-  async getExerciseCount(lessonId) {
-    return this.get(`/exercises/count/${lessonId}`);
+  async update(id, data) {
+    return this.patch(`/exercises/${id}`, data);
   }
 
   /**
-   * Get all exercises (admin only)
+   * Delete exercise
    */
-  async getAllExercises() {
-    return this.get('/exercises');
+  async remove(id) {
+    return this.delete(`/exercises/${id}`);
+  }
+
+  /**
+   * Get sequence of exercises for a lesson
+   */
+  async getSequence(lessonId) {
+    return this.get(`/exercises/lesson/${lessonId}/sequence`);
   }
 }
 

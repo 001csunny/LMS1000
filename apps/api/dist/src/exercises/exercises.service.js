@@ -27,6 +27,7 @@ let ExercisesService = class ExercisesService {
                 audioUrl: data.audioUrl,
                 imageUrl: data.imageUrl,
                 hints: data.hints || [],
+                choices: data.choices || [],
                 orderIndex: data.orderIndex || 0,
             },
             include: {
@@ -101,12 +102,13 @@ let ExercisesService = class ExercisesService {
         return this.prisma.exercise.update({
             where: { id },
             data: {
-                type: data.type,
+                type: data.type || undefined,
                 question: data.question,
                 answer: data.answer,
                 audioUrl: data.audioUrl,
                 imageUrl: data.imageUrl,
                 hints: data.hints,
+                choices: data.choices,
                 orderIndex: data.orderIndex,
             },
             include: {

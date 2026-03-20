@@ -8,7 +8,6 @@ import { cn } from '../../utils/cn';
 const Input = React.forwardRef(({
   type = 'text',
   placeholder = '',
-  value = '',
   error = '',
   disabled = false,
   required = false,
@@ -16,22 +15,21 @@ const Input = React.forwardRef(({
   helperText = '',
   size = 'md',
   className = '',
-  onChange,
   ...props
 }, ref) => {
-  const baseClasses = 'block w-full rounded-md border-gray-300 shadow-sm transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0';
+  const baseClasses = 'block w-full rounded-2xl bg-white/40 backdrop-blur-md border border-white/60 shadow-sm transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50 focus:bg-white/60';
   
   const sizeClasses = {
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-3 py-2 text-sm',
-    lg: 'px-4 py-3 text-base'
+    sm: 'px-4 py-2 text-sm',
+    md: 'px-5 py-3 text-sm',
+    lg: 'px-6 py-4 text-base'
   };
 
   const stateClasses = error
-    ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
-    : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500';
+    ? 'border-red-400 focus:ring-red-500/10 focus:border-red-500/50'
+    : '';
 
-  const disabledClasses = disabled ? 'bg-gray-100 cursor-not-allowed' : 'bg-white';
+  const disabledClasses = disabled ? 'opacity-50 cursor-not-allowed' : '';
 
   const classes = cn(
     baseClasses,
@@ -53,11 +51,9 @@ const Input = React.forwardRef(({
         ref={ref}
         type={type}
         placeholder={placeholder}
-        value={value}
         disabled={disabled}
         required={required}
         className={classes}
-        onChange={onChange}
         {...props}
       />
       {helperText && (
@@ -116,8 +112,8 @@ const Textarea = React.forwardRef(({
       <textarea
         ref={ref}
         rows={rows}
-        {...props}
         className={classes}
+        {...props}
       />
       {props.helperText && (
         <p className="mt-1 text-sm text-gray-500">

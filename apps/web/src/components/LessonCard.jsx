@@ -1,5 +1,6 @@
 import React from 'react';
-import { CheckCircle, PlayCircle, Trophy, Lock } from 'lucide-react';
+import { CheckCircle, PlayCircle, Trophy, Lock, Zap } from 'lucide-react';
+import { Card } from './ui';
 
 /**
  * LessonCard Component
@@ -19,65 +20,82 @@ const LessonCard = ({ lesson, onPlay }) => {
   const showProgress = isCompleted || isInProgress;
 
   return (
-    <div
+    <Card
       onClick={() => onPlay(lesson.id)}
+      hover
       className={`
-        relative group overflow-hidden rounded-3xl cursor-pointer transition-all duration-500 
-        backdrop-blur-xl border-2 shadow-2xl p-6 flex flex-col justify-between h-full
-        ${isCompleted ? 'bg-white/90 border-green-400 hover:shadow-green-500/30' : 
-          isUnattempted ? 'bg-white/30 border-white/10 hover:bg-white/50 grayscale hover:grayscale-0' : 
-          'bg-white/80 border-blue-400 hover:shadow-blue-500/30'}
-        hover:-translate-y-2
+        relative overflow-hidden flex flex-col justify-between h-full p-8 rounded-[32px]
+        ${isCompleted ? 'border-green-200/50 bg-green-50/20' : 
+          isUnattempted ? 'opacity-70 grayscale hover:grayscale-0 hover:opacity-100' : 
+          'border-blue-200/50 bg-blue-50/20'}
       `}
     >
-      <div className="flex justify-between items-start mb-4">
-        <h3 className={`text-xl font-bold ${isUnattempted ? 'text-gray-500' : 'text-gray-900'} leading-tight`}>
-          {lesson.name}
-        </h3>
-        {isCompleted ? (
-          <CheckCircle className="w-7 h-7 text-green-500 shrink-0 drop-shadow-sm" />
-        ) : isUnattempted ? (
-          <Lock className="w-5 h-5 text-gray-400 shrink-0" />
-        ) : (
-          <PlayCircle className="w-7 h-7 text-blue-500 shrink-0 drop-shadow-sm animate-pulse" />
-        )}
+      <div className="flex justify-between items-start mb-6">
+        <div className="space-y-1">
+          <div className="flex items-center space-x-2">
+            {isCompleted ? (
+              <span className="text-[10px] font-black text-green-600 uppercase tracking-widest">Mastered</span>
+            ) : isInProgress ? (
+              <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest leading-none">In Progress</span>
+            ) : (
+              <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">New Lesson</span>
+            )}
+          </div>
+          <h3 className="text-2xl font-black text-gray-900 leading-tight">
+            {lesson.name}
+          </h3>
+        </div>
+        <div className={`p-3 rounded-2xl ${
+          isCompleted ? 'bg-green-100 text-green-600' : 
+          isUnattempted ? 'bg-gray-100 text-gray-400' : 
+          'bg-blue-100 text-blue-600'
+        }`}>
+          {isCompleted ? <CheckCircle className="w-6 h-6" /> : 
+           isUnattempted ? <Lock className="w-5 h-5" /> : 
+           <Zap className="w-6 h-6 animate-pulse" />}
+        </div>
       </div>
 
-      <p className="text-sm text-gray-600 mb-8 flex-grow">
+      <p className="text-gray-500 font-medium text-sm mb-10 flex-grow leading-relaxed">
         {lesson.description}
       </p>
 
-      {/* Progress section: visible only if started/completed */}
-      {showProgress && (
-        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-700">
-          <div className="flex justify-between text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-            <span className="flex items-center space-x-1">
-              <Trophy className="w-3.5 h-3.5" /> <span>{score.toFixed(0)} XP</span>
-            </span>
-            <span>{completion.toFixed(0)}% Complete</span>
+      {/* Progress section */}
+      <div className="space-y-4">
+        {showProgress ? (
+          <>
+            <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
+              <span className="flex items-center text-blue-600">
+                <Trophy className="w-3.5 h-3.5 mr-1.5" /> {score.toFixed(0)} XP
+              </span>
+              <span className="text-gray-400">{completion.toFixed(0)}% Done</span>
+            </div>
+            <div className="w-full bg-white/50 rounded-full h-2 overflow-hidden border border-white/60">
+              <div
+                className={`h-full rounded-full transition-all duration-1000 ease-out ${isCompleted ? 'bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.3)]' : 'bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.3)]'}`}
+                style={{ width: `${completion}%` }}
+              ></div>
+            </div>
+          </>
+        ) : (
+          <div className="flex items-center space-x-2 text-[10px] font-black text-gray-400 uppercase tracking-widest">
+            <PlayCircle className="w-4 h-4" />
+            <span>Ready to start</span>
           </div>
-
-          <div className="w-full bg-gray-200/40 rounded-full h-2 overflow-hidden backdrop-blur-sm">
-            <div
-              className={`h-full rounded-full transition-all duration-1000 ease-out ${isCompleted ? 'bg-green-500' : 'bg-blue-500'}`}
-              style={{ width: `${completion}%` }}
-            ></div>
+        )}
+        
+        {!isCompleted && (
+          <div className={`mt-2 w-full py-4 rounded-2xl font-black text-xs uppercase tracking-widest text-center transition-all duration-300 ${
+              isUnattempted 
+                ? 'bg-white text-gray-400 border border-gray-100 hover:bg-blue-600 hover:text-white hover:border-blue-600 shadow-sm hover:shadow-blue-500/25' 
+                : 'bg-blue-600 text-white shadow-lg shadow-blue-500/25 hover:scale-[1.02]'
+            }`}
+          >
+            {isUnattempted ? 'Start Lesson' : 'Continue Learning'}
           </div>
-        </div>
-      )}
-
-      {/* Footer Button for Unattempted or In-progress */}
-      {!isCompleted && (
-        <div className={`mt-6 w-full py-3 rounded-2xl font-bold text-center text-sm transition-all duration-300 ${
-            isUnattempted 
-              ? 'bg-white/20 text-gray-500 group-hover:bg-blue-600 group-hover:text-white group-hover:shadow-lg group-hover:shadow-blue-500/40' 
-              : 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-500/20'
-          }`}
-        >
-          {isUnattempted ? 'Start' : 'Continue'}
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </Card>
   );
 };
 

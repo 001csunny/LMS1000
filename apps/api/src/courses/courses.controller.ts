@@ -9,12 +9,15 @@ import {
   ParseIntPipe,
   UseGuards,
   Query,
+  Patch,
 } from '@nestjs/common';
 import { CoursesService } from './courses.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { CreateCourseDto } from './dto/create-course.dto';
+import { UpdateCourseDto } from './dto/update-course.dto';
 
 @Controller('courses')
 @UseGuards(JwtAuthGuard)
@@ -50,20 +53,28 @@ export class CoursesController {
     return this.coursesService.findOne(id);
   }
 
+  @Get(':id/lessons')
+  findLessons(@Param('id', ParseIntPipe) id: number) {
+    return this.coursesService.findLessonsByCourse(id);
+  }
+
   // Only admins can create/update/delete courses
   @Post()
   @UseGuards(RolesGuard)
   @Roles('ADMIN')
-  create(@Body() body: { name: string; description?: string; isPublic?: boolean }) {
-    return this.coursesService.create(body);
+  create(
+    @Body() body: CreateCourseDto,
+    @CurrentUser() user: { id: number }
+  ) {
+    return this.coursesService.create(body, user.id);
   }
 
-  @Put(':id')
+  @Patch(':id')
   @UseGuards(RolesGuard)
   @Roles('ADMIN')
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() body: { name?: string; description?: string; isPublic?: boolean },
+    @Body() body: UpdateCourseDto,
   ) {
     return this.coursesService.update(id, body);
   }

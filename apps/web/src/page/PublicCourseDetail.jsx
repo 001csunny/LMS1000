@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Button, Card, CardBody, Loading, MainLayout } from '../components/ui';
+import { AlertCircle, ArrowLeft, BookOpen } from 'lucide-react';
 import courseService from '../services/CourseService';
 
 const PublicCourseDetail = () => {
@@ -38,10 +39,17 @@ const PublicCourseDetail = () => {
     if (error || !course) {
         return (
             <MainLayout>
-                <div className="flex flex-col items-center justify-center min-h-[60vh]">
-                    <h2 className="text-2xl font-bold text-red-600 mb-4">{error || 'ไม่พบคอร์ส'}</h2>
+                <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
+                    <div className="w-20 h-20 bg-red-500/10 rounded-full flex items-center justify-center mb-6 border border-red-500/20">
+                        <AlertCircle className="w-10 h-10 text-red-500" />
+                    </div>
+                    <h2 className="text-3xl font-black text-gray-900 mb-2 tracking-tighter uppercase">Data Fetch Error</h2>
+                    <p className="text-gray-500 font-medium mb-8 max-w-md">{error || 'ไม่พบคอร์สที่ต้องการ กรุณาลองใหม่อีกครั้ง'}</p>
                     <Link to="/public">
-                        <Button>กลับสู่หน้าหลัก</Button>
+                        <Button className="rounded-2xl px-8 py-6">
+                            <ArrowLeft className="w-4 h-4 mr-2" />
+                            กลับสู่หน้าหลัก
+                        </Button>
                     </Link>
                 </div>
             </MainLayout>

@@ -21,6 +21,8 @@ export class LessonsService {
     description?: string;
     courseId: number;
     isPublic?: boolean;
+    difficulty?: string;
+    orderIndex?: number;
   }) {
     return this.prisma.lesson.create({
       data: {
@@ -28,6 +30,8 @@ export class LessonsService {
         description: data.description,
         courseId: data.courseId,
         isPublic: data.isPublic || false,
+        difficulty: (data.difficulty as any) || 'BEGINNER',
+        orderIndex: data.orderIndex || 0,
       },
       include: { course: true },
     });
@@ -53,13 +57,15 @@ export class LessonsService {
     };
   }
 
-  async update(id: number, data: { 
-    name?: string; 
-    description?: string; 
-    isPublic?: boolean;
-  }) {
+  async update(id: number, data: { name?: string; description?: string; isPublic?: boolean; difficulty?: string; orderIndex?: number }) {
     await this.findOne(id);
-    return this.prisma.lesson.update({ where: { id }, data });
+    return this.prisma.lesson.update({ 
+      where: { id }, 
+      data: {
+        ...data,
+        difficulty: (data.difficulty as any) || undefined
+      } 
+    });
   }
 
   async remove(id: number) {

@@ -7,26 +7,28 @@ export declare class LessonsService {
         description?: string;
         courseId: number;
         isPublic?: boolean;
+        difficulty?: string;
+        orderIndex?: number;
     }): Promise<{
         course: {
+            createdAt: Date;
+            updatedAt: Date;
+            id: number;
             name: string;
             description: string | null;
             isPublic: boolean;
             difficulty: import("@prisma/client").$Enums.Difficulty;
-            createdAt: Date;
-            updatedAt: Date;
-            id: number;
         };
     } & {
+        createdAt: Date;
+        updatedAt: Date;
+        id: number;
         name: string;
         description: string | null;
         isPublic: boolean;
         difficulty: import("@prisma/client").$Enums.Difficulty;
-        createdAt: Date;
-        updatedAt: Date;
-        id: number;
-        courseId: number;
         orderIndex: number;
+        courseId: number;
     }>;
     findOne(id: number): Promise<{
         challenges: {
@@ -47,70 +49,120 @@ export declare class LessonsService {
             lessonId: number;
             wordIds: number[];
         }[];
+        userProgress: {
+            createdAt: Date;
+            updatedAt: Date;
+            id: number;
+            lessonId: number;
+            userId: number;
+            status: import("@prisma/client").$Enums.ProgressStatus;
+            xpEarned: number;
+            completionPercentage: number;
+            highestScore: number;
+        }[];
+        course: {
+            createdAt: Date;
+            updatedAt: Date;
+            id: number;
+            name: string;
+            description: string | null;
+            isPublic: boolean;
+            difficulty: import("@prisma/client").$Enums.Difficulty;
+        };
+        createdAt: Date;
+        updatedAt: Date;
+        id: number;
         name: string;
         description: string | null;
         isPublic: boolean;
         difficulty: import("@prisma/client").$Enums.Difficulty;
-        createdAt: Date;
-        updatedAt: Date;
-        id: number;
-        courseId: number;
         orderIndex: number;
+        courseId: number;
     }>;
     update(id: number, data: {
         name?: string;
         description?: string;
         isPublic?: boolean;
+        difficulty?: string;
+        orderIndex?: number;
     }): Promise<{
+        createdAt: Date;
+        updatedAt: Date;
+        id: number;
         name: string;
         description: string | null;
         isPublic: boolean;
         difficulty: import("@prisma/client").$Enums.Difficulty;
-        createdAt: Date;
-        updatedAt: Date;
-        id: number;
-        courseId: number;
         orderIndex: number;
+        courseId: number;
     }>;
     remove(id: number): Promise<{
+        createdAt: Date;
+        updatedAt: Date;
+        id: number;
         name: string;
         description: string | null;
         isPublic: boolean;
         difficulty: import("@prisma/client").$Enums.Difficulty;
-        createdAt: Date;
-        updatedAt: Date;
-        id: number;
-        courseId: number;
         orderIndex: number;
+        courseId: number;
     }>;
-    findPublicLessons(): Promise<{
+    findPublicLessons(): Promise<({
+        userProgress: {
+            createdAt: Date;
+            updatedAt: Date;
+            id: number;
+            lessonId: number;
+            userId: number;
+            status: import("@prisma/client").$Enums.ProgressStatus;
+            xpEarned: number;
+            completionPercentage: number;
+            highestScore: number;
+        }[];
+        course: {
+            id: number;
+            name: string;
+        };
+    } & {
+        createdAt: Date;
+        updatedAt: Date;
+        id: number;
         name: string;
         description: string | null;
         isPublic: boolean;
         difficulty: import("@prisma/client").$Enums.Difficulty;
+        orderIndex: number;
+        courseId: number;
+    })[]>;
+    findByCourse(courseId: number): Promise<({
+        userProgress: {
+            createdAt: Date;
+            updatedAt: Date;
+            id: number;
+            lessonId: number;
+            userId: number;
+            status: import("@prisma/client").$Enums.ProgressStatus;
+            xpEarned: number;
+            completionPercentage: number;
+            highestScore: number;
+        }[];
+    } & {
         createdAt: Date;
         updatedAt: Date;
         id: number;
-        courseId: number;
-        orderIndex: number;
-    }[]>;
-    findByCourse(courseId: number): Promise<{
         name: string;
         description: string | null;
         isPublic: boolean;
         difficulty: import("@prisma/client").$Enums.Difficulty;
-        createdAt: Date;
-        updatedAt: Date;
-        id: number;
-        courseId: number;
         orderIndex: number;
-    }[]>;
+        courseId: number;
+    })[]>;
     saveProgress(userId: number, lessonId: number, xpEarned: number): Promise<{
         createdAt: Date;
         updatedAt: Date;
         id: number;
-        userId: number;
         lessonId: number;
+        userId: number;
         status: import("@prisma/client").$Enums.ProgressStatus;
         xpEarned: number;
         completionPercentage: number;
@@ -120,8 +172,8 @@ export declare class LessonsService {
         createdAt: Date;
         updatedAt: Date;
         id: number;
-        userId: number;
         lessonId: number;
+        userId: number;
         status: import("@prisma/client").$Enums.ProgressStatus;
         xpEarned: number;
         completionPercentage: number;
@@ -135,8 +187,8 @@ export declare class LessonsService {
         createdAt: Date;
         updatedAt: Date;
         id: number;
-        userId: number;
         lessonId: number;
+        userId: number;
         status: import("@prisma/client").$Enums.ProgressStatus;
         xpEarned: number;
         completionPercentage: number;

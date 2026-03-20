@@ -26,6 +26,7 @@ export declare class ExercisesController {
         question: string;
         answer: string;
         hints: string[];
+        choices: string[];
     }>;
     findAll(): Promise<({
         lesson: {
@@ -50,6 +51,7 @@ export declare class ExercisesController {
         question: string;
         answer: string;
         hints: string[];
+        choices: string[];
     })[]>;
     findByLesson(lessonId: number): Promise<({
         speechResults: {
@@ -76,6 +78,7 @@ export declare class ExercisesController {
         question: string;
         answer: string;
         hints: string[];
+        choices: string[];
     })[]>;
     findByType(type: ExerciseType, lessonId?: string): Promise<({
         lesson: {
@@ -100,6 +103,7 @@ export declare class ExercisesController {
         question: string;
         answer: string;
         hints: string[];
+        choices: string[];
     })[]>;
     getNextExercise(currentExerciseId: number): Promise<{
         vocabulary: {
@@ -121,6 +125,7 @@ export declare class ExercisesController {
         question: string;
         answer: string;
         hints: string[];
+        choices: string[];
     }>;
     getExerciseCount(lessonId: number): Promise<number>;
     findOne(id: number): Promise<{
@@ -164,6 +169,7 @@ export declare class ExercisesController {
         question: string;
         answer: string;
         hints: string[];
+        choices: string[];
     }>;
     update(id: number, updateExerciseDto: UpdateExerciseDto): Promise<{
         lesson: {
@@ -188,6 +194,7 @@ export declare class ExercisesController {
         question: string;
         answer: string;
         hints: string[];
+        choices: string[];
     }>;
     remove(id: number): Promise<{
         createdAt: Date;
@@ -202,5 +209,6 @@ export declare class ExercisesController {
         question: string;
         answer: string;
         hints: string[];
+        choices: string[];
     }>;
 }

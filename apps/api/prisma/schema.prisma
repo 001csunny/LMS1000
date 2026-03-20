@@ -99,6 +99,7 @@ model Exercise {
   audioUrl     String?
   imageUrl     String?
   hints        String[]
+  choices      String[]
   orderIndex   Int          @default(0)
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt

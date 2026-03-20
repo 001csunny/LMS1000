@@ -1,8 +1,4 @@
-export declare enum Difficulty {
-    BEGINNER = "BEGINNER",
-    INTERMEDIATE = "INTERMEDIATE",
-    ADVANCED = "ADVANCED"
-}
+import { Difficulty } from '@prisma/client';
 export declare class CreateVocabularyDto {
     lessonId: number;
     thaiWord: string;

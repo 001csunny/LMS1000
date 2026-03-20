@@ -24,7 +24,7 @@ let VocabularyService = class VocabularyService {
                 englishWord: data.englishWord,
                 audioUrl: data.audioUrl,
                 imageUrl: data.imageUrl,
-                difficulty: data.difficulty,
+                difficulty: data.difficulty || undefined,
             },
             include: {
                 lesson: {
@@ -74,7 +74,7 @@ let VocabularyService = class VocabularyService {
                 englishWord: data.englishWord,
                 audioUrl: data.audioUrl,
                 imageUrl: data.imageUrl,
-                difficulty: data.difficulty,
+                difficulty: data.difficulty || undefined,
             },
             include: {
                 lesson: {

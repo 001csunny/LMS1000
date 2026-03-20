@@ -13,15 +13,15 @@ const Card = React.forwardRef(({
   padding = 'md',
   ...props
 }, ref) => {
-  const baseClasses = 'bg-white rounded-lg shadow-md border transition-all duration-200';
+  const baseClasses = 'glass-card transition-all duration-300';
   
   const variantClasses = {
-    default: 'border-gray-200',
-    elevated: 'border-gray-100 shadow-lg',
-    outlined: 'border-2 border-gray-300 bg-transparent',
-    success: 'border-green-200 bg-green-50',
-    warning: 'border-yellow-200 bg-yellow-50',
-    error: 'border-red-200 bg-red-50'
+    default: '',
+    elevated: 'shadow-2xl shadow-blue-900/10',
+    outlined: 'border-2 border-white/80',
+    success: 'bg-green-50/50 border-green-200/50',
+    warning: 'bg-yellow-50/50 border-yellow-200/50',
+    error: 'bg-red-50/50 border-red-200/50'
   };
 
   const paddingClasses = {
@@ -32,7 +32,7 @@ const Card = React.forwardRef(({
     xl: 'p-10'
   };
 
-  const hoverClasses = hover ? 'hover:shadow-lg hover:scale-[1.02] cursor-pointer' : '';
+  const hoverClasses = hover ? 'hover:shadow-2xl hover:shadow-blue-900/10 hover:translate-y-[-4px] cursor-pointer' : '';
 
   const classes = cn(
     baseClasses,
@@ -59,7 +59,7 @@ Card.displayName = 'Card';
  * Card Header Component
  */
 const CardHeader = ({ children, className = '', ...props }) => {
-  const classes = cn('px-6 py-4 border-b border-gray-200 bg-gray-50 rounded-t-lg', className);
+  const classes = cn('px-6 py-5 border-b border-white/40 bg-white/20 rounded-t-[22px]', className);
   
   return (
     <div className={classes} {...props}>
@@ -85,7 +85,7 @@ const CardBody = ({ children, className = '', ...props }) => {
  * Card Footer Component
  */
 const CardFooter = ({ children, className = '', ...props }) => {
-  const classes = cn('px-6 py-4 border-t border-gray-200 bg-gray-50 rounded-b-lg', className);
+  const classes = cn('px-6 py-5 border-t border-white/40 bg-white/20 rounded-b-[22px]', className);
   
   return (
     <div className={classes} {...props}>

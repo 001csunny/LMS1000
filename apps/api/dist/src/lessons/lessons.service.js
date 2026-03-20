@@ -33,6 +33,8 @@ let LessonsService = class LessonsService {
                 description: data.description,
                 courseId: data.courseId,
                 isPublic: data.isPublic || false,
+                difficulty: data.difficulty || 'BEGINNER',
+                orderIndex: data.orderIndex || 0,
             },
             include: { course: true },
         });
@@ -56,7 +58,13 @@ let LessonsService = class LessonsService {
     }
     async update(id, data) {
         await this.findOne(id);
-        return this.prisma.lesson.update({ where: { id }, data });
+        return this.prisma.lesson.update({
+            where: { id },
+            data: {
+                ...data,
+                difficulty: data.difficulty || undefined
+            }
+        });
     }
     async remove(id) {
         await this.findOne(id);

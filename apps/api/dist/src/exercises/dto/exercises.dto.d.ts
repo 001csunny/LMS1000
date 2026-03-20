@@ -1,10 +1,5 @@
-export declare enum ExerciseType {
-    TRANSLATION = "TRANSLATION",
-    SPEAKING = "SPEAKING",
-    LISTENING = "LISTENING",
-    READING = "READING",
-    MATCHING = "MATCHING"
-}
+import { ExerciseType } from '@prisma/client';
+export { ExerciseType };
 export declare class CreateExerciseDto {
     lessonId: number;
     vocabularyId: number;
@@ -14,6 +9,7 @@ export declare class CreateExerciseDto {
     audioUrl?: string;
     imageUrl?: string;
     hints?: string[];
+    choices?: string[];
     orderIndex?: number;
 }
 export declare class UpdateExerciseDto {
@@ -23,5 +19,6 @@ export declare class UpdateExerciseDto {
     audioUrl?: string;
     imageUrl?: string;
     hints?: string[];
+    choices?: string[];
     orderIndex?: number;
 }

@@ -19,6 +19,7 @@ const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
 const roles_guard_1 = require("../auth/guards/roles.guard");
 const roles_decorator_1 = require("../auth/decorators/roles.decorator");
 const current_user_decorator_1 = require("../auth/decorators/current-user.decorator");
+const lessons_dto_1 = require("./dto/lessons.dto");
 let LessonsController = class LessonsController {
     constructor(lessonsService) {
         this.lessonsService = lessonsService;
@@ -86,7 +87,7 @@ __decorate([
     (0, roles_decorator_1.Roles)('ADMIN'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [lessons_dto_1.CreateLessonDto]),
     __metadata("design:returntype", void 0)
 ], LessonsController.prototype, "create", null);
 __decorate([
@@ -96,7 +97,7 @@ __decorate([
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, Object]),
+    __metadata("design:paramtypes", [Number, lessons_dto_1.UpdateLessonDto]),
     __metadata("design:returntype", void 0)
 ], LessonsController.prototype, "update", null);
 __decorate([

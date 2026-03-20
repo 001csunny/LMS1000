@@ -1,52 +1,57 @@
-import { IsString, IsOptional, IsEnum, IsInt } from 'class-validator';
+import { IsString, IsOptional, IsEnum, IsInt, MaxLength } from 'class-validator';
+import { Difficulty } from '@prisma/client';
 
-export enum Difficulty {
-  BEGINNER = 'BEGINNER',
-  INTERMEDIATE = 'INTERMEDIATE',
-  ADVANCED = 'ADVANCED'
-}
-
+/**
+ * Data Transfer Object for Vocabulary Creation
+ */
 export class CreateVocabularyDto {
-  @IsInt()
+  @IsInt({ message: 'ไม่ได้ระบุรหัสบทเรียน' })
   lessonId: number;
 
-  @IsString()
+  @IsString({ message: 'คำอ่านภาษาไทยต้องเป็นตัวอักษร' })
+  @MaxLength(100, { message: 'คำอ่านภาษาไทยต้องมีความยาวไม่เกิน 100 ตัวอักษร' })
   thaiWord: string;
 
-  @IsString()
+  @IsString({ message: 'คำแปลภาษาอังกฤษต้องเป็นตัวอักษร' })
+  @MaxLength(100, { message: 'คำแปลภาษาอังกฤษต้องมีความยาวไม่เกิน 100 ตัวอักษร' })
   englishWord: string;
 
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'Audio URL must be a string' })
   audioUrl?: string;
 
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'Image URL must be a string' })
   imageUrl?: string;
 
   @IsOptional()
-  @IsEnum(Difficulty)
+  @IsEnum(Difficulty, { message: 'กรุณาเลือกระดับความยากที่ถูกต้อง' })
   difficulty?: Difficulty;
 }
 
+/**
+ * Data Transfer Object for Vocabulary Updates
+ */
 export class UpdateVocabularyDto {
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'คำอ่านภาษาไทยต้องเป็นตัวอักษร' })
+  @MaxLength(100, { message: 'คำอ่านภาษาไทยต้องมีความยาวไม่เกิน 100 ตัวอักษร' })
   thaiWord?: string;
 
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'คำแปลภาษาอังกฤษต้องเป็นตัวอักษร' })
+  @MaxLength(100, { message: 'คำแปลภาษาอังกฤษต้องมีความยาวไม่เกิน 100 ตัวอักษร' })
   englishWord?: string;
 
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'Audio URL must be a string' })
   audioUrl?: string;
 
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'Image URL must be a string' })
   imageUrl?: string;
 
   @IsOptional()
-  @IsEnum(Difficulty)
+  @IsEnum(Difficulty, { message: 'กรุณาเลือกระดับความยากที่ถูกต้อง' })
   difficulty?: Difficulty;
 }

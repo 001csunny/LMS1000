@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateExerciseDto, UpdateExerciseDto } from './dto/exercises.dto';
-import { ExerciseType } from './dto/exercises.dto';
+import { CreateExerciseDto, UpdateExerciseDto, ExerciseType } from './dto/exercises.dto';
 
 @Injectable()
 export class ExercisesService {
@@ -13,12 +12,13 @@ export class ExercisesService {
       data: {
         lessonId: data.lessonId,
         vocabularyId: data.vocabularyId,
-        type: data.type,
+        type: (data.type as any),
         question: data.question,
         answer: data.answer,
         audioUrl: data.audioUrl,
         imageUrl: data.imageUrl,
         hints: data.hints || [],
+        choices: data.choices || [],
         orderIndex: data.orderIndex || 0,
       },
       include: {
@@ -105,12 +105,13 @@ export class ExercisesService {
     return this.prisma.exercise.update({
       where: { id },
       data: {
-        type: data.type,
+        type: (data.type as any) || undefined,
         question: data.question,
         answer: data.answer,
         audioUrl: data.audioUrl,
         imageUrl: data.imageUrl,
         hints: data.hints,
+        choices: data.choices,
         orderIndex: data.orderIndex,
       },
       include: {

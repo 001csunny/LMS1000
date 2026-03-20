@@ -74,22 +74,18 @@ class CourseService extends BaseService {
   /**
    * Create new course (Admin only)
    */
-  async createCourse(createCourseRequest) {
+  async createCourse(courseData) {
     try {
-      const validation = createCourseRequest.validate();
-      if (!validation.isValid) {
-        throw new Error(validation.errors.join(', '));
-      }
-
       const data = await this.post('/courses', {
-        name: createCourseRequest.name,
-        description: createCourseRequest.description,
-        isPublic: createCourseRequest.isPublic
+        name: courseData.name,
+        description: courseData.description,
+        difficulty: courseData.difficulty,
+        isPublic: courseData.isPublic ?? true
       });
       
       return ApiResponse.success(new Course(data));
     } catch (error) {
-      return ApiResponse.error(error.message);
+      return ApiResponse.error(error.message || 'Failed to create course');
     }
   }
 
@@ -98,10 +94,15 @@ class CourseService extends BaseService {
    */
   async updateCourse(courseId, updateData) {
     try {
-      const data = await this.put(`/courses/${courseId}`, updateData);
+      const data = await this.patch(`/courses/${courseId}`, {
+        name: updateData.name,
+        description: updateData.description,
+        difficulty: updateData.difficulty,
+        isPublic: updateData.isPublic
+      });
       return ApiResponse.success(new Course(data));
     } catch (error) {
-      return ApiResponse.error(error.message);
+      return ApiResponse.error(error.message || 'Failed to update course');
     }
   }
 

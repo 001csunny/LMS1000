@@ -1,21 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button, Card, CardHeader, CardBody, Loading, Input, MainLayout } from '../components/ui';
 import { Course, Lesson } from '../types';
 import courseService from '../services/CourseService';
 import lessonService from '../services/LessonService';
+import { Sparkles, Search, Book, GraduationCap, ArrowRight, LayoutDashboard, LogIn, Trophy } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
 /**
- * Public Courses Page - Accessible without authentication
- * Displays public courses and lessons for anyone to browse
+ * Bright Liquid Glass Public Courses
+ * Discoverable content with premium aesthetic
  */
 const PublicCourses = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [courses, setCourses] = useState([]);
   const [lessons, setLessons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeView, setActiveView] = useState('courses'); // 'courses' or 'lessons'
+  const [activeView, setActiveView] = useState('courses');
 
   useEffect(() => {
     loadPublicContent();
@@ -34,13 +38,12 @@ const PublicCourses = () => {
       setCourses(coursesData);
       setLessons(lessonsData);
     } catch (err) {
-      setError(err.message || 'Failed to load public content');
+      setError(err.message || 'Failed to load content');
     } finally {
       setLoading(false);
     }
   };
 
-  // Filter content based on search term
   const filteredCourses = courses.filter(course =>
     course.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     course.description?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -55,7 +58,7 @@ const PublicCourses = () => {
     return (
       <MainLayout>
         <div className="flex items-center justify-center min-h-[60vh]">
-          <Loading size="lg" text="กำลังโหลดคอร์สและบทเรียน..." />
+          <Loading size="lg" />
         </div>
       </MainLayout>
     );
@@ -63,216 +66,192 @@ const PublicCourses = () => {
 
   return (
     <MainLayout>
-      {/* Hero Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold mb-4">
-              คอร์สและบทเรียนสาธารณะ
-            </h1>
-            <p className="text-xl mb-8 opacity-90">
-              เรียนรู้ภาษาไทยฟรี - ไม่ต้องสมัครสมาชิก
-            </p>
-            <div className="flex justify-center space-x-4">
-              <Link to="/Login">
-                <Button variant="secondary" className="bg-white text-blue-600 hover:bg-gray-100">
-                  เข้าสู่ระบบ
+      <div className="max-w-7xl mx-auto px-6 py-16 lg:py-24 space-y-24">
+        {/* Glass Hero Section */}
+        <section className="text-center space-y-8 animate-in fade-in zoom-in duration-1000">
+          <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-2xl bg-blue-50 text-blue-600 text-xs font-black uppercase tracking-widest mb-6">
+            <Sparkles className="w-4 h-4" />
+            <span>Open Learning</span>
+          </div>
+          
+          <h1 className="text-6xl md:text-8xl font-black text-gray-900 tracking-tighter leading-none max-w-4xl mx-auto">
+            Explore Free <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Thai</span> Lessons
+          </h1>
+          
+          <p className="text-xl text-gray-400 font-medium max-w-2xl mx-auto leading-relaxed">
+            Start your language journey today with our curated collection of <br className="hidden md:block" /> free courses and interactive lessons.
+          </p>
+
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 pt-4">
+            {user ? (
+              <Link to="/dashboard">
+                <Button size="xl" className="shadow-2xl shadow-blue-500/30">
+                  <LayoutDashboard className="w-5 h-5 mr-2" />
+                  My Dashboard
                 </Button>
               </Link>
-              <Button variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600">
-                เรียนรู้เพิ่มเติม
-              </Button>
-            </div>
+            ) : (
+              <Link to="/Login">
+                <Button size="xl" className="shadow-2xl shadow-blue-500/30">
+                  <LogIn className="w-5 h-5 mr-2" />
+                  Sign In to Start
+                </Button>
+              </Link>
+            )}
+            <Button variant="outline" size="xl" className="bg-white/50 border-white/80">
+              Browse Below <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
           </div>
-        </div>
-      </div>
+        </section>
 
-      {/* Search and Filter Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <div className="flex flex-col md:flex-row gap-4 items-center">
-            <div className="flex-1">
+        {/* Search and Filters */}
+        <div className="glass-card p-6 md:p-8 rounded-[40px] shadow-xl shadow-blue-900/5">
+          <div className="flex flex-col lg:flex-row gap-6 items-center">
+            <div className="relative flex-1 w-full">
+              <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <Input
-                placeholder="ค้นหาคอร์สหรือบทเรียน..."
+                placeholder="What do you want to learn today?"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="text-lg"
+                className="pl-14 py-4 text-lg border-white/60 focus:bg-white"
               />
             </div>
-            <div className="flex space-x-2">
-              <Button
-                variant={activeView === 'courses' ? 'primary' : 'outline'}
+            <div className="flex p-1.5 bg-blue-50 rounded-[28px] w-full lg:w-auto">
+              <button
                 onClick={() => setActiveView('courses')}
+                className={`flex-1 lg:flex-none px-8 py-3 rounded-[22px] text-xs font-black uppercase tracking-widest transition-all duration-300 ${
+                  activeView === 'courses' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-400 hover:text-gray-600'
+                }`}
               >
-                คอร์ส ({filteredCourses.length})
-              </Button>
-              <Button
-                variant={activeView === 'lessons' ? 'primary' : 'outline'}
+                Courses ({filteredCourses.length})
+              </button>
+              <button
                 onClick={() => setActiveView('lessons')}
+                className={`flex-1 lg:flex-none px-8 py-3 rounded-[22px] text-xs font-black uppercase tracking-widest transition-all duration-300 ${
+                  activeView === 'lessons' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-400 hover:text-gray-600'
+                }`}
               >
-                บทเรียน ({filteredLessons.length})
-              </Button>
+                Lessons ({filteredLessons.length})
+              </button>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Error Alert */}
-      {error && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
-          <Card variant="error">
-            <CardBody className="text-red-700">
-              {error}
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="ml-2"
-                onClick={() => setError('')}
-              >
-                ✕
-              </Button>
-            </CardBody>
-          </Card>
-        </div>
-      )}
-
-      {/* Content Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-        {activeView === 'courses' && (
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">คอร์สสาธารณะ</h2>
-            
-            {filteredCourses.length === 0 ? (
-              <div className="text-center py-12">
-                <div className="text-gray-500 text-lg">
-                  {searchTerm ? 'ไม่พบคอร์สที่ตรงกับการค้นหา' : 'ยังไม่มีคอร์สสาธารณะ'}
-                </div>
-                <Link to="/Login">
-                  <Button className="mt-4">
-                    สมัครสมาชิกเพื่อเข้าถึงคอร์สเพิ่มเติม
-                  </Button>
-                </Link>
+        {/* Grid Display */}
+        <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
+          {activeView === 'courses' ? (
+            <div className="space-y-10">
+              <div className="flex items-center space-x-3">
+                <Book className="w-6 h-6 text-blue-600" />
+                <h2 className="text-3xl font-black text-gray-900 tracking-tight">Public Courses</h2>
               </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredCourses.map((course) => (
-                  <Card key={course.id} hover className="group">
-                    <CardBody>
-                      <div className="flex justify-between items-start mb-4">
-                        <h3 className="text-xl font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+              
+              {filteredCourses.length === 0 ? (
+                <Card className="py-20 text-center space-y-4 bg-white/40 border-dashed border-2 border-gray-200">
+                  <p className="text-gray-400 font-medium">No courses found matching your search.</p>
+                  <Button variant="ghost" size="sm" onClick={() => setSearchTerm('')}>Clear Search</Button>
+                </Card>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {filteredCourses.map((course) => (
+                    <Card key={course.id} hover className="p-8 flex flex-col justify-between h-full bg-white/40 border-white/80">
+                      <div className="space-y-4">
+                        <div className="flex justify-between items-start">
+                          <span className="px-3 py-1 bg-green-50 text-green-600 text-[10px] font-black uppercase tracking-widest rounded-full">Free</span>
+                          <GraduationCap className="w-6 h-6 text-blue-600/20" />
+                        </div>
+                        <h3 className="text-2xl font-black text-gray-900 leading-tight group-hover:text-blue-600 transition-colors">
                           {course.name}
                         </h3>
-                        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                          สาธารณะ
-                        </span>
+                        <p className="text-gray-500 font-medium text-sm line-clamp-3 leading-relaxed">
+                          {course.description || 'Dive into basic Thai greetings and essential navigation skills.'}
+                        </p>
                       </div>
                       
-                      <p className="text-gray-600 mb-4 line-clamp-2">
-                        {course.description || 'ไม่มีคำอธิบาย'}
-                      </p>
-                      
-                      <div className="flex items-center justify-between">
-                        <div className="text-sm text-gray-500">
-                          <span>บทเรียน: {course.getLessonCount?.() || 0}</span>
-                          <span className="mx-2">•</span>
-                          <span>บทเรียนสาธารณะ: {course.getPublicLessons?.().length || 0}</span>
-                        </div>
-                        
+                      <div className="mt-8 pt-6 border-t border-gray-100 flex items-center justify-between">
+                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                          {course.getLessonCount?.() || 2} Lessons
+                        </span>
                         <Link to={`/public/courses/${course.id}`}>
-                          <Button size="sm">
-                            ดูรายละเอียด
+                          <Button size="sm" variant="ghost" className="hover:bg-blue-50 hover:text-blue-600">
+                            View Details <ArrowRight className="w-4 h-4 ml-2" />
                           </Button>
                         </Link>
                       </div>
-                    </CardBody>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        {activeView === 'lessons' && (
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">บทเรียนสาธารณะ</h2>
-            
-            {filteredLessons.length === 0 ? (
-              <div className="text-center py-12">
-                <div className="text-gray-500 text-lg">
-                  {searchTerm ? 'ไม่พบบทเรียนที่ตรงกับการค้นหา' : 'ยังไม่มีบทเรียนสาธารณะ'}
+                    </Card>
+                  ))}
                 </div>
-                <Link to="/Login">
-                  <Button className="mt-4">
-                    สมัครสมาชิกเพื่อเข้าถึงบทเรียนเพิ่มเติม
-                  </Button>
-                </Link>
+              )}
+            </div>
+          ) : (
+            <div className="space-y-10">
+              <div className="flex items-center space-x-3">
+                <GraduationCap className="w-6 h-6 text-blue-600" />
+                <h2 className="text-3xl font-black text-gray-900 tracking-tight">Public Lessons</h2>
               </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredLessons.map((lesson) => (
-                  <Card key={lesson.id} hover className="group">
-                    <CardBody>
-                      <div className="flex justify-between items-start mb-4">
-                        <h3 className="text-xl font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+              
+              {filteredLessons.length === 0 ? (
+                <Card className="py-20 text-center space-y-4 bg-white/40 border-dashed border-2 border-gray-200">
+                  <p className="text-gray-400 font-medium">No individual lessons found matching your search.</p>
+                  <Button variant="ghost" size="sm" onClick={() => setSearchTerm('')}>Clear Search</Button>
+                </Card>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {filteredLessons.map((lesson) => (
+                    <Card key={lesson.id} hover className="p-8 flex flex-col justify-between h-full bg-white/40 border-white/80">
+                      <div className="space-y-4">
+                        <div className="flex justify-between items-start">
+                          <span className="px-3 py-1 bg-blue-50 text-blue-600 text-[10px] font-black uppercase tracking-widest rounded-full leading-none h-6 flex items-center justify-center">Public</span>
+                        </div>
+                        <h3 className="text-2xl font-black text-gray-900 leading-tight">
                           {lesson.name}
                         </h3>
-                        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                          สาธารณะ
-                        </span>
+                        {lesson.course && (
+                          <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest">
+                            Part of {lesson.course.name}
+                          </p>
+                        )}
+                        <p className="text-gray-500 font-medium text-sm line-clamp-3 leading-relaxed">
+                          {lesson.description || 'Master essential phrases and pronunciation through interactive exercises.'}
+                        </p>
                       </div>
                       
-                      <p className="text-gray-600 mb-4 line-clamp-2">
-                        {lesson.description || 'ไม่มีคำอธิบาย'}
-                      </p>
-                      
-                      {lesson.course && (
-                        <div className="text-sm text-gray-500 mb-4">
-                          คอร์ส: {lesson.course.name}
-                        </div>
-                      )}
-                      
-                      <div className="flex items-center justify-between">
-                        <div className="text-sm text-gray-500">
-                          กิจกรรม: {lesson.getTotalActivities?.() || 0}
-                        </div>
-                        
-                        <Link to={`/public/lessons/${lesson.id}`}>
-                          <Button size="sm">
-                            เริ่มเรียน
+                      <div className="mt-8 pt-6 border-t border-gray-100">
+                        <Link to={`/public/lessons/${lesson.id}`} className="w-full block">
+                          <Button size="lg" className="w-full">
+                            Try Lesson <ArrowRight className="w-4 h-4 ml-2" />
                           </Button>
                         </Link>
                       </div>
-                    </CardBody>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-
-      {/* Call to Action Section */}
-      <div className="bg-gray-100 py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            พร้อมเริ่มเรียน?
-          </h2>
-          <p className="text-xl text-gray-600 mb-8">
-            สมัครสมาชิกวันนี้เพื่อเข้าถึงคอร์สและบทเรียนทั้งหมด
-          </p>
-          <div className="flex justify-center space-x-4">
-            <Link to="/Login">
-              <Button size="lg">
-                สมัครสมาชิกฟรี
-              </Button>
-            </Link>
-            <Link to="/Login">
-              <Button variant="outline" size="lg">
-                เรียนรู้เพิ่มเติม
-              </Button>
-            </Link>
-          </div>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
+
+        {/* CTA Footer Card */}
+        <Card className="bg-gradient-to-br from-blue-600 to-indigo-700 p-12 md:p-20 text-center space-y-8 rounded-[60px] relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-12 opacity-10 pointer-events-none">
+            <Trophy className="w-64 h-64 text-white rotate-12" />
+          </div>
+          <div className="relative z-10 space-y-4">
+            <h2 className="text-4xl md:text-6xl font-black text-white tracking-tighter">
+              Unlock the Full Experience
+            </h2>
+            <p className="text-xl text-blue-100 font-medium max-w-2xl mx-auto">
+              Join thousands of learners tracking their daily streak, <br className="hidden md:block" /> earning XP, and achieving true fluency.
+            </p>
+            <div className="pt-8">
+              <Link to="/Login">
+                <Button size="xl" className="bg-white text-blue-600 hover:bg-gray-100 shadow-2xl shadow-black/20">
+                  Create Free Account Now
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </Card>
       </div>
     </MainLayout>
   );

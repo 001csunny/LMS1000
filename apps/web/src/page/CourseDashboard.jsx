@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useProgressStore } from '../store/useProgressStore';
 import CourseSection from '../components/CourseSection';
+import { MainLayout, Loading } from '../components/ui';
+import { Sparkles } from 'lucide-react';
 
 const CourseDashboard = () => {
   const navigate = useNavigate();
@@ -17,43 +19,29 @@ const CourseDashboard = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-900 space-y-6">
-        <div className="relative w-24 h-24">
-          <div className="absolute inset-0 border-4 border-blue-500/20 rounded-full"></div>
-          <div className="absolute inset-0 border-4 border-t-blue-500 rounded-full animate-spin"></div>
+      <MainLayout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <Loading size="lg" />
         </div>
-        <p className="text-white font-bold tracking-widest text-sm animate-pulse uppercase">Syncing Progress</p>
-      </div>
+      </MainLayout>
     );
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-[#0a0a0c] font-sans text-gray-800 antialiased">
-      {/* Dynamic Animated Background Blobs */}
-      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-        <div className="absolute w-[1000px] h-[1000px] -top-[300px] -left-[100px] bg-blue-600/10 rounded-full blur-[160px] animate-pulse duration-[10s]"></div>
-        <div className="absolute w-[800px] h-[800px] top-[40%] -right-[200px] bg-purple-600/10 rounded-full blur-[140px] animate-pulse duration-[8s] delay-700"></div>
-        <div className="absolute w-[600px] h-[600px] -bottom-[100px] left-[20%] bg-teal-500/10 rounded-full blur-[120px] animate-pulse duration-[12s] delay-1000"></div>
-      </div>
-
-      <div className="relative z-10 container mx-auto px-6 py-16 lg:py-24 max-w-7xl">
-        <header className="mb-20 space-y-4">
-          <div className="flex items-center space-x-3 mb-6">
-            <div className="h-px flex-grow bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-            <span className="px-4 py-1 rounded-full border border-white/10 bg-white/5 backdrop-blur-md text-[10px] font-bold text-gray-400 tracking-[0.4em] uppercase">
-              Dashboard
-            </span>
-            <div className="h-px flex-grow bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+    <MainLayout>
+      <div className="max-w-7xl mx-auto px-6 py-16 lg:py-24">
+        <header className="mb-20 text-center">
+          <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-2xl bg-blue-50 text-blue-600 text-xs font-black uppercase tracking-widest mb-6">
+            <Sparkles className="w-4 h-4" />
+            <span>Learning Journey</span>
           </div>
           
-          <div className="text-center">
-            <h1 className="text-6xl md:text-7xl font-black text-white mb-6 tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-white to-gray-500 select-none">
-              Learn Thai
-            </h1>
-            <p className="text-xl text-gray-400 tracking-wide max-w-2xl mx-auto font-medium leading-relaxed">
-              Track your journey through the levels of fluency with our <br className="hidden md:block" /> interactive glass dashboard.
-            </p>
-          </div>
+          <h1 className="text-6xl md:text-8xl font-black text-gray-900 mb-8 tracking-tighter leading-none">
+            Master <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Thai</span>
+          </h1>
+          <p className="text-xl text-gray-400 font-medium max-w-2xl mx-auto leading-relaxed">
+            Beautifully crafted lessons designed to take you from <br className="hidden md:block" /> absolute beginner to fluent speaker.
+          </p>
         </header>
 
         <div className="space-y-32">
@@ -62,10 +50,7 @@ const CourseDashboard = () => {
           ))}
         </div>
       </div>
-
-      {/* Subtle UI Accents */}
-      <div className="fixed bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#0a0a0c] to-transparent pointer-events-none z-20"></div>
-    </div>
+    </MainLayout>
   );
 };
 

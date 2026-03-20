@@ -1,4 +1,5 @@
 import { LessonsService } from './lessons.service';
+import { CreateLessonDto, UpdateLessonDto } from './dto/lessons.dto';
 export declare class LessonsController {
     private readonly lessonsService;
     constructor(lessonsService: LessonsService);
@@ -21,67 +22,78 @@ export declare class LessonsController {
             lessonId: number;
             wordIds: number[];
         }[];
-        name: string;
-        description: string | null;
-        isPublic: boolean;
-        difficulty: import("@prisma/client").$Enums.Difficulty;
-        createdAt: Date;
-        updatedAt: Date;
-        id: number;
-        courseId: number;
-        orderIndex: number;
-    }>;
-    create(body: {
-        name: string;
-        description?: string;
-        courseId: number;
-        isPublic?: boolean;
-    }): Promise<{
+        userProgress: {
+            createdAt: Date;
+            updatedAt: Date;
+            id: number;
+            lessonId: number;
+            userId: number;
+            status: import("@prisma/client").$Enums.ProgressStatus;
+            xpEarned: number;
+            completionPercentage: number;
+            highestScore: number;
+        }[];
         course: {
+            createdAt: Date;
+            updatedAt: Date;
+            id: number;
             name: string;
             description: string | null;
             isPublic: boolean;
             difficulty: import("@prisma/client").$Enums.Difficulty;
+        };
+        createdAt: Date;
+        updatedAt: Date;
+        id: number;
+        name: string;
+        description: string | null;
+        isPublic: boolean;
+        difficulty: import("@prisma/client").$Enums.Difficulty;
+        orderIndex: number;
+        courseId: number;
+    }>;
+    create(body: CreateLessonDto): Promise<{
+        course: {
             createdAt: Date;
             updatedAt: Date;
             id: number;
+            name: string;
+            description: string | null;
+            isPublic: boolean;
+            difficulty: import("@prisma/client").$Enums.Difficulty;
         };
     } & {
+        createdAt: Date;
+        updatedAt: Date;
+        id: number;
         name: string;
         description: string | null;
         isPublic: boolean;
         difficulty: import("@prisma/client").$Enums.Difficulty;
-        createdAt: Date;
-        updatedAt: Date;
-        id: number;
-        courseId: number;
         orderIndex: number;
+        courseId: number;
     }>;
-    update(id: number, body: {
-        name?: string;
-        description?: string;
-        isPublic?: boolean;
-    }): Promise<{
+    update(id: number, body: UpdateLessonDto): Promise<{
+        createdAt: Date;
+        updatedAt: Date;
+        id: number;
         name: string;
         description: string | null;
         isPublic: boolean;
         difficulty: import("@prisma/client").$Enums.Difficulty;
-        createdAt: Date;
-        updatedAt: Date;
-        id: number;
-        courseId: number;
         orderIndex: number;
+        courseId: number;
     }>;
     remove(id: number): Promise<{
+        createdAt: Date;
+        updatedAt: Date;
+        id: number;
         name: string;
         description: string | null;
         isPublic: boolean;
         difficulty: import("@prisma/client").$Enums.Difficulty;
-        createdAt: Date;
-        updatedAt: Date;
-        id: number;
-        courseId: number;
         orderIndex: number;
+        courseId: number;
     }>;
     createChallenge(body: {
         name: string;
@@ -149,8 +161,8 @@ export declare class LessonsController {
         createdAt: Date;
         updatedAt: Date;
         id: number;
-        userId: number;
         lessonId: number;
+        userId: number;
         status: import("@prisma/client").$Enums.ProgressStatus;
         xpEarned: number;
         completionPercentage: number;
@@ -166,8 +178,8 @@ export declare class LessonsController {
         createdAt: Date;
         updatedAt: Date;
         id: number;
-        userId: number;
         lessonId: number;
+        userId: number;
         status: import("@prisma/client").$Enums.ProgressStatus;
         xpEarned: number;
         completionPercentage: number;
